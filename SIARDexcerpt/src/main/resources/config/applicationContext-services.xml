@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<!-- Common Services -->
+
+	<bean id="textResourceService"
+		class="ch.kostceco.tools.siardexcerpt.service.impl.TextResourceServiceImpl">
+	</bean>
+
+	<bean id="configurationService"
+		class="ch.kostceco.tools.siardexcerpt.service.impl.ConfigurationServiceImpl">
+		<property name="textResourceService" ref="textResourceService" />
+	</bean>
+
+	<bean id="messageService"
+		class="ch.kostceco.tools.siardexcerpt.service.impl.MessageServiceImpl">
+	</bean>
+
+
+	<!-- Validation Services -->
+
+
+
+	<bean id="excerptAZipModule"
+		class="ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl.ExcerptAZipModuleImpl">
+		<property name="textResourceService" ref="textResourceService" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+	<bean id="excerptBFolderStructureModule"
+		class="ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl.ExcerptBFolderStructureModuleImpl">
+		<property name="textResourceService" ref="textResourceService" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+	<bean id="excerptCGrepModule"
+		class="ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl.ExcerptCGrepModuleImpl">
+		<property name="textResourceService" ref="textResourceService" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+
+
+	<bean id="siardexcerpt" class="ch.kostceco.tools.siardexcerpt.SIARDexcerpt">
+		<property name="textResourceService" ref="textResourceService" />
+		<property name="configurationService" ref="configurationService" />
+	</bean>
+
+	<bean id="logconfigurator" class="ch.kostceco.tools.siardexcerpt.logging.LogConfigurator">
+		<property name="textResourceService" ref="textResourceService" />
+	</bean>
+
+	<bean id="controllerexcerpt" class="ch.kostceco.tools.siardexcerpt.controller.Controllerexcerpt">
+		<property name="textResourceService" ref="textResourceService" />
+		<property name="excerptAZipModule" ref="excerptAZipModule" /> 
+		<property name="excerptBFolderStructureModule" ref="excerptBFolderStructureModule" />
+		<property name="excerptCGrepModule" ref="excerptCGrepModule" />
+	</bean>
+
+</beans>
