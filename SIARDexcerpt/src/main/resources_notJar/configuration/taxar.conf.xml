@@ -4,6 +4,27 @@
 	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
 	<pathtoxsl>resources\taxar.xsl</pathtoxsl>
 	<archive>Staatsarchiv Zuerich</archive>
+
+	<searchtable>
+		<folder>table13</folder>
+		<name>taxDeclarationMainForm</name>
+		<cellname1>Name P1</cellname1>
+		<cellnumber1>c6</cellnumber1>
+		<cellname2>Vorname P1</cellname2>
+		<cellnumber2>c7</cellnumber2>
+		<cellname3>Geburtsdatum P1</cellname3>
+		<cellnumber3>c10</cellnumber3>
+		<cellname4>Ort P1</cellname4>
+		<cellnumber4>c18</cellnumber4>
+		<cellnameresult1>AHV-Nr P1</cellnameresult1>
+		<cellnumberresult1>c11</cellnumberresult1>
+		<cellnameresult2>Name P2</cellnameresult2>
+		<cellnumberresult2>c26</cellnumberresult2>
+		<cellnameresult3>Vorname P2</cellnameresult3>
+		<cellnumberresult3>c27</cellnumberresult3>
+		<cellnameresult4>Geburtsdatum P2</cellnameresult4>
+		<cellnumberresult4>c30</cellnumberresult4>
+	</searchtable>
 	
 	<maintable>
 		<folder>table13</folder>

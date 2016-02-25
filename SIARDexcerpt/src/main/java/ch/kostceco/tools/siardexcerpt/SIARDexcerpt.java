@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.0.1 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.0.2 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016 Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-// import ch.kostceco.tools.siardexcerpt.controller.Controllersearch;
 import ch.kostceco.tools.siardexcerpt.controller.Controllerexcerpt;
 import ch.kostceco.tools.siardexcerpt.logging.LogConfigurator;
 import ch.kostceco.tools.siardexcerpt.logging.Logger;
@@ -63,8 +62,12 @@ public class SIARDexcerpt implements MessageConstants
 		this.configurationService = configurationService;
 	}
 
-	/** Die Eingabe besteht aus 3 Parameter: [0] Pfad zur SIARD-Datei oder Verzeichnis [1] Suchtext [2]
-	 * configfile
+	/** Die Eingabe besteht aus mind 3 Parameter: [0] Pfad zur SIARD-Datei oder Verzeichnis [1]
+	 * configfile [2] Modul
+	 * 
+	 * Übersicht der Module: --init --search --extract sowie --finish
+	 * 
+	 * bei --search kommen danach noch die Suchtexte und bei --extract die Schlüssel
 	 * 
 	 * @param args
 	 * @throws IOException */
@@ -74,10 +77,15 @@ public class SIARDexcerpt implements MessageConstants
 		ApplicationContext context = new ClassPathXmlApplicationContext(
 				"classpath:config/applicationContext.xml" );
 
-		// Zeitstempel der Datenextraktion
-		java.util.Date nowStart = new java.util.Date();
-		java.text.SimpleDateFormat sdfStart = new java.text.SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
-		String ausgabeStart = sdfStart.format( nowStart );
+		/** SIARDexcerpt: Aufbau des Tools
+		 * 
+		 * 1) init: Config Kopieren und ggf SIARD-Datei ins Workverzeichnis entpacken
+		 * 
+		 * 2) search: gemäss config die Tabelle mit Suchtext befragen und Ausgabe des Resultates
+		 * 
+		 * 3) extract: mit den Keys anhand der config einen Records herausziehen und anzeigen
+		 * 
+		 * 4) finish: Config-Kopie sowie Workverzeichnis löschen */
 
 		/* TODO: siehe Bemerkung im applicationContext-services.xml bezüglich Injection in der
 		 * Superklasse aller Impl-Klassen ValidationModuleImpl validationModuleImpl =
@@ -85,226 +93,445 @@ public class SIARDexcerpt implements MessageConstants
 
 		SIARDexcerpt siardexcerpt = (SIARDexcerpt) context.getBean( "siardexcerpt" );
 
-		// Ueberprüfung des Parameters (Log-Verzeichnis)
-		String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
-
-		File directoryOfOutput = new File( pathToOutput );
-
-		if ( !directoryOfOutput.exists() ) {
-			directoryOfOutput.mkdir();
-		}
-
-		// Im Logverzeichnis besteht kein Schreibrecht
-		if ( !directoryOfOutput.canWrite() ) {
-			System.out.println( siardexcerpt.getTextResourceService().getText(
-					ERROR_LOGDIRECTORY_NOTWRITABLE, directoryOfOutput ) );
-			System.exit( 1 );
-		}
-
-		if ( !directoryOfOutput.isDirectory() ) {
-			System.out.println( siardexcerpt.getTextResourceService().getText(
-					ERROR_LOGDIRECTORY_NODIRECTORY ) );
-			System.exit( 1 );
-		}
-
-		// Ist die Anzahl Parameter (3) korrekt?
-		if ( args.length != 3 ) {
+		// Ist die Anzahl Parameter (mind 3) korrekt?
+		if ( args.length < 3 ) {
 			System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_PARAMETER_USAGE ) );
 			System.exit( 1 );
 		}
 
-		/* TODO: arg 2 sollte den pfad zur configdatei angeben. Prov hartcodiert
-		 * 
-		 * String path = "configuration/TAXAR.conf.xml";
-		 * 
-		 * in ConfigurationServiceImpl */
-
-		String excerptString = new String( args[1] );
+		String module = new String( args[2] );
 		File siardDatei = new File( args[0] );
-		File configFile = new File( args[2] );
-		String outDateiName = siardDatei.getName() + "_" + excerptString + "_SIARDexcerpt.xml";
+		File configFile = new File( args[1] );
 
-		// Informationen zum Arbeitsverzeichnis holen
-		String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
-		/* Nicht vergessen in "src/main/resources/config/applicationContext-services.xml" beim
-		 * entsprechenden Modul die property anzugeben: <property name="configurationService"
-		 * ref="configurationService" /> */
+		/* arg 1 gibt den Pfad zur configdatei an. Da dieser in ConfigurationServiceImpl hartcodiert
+		 * ist, wird diese nach "configuration/SIARDexcerpt.conf.xml" kopiert. */
+		File configFileHard = new File( "configuration" + File.separator + "SIARDexcerpt.conf.xml" );
 
-		// Informationen zum Archiv holen
-		String archive = siardexcerpt.getConfigurationService().getArchive();
+		// excerpt ist der Standardwert wird aber anhand der config dann gesetzt
+		File directoryOfOutput = new File( "excerpt" );
 
-		// Konfiguration des Outputs, ein File Logger wird zusätzlich erstellt
-		LogConfigurator logConfigurator = (LogConfigurator) context.getBean( "logconfigurator" );
-		String outFileName = logConfigurator.configure( directoryOfOutput.getAbsolutePath(),
-				outDateiName );
-		File outFile = new File( outFileName );
-		// Ab hier kann ins Output geschrieben werden...
+		// temp_SIARDexcerpt ist der Standardwert wird aber anhand der config dann gesetzt
+		File tmpDir = new File( "temp_SIARDexcerpt" );
 
-		System.out.println( "SIARDexcerpt" );
-		System.out.println( "" );
-
-		// Informationen zum XSL holen
-		String pathToXSL = siardexcerpt.getConfigurationService().getPathToXSL();
-
-		File xslOrig = new File( pathToXSL );
-		File xslCopy = new File( directoryOfOutput.getAbsolutePath() + File.separator
-				+ xslOrig.getName() );
-		if ( !xslCopy.exists() ) {
-			Util.copyFile( xslOrig, xslCopy );
-		}
-
-		LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
-				xslCopy.getName() ) );
-		LOGGER.logError( siardexcerpt.getTextResourceService()
-				.getText( MESSAGE_XML_START, ausgabeStart ) );
-		LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_ARCHIVE, archive ) );
-		LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_INFO ) );
-
-		File tmpDir = new File( pathToWorkDir );
-
-		/* bestehendes Workverzeichnis Abbruch wenn nicht leer, da am Schluss das Workverzeichnis
-		 * gelöscht wird und entsprechend bestehende Dateien gelöscht werden können */
-		if ( tmpDir.exists() ) {
-			if ( tmpDir.isDirectory() ) {
-				// Get list of file in the directory. When its length is not zero the folder is not empty.
-				String[] files = tmpDir.list();
-				if ( files.length > 0 ) {
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText(
-							ERROR_IOE,
-							siardexcerpt.getTextResourceService().getText( ERROR_WORKDIRECTORY_EXISTS,
-									pathToWorkDir ) ) );
-					System.out.println( siardexcerpt.getTextResourceService().getText(
-							ERROR_WORKDIRECTORY_EXISTS, pathToWorkDir ) );
-					System.exit( 1 );
-				}
-			}
-		}
+		boolean okA = false;
+		boolean okB = false;
+		boolean okC = false;
 
 		// die Anwendung muss mindestens unter Java 6 laufen
 		String javaRuntimeVersion = System.getProperty( "java.vm.version" );
 		if ( javaRuntimeVersion.compareTo( "1.6.0" ) < 0 ) {
-			LOGGER.logError( siardexcerpt.getTextResourceService().getText( ERROR_IOE,
-					siardexcerpt.getTextResourceService().getText( ERROR_WRONG_JRE ) ) );
 			System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_WRONG_JRE ) );
 			System.exit( 1 );
 		}
 
-		// bestehendes Workverzeichnis wieder anlegen
-		if ( !tmpDir.exists() ) {
-			tmpDir.mkdir();
-		}
+		if ( module.equalsIgnoreCase( "--init" ) ) {
 
-		// Im workverzeichnis besteht kein Schreibrecht
-		if ( !tmpDir.canWrite() ) {
-			LOGGER
-					.logError( siardexcerpt.getTextResourceService().getText(
-							ERROR_IOE,
-							siardexcerpt.getTextResourceService().getText( ERROR_WORKDIRECTORY_NOTWRITABLE,
-									tmpDir ) ) );
-			System.out.println( siardexcerpt.getTextResourceService().getText(
-					ERROR_WORKDIRECTORY_NOTWRITABLE, tmpDir ) );
-			System.exit( 1 );
-		}
+			/** 1) init: Config Kopieren und ggf SIARD-Datei ins Workverzeichnis entpacken
+			 * 
+			 * a) config muss existieren und SIARDexcerpt.conf.xml noch nicht
+			 * 
+			 * b) Excerptverzeichnis mit schreibrechte und ggf anlegen
+			 * 
+			 * c) Workverzeichnis muss leer sein und mit schreibrechte
+			 * 
+			 * d) SIARD-Datei entpacken
+			 * 
+			 * e) Struktur-Check SIARD-Verzeichnis
+			 * 
+			 * TODO: Erledigt */
 
-		// Ueberprüfung des Parameters (Val-Datei): existiert die Datei?
-		if ( siardDatei.exists() ) {
-			Controllerexcerpt controllerexcerpt = (Controllerexcerpt) context
-					.getBean( "controllerexcerpt" );
-			boolean okA = false;
-			boolean okB = false;
-			boolean okOther = false;
+			System.out.println( "SIARDexcerpt: init" );
+
+			/** a) config muss existieren und SIARDexcerpt.conf.xml noch nicht */
+			if ( !configFile.exists() ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText(
+						ERROR_CONFIGFILE_FILENOTEXISTING, configFile.getAbsolutePath() ) );
+				System.exit( 1 );
+			}
+
+			if ( configFileHard.exists() ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText(
+						ERROR_CONFIGFILEHARD_FILEEXISTING ) );
+				System.exit( 1 );
+			}
+			Util.copyFile( configFile, configFileHard );
+
+			/** b) Excerptverzeichnis mit schreibrechte und ggf anlegen */
+			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
+
+			directoryOfOutput = new File( pathToOutput );
+
+			if ( !directoryOfOutput.exists() ) {
+				directoryOfOutput.mkdir();
+			}
+
+			// Im Logverzeichnis besteht kein Schreibrecht
+			if ( !directoryOfOutput.canWrite() ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText(
+						ERROR_LOGDIRECTORY_NOTWRITABLE, directoryOfOutput ) );
+				// Löschen des configFileHard, falls eines angelegt wurde
+				if ( configFileHard.exists() ) {
+					Util.deleteDir( configFileHard );
+				}
+				System.exit( 1 );
+			}
+
+			if ( !directoryOfOutput.isDirectory() ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText(
+						ERROR_LOGDIRECTORY_NODIRECTORY ) );
+				// Löschen des configFileHard, falls eines angelegt wurde
+				if ( configFileHard.exists() ) {
+					Util.deleteDir( configFileHard );
+				}
+				System.exit( 1 );
+			}
+
+			/** c) Workverzeichnis muss leer sein und mit schreibrechte */
+			String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
+
+			tmpDir = new File( pathToWorkDir );
+
+			/* bestehendes Workverzeichnis Abbruch wenn nicht leer, da am Schluss das Workverzeichnis
+			 * gelöscht wird und entsprechend bestehende Dateien gelöscht werden können */
+			if ( tmpDir.exists() ) {
+				if ( tmpDir.isDirectory() ) {
+					// Get list of file in the directory. When its length is not zero the folder is not empty.
+					String[] files = tmpDir.list();
+					if ( files.length > 0 ) {
+						System.out.println( siardexcerpt.getTextResourceService().getText(
+								ERROR_WORKDIRECTORY_EXISTS, pathToWorkDir ) );
+						// Löschen des configFileHard, falls eines angelegt wurde
+						if ( configFileHard.exists() ) {
+							Util.deleteDir( configFileHard );
+						}
+						System.exit( 1 );
+					}
+				}
+			}
+			if ( !tmpDir.exists() ) {
+				tmpDir.mkdir();
+			}
+
+			// Im Workverzeichnis besteht kein Schreibrecht
+			if ( !tmpDir.canWrite() ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText(
+						ERROR_WORKDIRECTORY_NOTWRITABLE, pathToWorkDir ) );
+				// Löschen des configFileHard, falls eines angelegt wurde
+				if ( configFileHard.exists() ) {
+					Util.deleteDir( configFileHard );
+				}
+				System.exit( 1 );
+			}
+
+			/** d) SIARD-Datei entpacken */
+			if ( !siardDatei.exists() ) {
+				// SIARD-Datei existiert nicht
+				System.out.println( siardexcerpt.getTextResourceService().getText(
+						ERROR_SIARDFILE_FILENOTEXISTING, siardDatei.getAbsolutePath() ) );
+				// Löschen des configFileHard, falls eines angelegt wurde
+				if ( configFileHard.exists() ) {
+					Util.deleteDir( configFileHard );
+				}
+				System.exit( 1 );
+			}
+
 			if ( !siardDatei.isDirectory() ) {
+
 				/* SIARD-Datei ist eine Datei
 				 * 
-				 * Die Datei muss als erstes ins Workverzeichnis extrahiert werden. Dies erfolgt im Schritt
-				 * A. */
+				 * Die Datei muss ins Workverzeichnis extrahiert werden. Dies erfolgt im Modul A.
+				 * 
+				 * danach der Pfad zu SIARD-Datei dorthin zeigen lassen */
 
-				// TODO:
-				// okA = controllerexcerpt.executeA( siardDatei, outFile, excerptString );
-				okA = true;
+				Controllerexcerpt controllerexcerpt = (Controllerexcerpt) context
+						.getBean( "controllerexcerpt" );
+				File siardDateiNew = new File( pathToWorkDir + File.separator + siardDatei.getName() );
+				okA = controllerexcerpt.executeA( siardDatei, siardDateiNew, "" );
 
 				if ( !okA ) {
 					// SIARD Datei konte nicht entpackt werden
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_MODUL_A ) );
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText(
-							ERROR_XML_A_CANNOTEXTRACTZIP ) );
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
 					System.out.println( MESSAGE_XML_MODUL_A );
 					System.out.println( ERROR_XML_A_CANNOTEXTRACTZIP );
-					System.out.println( "" );
 
-					// Löschen des Arbeitsverzeichnisses, falls eines angelegt wurde
+					// Löschen des Arbeitsverzeichnisses und configFileHard, falls eines angelegt wurde
 					if ( tmpDir.exists() ) {
 						Util.deleteDir( tmpDir );
 					}
+					if ( configFileHard.exists() ) {
+						Util.deleteDir( configFileHard );
+					}
 					// Fehler Extraktion --> invalide
 					System.exit( 2 );
+				} else {
+					@SuppressWarnings("unused")
+					File siardDateiOld = siardDatei;
+					siardDatei = siardDateiNew;
 				}
 
+			} else {
+				/* SIARD-Datei entpackt oder Datei war bereits ein Verzeichnis.
+				 * 
+				 * Gerade bei grösseren SIARD-Dateien ist es sinnvoll an einer Stelle das ausgepackte SIARD
+				 * zu haben, damit diese nicht immer noch extrahiert werden muss */
 			}
 
-			/* SIARD-Datei entpackt oder Datei war bereits ein Verzeichnis.
-			 * 
-			 * Gerade bei grösseren SIARD-Dateien ist es sinnvoll an einer Stelle das ausgepackte SIARD
-			 * zu haben, damit diese nicht immer noch extrahiert werden muss */
-			okB = controllerexcerpt.executeB( siardDatei, outFile, excerptString );
+			/** e) Struktur-Check SIARD-Verzeichnis */
+			File content = new File( siardDatei.getAbsolutePath() + File.separator + "content" );
+			File header = new File( siardDatei.getAbsolutePath() + File.separator + "header" );
+			File xsd = new File( siardDatei.getAbsolutePath() + File.separator + "header"
+					+ File.separator + "metadata.xsd" );
+			File metadata = new File( siardDatei.getAbsolutePath() + File.separator + "header"
+					+ File.separator + "metadata.xml" );
 
-			if ( !okB ) {
-				// Struktur entspricht nicht einer SIARD-Datei
-				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_MODUL_B ) );
-				LOGGER.logError( siardexcerpt.getTextResourceService().getText( ERROR_XML_B_STRUCTURE ) );
-				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
-				System.out.println( MESSAGE_XML_MODUL_B );
-				System.out.println( ERROR_XML_B_STRUCTURE );
-				System.out.println( "" );
-
-				// Löschen des Arbeitsverzeichnisses, falls eines angelegt wurde
+			if ( !content.exists() || !header.exists() || !xsd.exists() || !metadata.exists() ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_XML_B_STRUCTURE ) );
+				// Löschen des Arbeitsverzeichnisses und configFileHard, falls eines angelegt wurde
 				if ( tmpDir.exists() ) {
 					Util.deleteDir( tmpDir );
+				}
+				if ( configFileHard.exists() ) {
+					Util.deleteDir( configFileHard );
 				}
 				// Fehler Extraktion --> invalide
 				System.exit( 2 );
 			} else {
 				// Struktur sieht plausibel aus, extraktion kann starten
-				okOther = controllerexcerpt.executeOther( siardDatei, outFile, excerptString );
+			}
 
-				if ( !okOther ) {
-					// Record konnte nicht extrahiert werden
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_MODUL_A ) );
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText(
-							ERROR_XML_A_CANNOTEXTRACTZIP ) );
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
-					System.out.println( MESSAGE_XML_MODUL_A );
-					System.out.println( ERROR_XML_A_CANNOTEXTRACTZIP );
-					System.out.println( "" );
+		} // End init
 
-					// Löschen des Arbeitsverzeichnisses, falls eines angelegt wurde
-					if ( tmpDir.exists() ) {
-						Util.deleteDir( tmpDir );
-					}
-					// Fehler Extraktion --> invalide
-					System.exit( 2 );
+		if ( module.equalsIgnoreCase( "--search" ) ) {
+
+			/** 2) search: gemäss config die Tabelle mit Suchtext befragen und Ausgabe des Resultates
+			 * 
+			 * a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext
+			 * 
+			 * b) config zu den Suchfelder herauslesen und Suchtext einlesen
+			 * 
+			 * c) search.xml vorbereiten (Header) und xsl in Output kopieren
+			 * 
+			 * d) grep ausführen
+			 * 
+			 * e) Suchergebnis speichern und anzeigen (via GUI)
+			 * 
+			 * TODO: Noch offen */
+
+			System.out.println( "SIARDexcerpt: search" );
+
+			/** a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext */
+			if ( args.length < 4 ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_PARAMETER_USAGE ) );
+				System.exit( 1 );
+			}
+
+			if ( !siardDatei.isDirectory() ) {
+				File siardDateiNew = new File( tmpDir.getAbsolutePath() + File.separator
+						+ siardDatei.getName() );
+				if ( !siardDateiNew.exists() ) {
+					System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_NOINIT ) );
+					System.exit( 1 );
 				} else {
-					LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
-					// Löschen des Arbeitsverzeichnisses, falls eines angelegt wurde
-					if ( tmpDir.exists() ) {
-						Util.deleteDir( tmpDir );
-					}
-					// Record konnte extrahiert werden
-					System.exit( 0 );
-
+					siardDatei = siardDateiNew;
 				}
+			}
+
+			/** TODO: b) config zu den Suchfelder herauslesen und Suchtext einlesen */
+			String searchString = new String( args[3] );
+
+			/** c) search.xml vorbereiten (Header) und xsl in Output kopieren */
+			// Zeitstempel der Datenextraktion
+			java.util.Date nowStartS = new java.util.Date();
+			java.text.SimpleDateFormat sdfStartS = new java.text.SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
+			String ausgabeStartS = sdfStartS.format( nowStartS );
+
+			/* Der SearchString kann zeichen enthalten, welche nicht im Dateinamen vorkommen dürfen.
+			 * Entsprechend werden diese normalisiert */
+			String searchStringFilename = searchString.replaceAll( "/", "_" );
+			searchStringFilename = searchStringFilename.replaceAll( ">", "_" );
+			searchStringFilename = searchStringFilename.replaceAll( "<", "_" );
+			searchStringFilename = searchStringFilename.replace( ".*", "_" );
+			searchStringFilename = searchStringFilename.replaceAll( "___", "_" );
+			searchStringFilename = searchStringFilename.replaceAll( "__", "_" );
+
+			String outDateiNameS = siardDatei.getName() + "_" + searchStringFilename + "_SIARDsearch.xml";
+			outDateiNameS = outDateiNameS.replaceAll( "__", "_" );
+
+			// Informationen zum Archiv holen
+			String archiveS = siardexcerpt.getConfigurationService().getArchive();
+
+			// Konfiguration des Outputs, ein File Logger wird zusätzlich erstellt
+			LogConfigurator logConfiguratorS = (LogConfigurator) context.getBean( "logconfigurator" );
+			String outFileNameS = logConfiguratorS.configure( directoryOfOutput.getAbsolutePath(),
+					outDateiNameS );
+			File outFileSearch = new File( outFileNameS );
+			// Ab hier kann ins Output geschrieben werden...
+
+			// Informationen zum XSL holen
+			String pathToXSLS = siardexcerpt.getConfigurationService().getPathToXSL();
+
+			File xslOrigS = new File( pathToXSLS );
+			File xslCopyS = new File( directoryOfOutput.getAbsolutePath() + File.separator
+					+ xslOrigS.getName() );
+			if ( !xslCopyS.exists() ) {
+				Util.copyFile( xslOrigS, xslCopyS );
+			}
+
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
+					xslCopyS.getName() ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_START,
+					ausgabeStartS ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService()
+					.getText( MESSAGE_XML_ARCHIVE, archiveS ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_INFO ) );
+
+			/** d) search: dies ist in einem eigenen Modul realisiert */
+			Controllerexcerpt controllerexcerptS = (Controllerexcerpt) context
+					.getBean( "controllerexcerpt" );
+
+			okB = controllerexcerptS.executeB( siardDatei, outFileSearch, searchString );
+
+			/** e) Ausgabe und exitcode */
+			if ( !okB ) {
+				// Suche konnte nicht erfolgen
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_MODUL_B ) );
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText(
+						ERROR_XML_B_CANNOTSEARCHRECORD ) );
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
+				System.out.println( MESSAGE_XML_MODUL_B );
+				System.out.println( ERROR_XML_B_CANNOTSEARCHRECORD );
+				System.out.println( "" );
+
+				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
+
+				// Fehler Extraktion --> invalide
+				System.exit( 2 );
+			} else {
+				// Suche konnte durchgeführt werden
+				System.exit( 0 );
+			}
+
+		} // End search
+
+		if ( module.equalsIgnoreCase( "--excerpt" ) ) {
+
+			/** 3) extract: mit den Keys anhand der config einen Records herausziehen und anzeigen
+			 * 
+			 * a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext
+			 * 
+			 * b) extract.xml vorbereiten (Header) und xsl in Output kopieren
+			 * 
+			 * c) extraktion: dies ist in einem eigenen Modul realisiert
+			 * 
+			 * d) Ausgabe und exitcode
+			 * 
+			 * TODO: Erledigt */
+
+			System.out.println( "SIARDexcerpt: extract" );
+
+			/** a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext */
+			if ( args.length < 4 ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_PARAMETER_USAGE ) );
+				System.exit( 1 );
+			}
+
+			if ( !siardDatei.isDirectory() ) {
+				File siardDateiNew = new File( tmpDir.getAbsolutePath() + File.separator
+						+ siardDatei.getName() );
+				if ( !siardDateiNew.exists() ) {
+					System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_NOINIT ) );
+					System.exit( 1 );
+				} else {
+					siardDatei = siardDateiNew;
+				}
+			}
+
+			/** b) extract.xml vorbereiten (Header) und xsl in Output kopieren */
+			// Zeitstempel der Datenextraktion
+			java.util.Date nowStart = new java.util.Date();
+			java.text.SimpleDateFormat sdfStart = new java.text.SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
+			String ausgabeStart = sdfStart.format( nowStart );
+
+			String excerptString = new String( args[3] );
+			String outDateiName = siardDatei.getName() + "_" + excerptString + "_SIARDexcerpt.xml";
+
+			// Informationen zum Archiv holen
+			String archive = siardexcerpt.getConfigurationService().getArchive();
+
+			// Konfiguration des Outputs, ein File Logger wird zusätzlich erstellt
+			LogConfigurator logConfigurator = (LogConfigurator) context.getBean( "logconfigurator" );
+			String outFileName = logConfigurator.configure( directoryOfOutput.getAbsolutePath(),
+					outDateiName );
+			File outFile = new File( outFileName );
+			// Ab hier kann ins Output geschrieben werden...
+
+			// Informationen zum XSL holen
+			String pathToXSL = siardexcerpt.getConfigurationService().getPathToXSL();
+
+			File xslOrig = new File( pathToXSL );
+			File xslCopy = new File( directoryOfOutput.getAbsolutePath() + File.separator
+					+ xslOrig.getName() );
+			if ( !xslCopy.exists() ) {
+				Util.copyFile( xslOrig, xslCopy );
+			}
+
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
+					xslCopy.getName() ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_START,
+					ausgabeStart ) );
+			LOGGER
+					.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_ARCHIVE, archive ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_INFO ) );
+
+			/** c) extraktion: dies ist in einem eigenen Modul realisiert */
+			Controllerexcerpt controllerexcerpt = (Controllerexcerpt) context
+					.getBean( "controllerexcerpt" );
+
+			okC = controllerexcerpt.executeC( siardDatei, outFile, excerptString );
+
+			/** d) Ausgabe und exitcode */
+			if ( !okC ) {
+				// Record konnte nicht extrahiert werden
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_MODUL_C ) );
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText(
+						ERROR_XML_C_CANNOTEXTRACTRECORD ) );
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
+				System.out.println( MESSAGE_XML_MODUL_C );
+				System.out.println( ERROR_XML_C_CANNOTEXTRACTRECORD );
+				System.out.println( "" );
+
+				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
+
+				// Fehler Extraktion --> invalide
+				System.exit( 2 );
+			} else {
+				// Record konnte extrahiert werden
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
+				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
+
+				// Record konnte extrahiert werden
+				System.exit( 0 );
 
 			}
 
-		} else {
-			// SIARD-Datei existiert nicht
-			LOGGER.logError( siardexcerpt.getTextResourceService().getText( ERROR_IOE,
-					siardexcerpt.getTextResourceService().getText( ERROR_SIARDFILE_FILENOTEXISTING ) ) );
-			System.out.println( siardexcerpt.getTextResourceService().getText(
-					ERROR_SIARDFILE_FILENOTEXISTING ) );
-			System.exit( 1 );
+		} // End extract
 
-		}
+		if ( module.equalsIgnoreCase( "--finish" ) ) {
+
+			/** 4) finish: Config-Kopie sowie Workverzeichnis löschen
+			 * 
+			 * TODO: Erledigt */
+
+			System.out.println( "SIARDexcerpt: finish" );
+
+			// Löschen des Arbeitsverzeichnisses und confiFileHard, falls eines angelegt wurde
+			if ( tmpDir.exists() ) {
+				Util.deleteDir( tmpDir );
+			}
+			if ( configFileHard.exists() ) {
+				Util.deleteDir( configFileHard );
+			}
+
+		} // End finish
+
 	}
 }

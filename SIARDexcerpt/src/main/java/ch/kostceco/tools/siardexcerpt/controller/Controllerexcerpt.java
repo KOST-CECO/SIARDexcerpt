@@ -18,10 +18,10 @@ package ch.kostceco.tools.siardexcerpt.controller;
 import java.io.File;
 
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAZipException;
-import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptBFolderStructureException;
+import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptBSearchException;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptCGrepException;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptAZipModule;
-import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptBFolderStructureModule;
+import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptBSearchModule;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptCGrepModule;
 import ch.kostceco.tools.siardexcerpt.logging.Logger;
 import ch.kostceco.tools.siardexcerpt.logging.MessageConstants;
@@ -34,15 +34,15 @@ import ch.kostceco.tools.siardexcerpt.service.TextResourceService;
 public class Controllerexcerpt implements MessageConstants
 {
 
-	private static final Logger						LOGGER	= new Logger( Controllerexcerpt.class );
+	private static final Logger		LOGGER	= new Logger( Controllerexcerpt.class );
 
-	private ExcerptAZipModule							excerptAZipModule;
+	private ExcerptAZipModule			excerptAZipModule;
 
-	private ExcerptBFolderStructureModule	excerptBFolderStructureModule;
+	private ExcerptBSearchModule	excerptBSearchModule;
 
-	private ExcerptCGrepModule						excerptCGrepModule;
+	private ExcerptCGrepModule		excerptCGrepModule;
 
-	private TextResourceService						textResourceService;
+	private TextResourceService		textResourceService;
 
 	public ExcerptAZipModule getExcerptAZipModule()
 	{
@@ -54,15 +54,14 @@ public class Controllerexcerpt implements MessageConstants
 		this.excerptAZipModule = excerptAZipModule;
 	}
 
-	public ExcerptBFolderStructureModule getExcerptBFolderStructureModule()
+	public ExcerptBSearchModule getExcerptBSearchModule()
 	{
-		return excerptBFolderStructureModule;
+		return excerptBSearchModule;
 	}
 
-	public void setExcerptBFolderStructureModule(
-			ExcerptBFolderStructureModule excerptBFolderStructureModule )
+	public void setExcerptBSearchModule( ExcerptBSearchModule excerptBSearchModule )
 	{
-		this.excerptBFolderStructureModule = excerptBFolderStructureModule;
+		this.excerptBSearchModule = excerptBSearchModule;
 	}
 
 	public ExcerptCGrepModule getExcerptCGrepModule()
@@ -85,20 +84,18 @@ public class Controllerexcerpt implements MessageConstants
 		this.textResourceService = textResourceService;
 	}
 
-	public boolean executeA( File siardDatei, File outFile, String excerptString )
+	public boolean executeA( File siardDatei, File siardDateiNew, String noString )
 	{
 		boolean valid = true;
 
-		// Excerpt Step A (TODO: SIARD-Datei ins Workverzeichnis extrahieren)
+		// Excerpt Step A (SIARD-Datei ins Workverzeichnis extrahieren)
 
-/*		try {
-			if ( this.getExcerptAZipModule().validate( siardDatei, outFile, excerptString ) ) {
+		try {
+			if ( this.getExcerptAZipModule().validate( siardDatei, siardDateiNew, noString ) ) {
 				this.getExcerptAZipModule().getMessageService().print();
 			} else {
 				this.getExcerptAZipModule().getMessageService().print();
-				// Ein negatives Validierungsresultat in diesem Schritt führt zum Abbruch der weiteren
-				// Verarbeitung
-				return false;
+				valid = false;
 			}
 		} catch ( ExcerptAZipException e ) {
 			LOGGER.logError( getTextResourceService().getText( MESSAGE_XML_MODUL_A )
@@ -110,28 +107,26 @@ public class Controllerexcerpt implements MessageConstants
 					+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
 			return false;
 		}
-*/
+
 		return valid;
 
 	}
 
-	public boolean executeB( File siardDatei, File outFile, String excerptString )
+	public boolean executeB( File siardDatei, File outFileSearch, String searchString )
 	{
 		boolean valid = true;
-		// Excerpt Step B (Struktur Check)
+		// Excerpt Step B (Suche)
 		try {
-			if ( this.getExcerptBFolderStructureModule().validate( siardDatei, outFile, excerptString ) ) {
-				this.getExcerptBFolderStructureModule().getMessageService().print();
+			if ( this.getExcerptBSearchModule().validate( siardDatei, outFileSearch, searchString ) ) {
+				this.getExcerptBSearchModule().getMessageService().print();
 			} else {
-				this.getExcerptBFolderStructureModule().getMessageService().print();
-				// Ein negatives Validierungsresultat in diesem Schritt führt zum Abbruch der weiteren
-				// Verarbeitung
-				return false;
+				this.getExcerptBSearchModule().getMessageService().print();
+				valid = false;
 			}
-		} catch ( ExcerptBFolderStructureException e ) {
+		} catch ( ExcerptBSearchException e ) {
 			LOGGER.logError( getTextResourceService().getText( MESSAGE_XML_MODUL_B )
 					+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
-			this.getExcerptBFolderStructureModule().getMessageService().print();
+			this.getExcerptBSearchModule().getMessageService().print();
 			return false;
 		} catch ( Exception e ) {
 			LOGGER.logError( getTextResourceService().getText( MESSAGE_XML_MODUL_B )
@@ -143,10 +138,10 @@ public class Controllerexcerpt implements MessageConstants
 
 	}
 
-	public boolean executeOther( File siardDatei, File outFile, String excerptString )
+	public boolean executeC( File siardDatei, File outFile, String excerptString )
 	{
 		boolean valid = true;
-		// Excerpt Step C
+		// Excerpt Step C (Extraktion)
 		try {
 			if ( this.getExcerptCGrepModule().validate( siardDatei, outFile, excerptString ) ) {
 				this.getExcerptCGrepModule().getMessageService().print();
@@ -165,35 +160,6 @@ public class Controllerexcerpt implements MessageConstants
 			return false;
 		}
 
-		/* // Excerpt Step D try { if ( this.getExcerptDMetadataModule().validate( siardDatei, outFile )
-		 * ) { this.getExcerptDMetadataModule().getMessageService().print(); } else {
-		 * this.getExcerptDMetadataModule().getMessageService().print(); valid = false; } } catch (
-		 * ExcerptDMetadataException e ) { LOGGER.logError( getTextResourceService().getText(
-		 * MESSAGE_XML_MODUL_Ad_SIP ) + getTextResourceService().getText( ERROR_XML_UNKNOWN,
-		 * e.getMessage() ) ); this.getExcerptDMetadataModule().getMessageService().print(); return
-		 * false; } catch ( Exception e ) { LOGGER.logError( getTextResourceService().getText(
-		 * MESSAGE_XML_MODUL_Ad_SIP ) + getTextResourceService().getText( ERROR_XML_UNKNOWN,
-		 * e.getMessage() ) ); return false; }
-		 * 
-		 * // Excerpt Step E try { if ( this.getExcerptESipTypeModule().validate( siardDatei, outFile )
-		 * ) { this.getExcerptESipTypeModule().getMessageService().print(); } else {
-		 * this.getExcerptESipTypeModule().getMessageService().print(); valid = false; } } catch (
-		 * ExcerptESipTypeException e ) { LOGGER.logError( getTextResourceService().getText(
-		 * MESSAGE_XML_MODUL_Ae_SIP ) + getTextResourceService().getText( ERROR_XML_UNKNOWN,
-		 * e.getMessage() ) ); this.getExcerptESipTypeModule().getMessageService().print(); valid =
-		 * false; } catch ( Exception e ) { LOGGER.logError( getTextResourceService().getText(
-		 * MESSAGE_XML_MODUL_Ae_SIP ) + getTextResourceService().getText( ERROR_XML_UNKNOWN,
-		 * e.getMessage() ) ); return false; }
-		 * 
-		 * // Excerpt Step F try { if ( this.getExcerptFPrimaryDataModule().validate( siardDatei,
-		 * outFile ) ) { this.getExcerptFPrimaryDataModule().getMessageService().print(); } else {
-		 * this.getExcerptFPrimaryDataModule().getMessageService().print(); valid = false; } } catch (
-		 * ExcerptFPrimaryDataException e ) { LOGGER.logError( getTextResourceService().getText(
-		 * MESSAGE_XML_MODUL_Af_SIP ) + getTextResourceService().getText( ERROR_XML_UNKNOWN,
-		 * e.getMessage() ) ); this.getExcerptFPrimaryDataModule().getMessageService().print(); valid =
-		 * false; } catch ( Exception e ) { LOGGER.logError( getTextResourceService().getText(
-		 * MESSAGE_XML_MODUL_Af_SIP ) + getTextResourceService().getText( ERROR_XML_UNKNOWN,
-		 * e.getMessage() ) ); return false; } */
 		return valid;
 	}
 }

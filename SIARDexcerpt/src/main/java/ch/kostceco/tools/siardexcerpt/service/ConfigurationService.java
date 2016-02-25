@@ -20,8 +20,8 @@ package ch.kostceco.tools.siardexcerpt.service;
  * @author Rc Claire Röthlisberger, KOST-CECO */
 public interface ConfigurationService extends Service
 {
-
-	/** Pfad zu XSL-File, damit der extrahierte Record dargestellt werden kann  
+	// ------------------------ Allgemeines ------------------------
+	/** Pfad zu XSL-File, damit der extrahierte Record dargestellt werden kann
 	 * 
 	 * @return Pfad des XSL-File zum extrahierten Record */
 	String getPathToXSL();
@@ -42,6 +42,98 @@ public interface ConfigurationService extends Service
 	 * @return Namen des Archivs */
 	String getArchive();
 
+	// ------------------------ Suche ------------------------
+	/** Gibt den Ordner der Suchtabelle zurück.
+	 * 
+	 * @return Ordner der Suchtabelle */
+	String getSearchtableFolder();
+
+	/** Gibt den Namen der Suchtabelle zurück.
+	 * 
+	 * @return Name der Suchtabelle */
+	String getSearchtableName();
+
+	/** Gibt den Namen der Suchzelle Nr1 zurück.
+	 * 
+	 * @return Name der Suchzelle Nr1 */
+	String getcellName1();
+
+	/** Gibt den Nummer der Suchzelle Nr1 zurück.
+	 * 
+	 * @return Nummer der Suchzelle Nr1 */
+	String getcellNumber1();
+
+	/** Gibt den Namen der Suchzelle Nr2 zurück.
+	 * 
+	 * @return Name der Suchzelle Nr2 */
+	String getcellName2();
+
+	/** Gibt den Nummer der Suchzelle Nr2 zurück.
+	 * 
+	 * @return Nummer der Suchzelle Nr2 */
+	String getcellNumber2();
+
+	/** Gibt den Namen der Suchzelle Nr3 zurück.
+	 * 
+	 * @return Name der Suchzelle Nr3 */
+	String getcellName3();
+
+	/** Gibt den Nummer der Suchzelle Nr3 zurück.
+	 * 
+	 * @return Nummer der Suchzelle Nr3 */
+	String getcellNumber3();
+
+	/** Gibt den Namen der Suchzelle Nr4 zurück.
+	 * 
+	 * @return Name der Suchzelle Nr4 */
+	String getcellName4();
+
+	/** Gibt den Nummer der Suchzelle Nr4 zurück.
+	 * 
+	 * @return Nummer der Suchzelle Nr4 */
+	String getcellNumber4();
+
+	/** Gibt den Namen der Suchzelle ResultNr1 zurück.
+	 * 
+	 * @return Name der Suchzelle ResultNr1 */
+	String getcellNameResult1();
+
+	/** Gibt den Nummer der Suchzelle ResultNr1 zurück.
+	 * 
+	 * @return Nummer der Suchzelle ResultNr1 */
+	String getcellNumberResult1();
+
+	/** Gibt den Namen der Suchzelle ResultNr2 zurück.
+	 * 
+	 * @return Name der Suchzelle ResultNr2 */
+	String getcellNameResult2();
+
+	/** Gibt den Nummer der Suchzelle ResultNr2 zurück.
+	 * 
+	 * @return Nummer der Suchzelle ResultNr2 */
+	String getcellNumberResult2();
+
+	/** Gibt den Namen der Suchzelle ResultNr3 zurück.
+	 * 
+	 * @return Name der Suchzelle ResultNr3 */
+	String getcellNameResult3();
+
+	/** Gibt den Nummer der Suchzelle NrResult3 zurück.
+	 * 
+	 * @return Nummer der Suchzelle NrResult3 */
+	String getcellNumberResult3();
+
+	/** Gibt den Namen der Suchzelle NrResult4 zurück.
+	 * 
+	 * @return Name der Suchzelle NrResult4 */
+	String getcellNameResult4();
+
+	/** Gibt den Nummer der Suchzelle NrResult4 zurück.
+	 * 
+	 * @return Nummer der Suchzelle NrResult4 */
+	String getcellNumberResult4();
+
+	// ------------------------ Extraktion ------------------------
 	/** Gibt den Ordner der Haupttabelle zurück.
 	 * 
 	 * @return Ordner der Haupttabelle */

@@ -17,29 +17,16 @@ package ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl;
 
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+
 import org.jdom2.Document;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
-// import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptCGrepException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
@@ -71,6 +58,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 	public boolean validate( File siardDatei, File outFile, String excerptString )
 			throws ExcerptCGrepException
 	{
+		// Ausgabe -> Ersichtlich das SIARDexcerpt arbeitet
+		int onWork = 41;
 
 		boolean isValid = true;
 
@@ -80,7 +69,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			// grep.exe existiert nicht --> Abbruch
 			getMessageService().logError(
 					getTextResourceService().getText( MESSAGE_XML_MODUL_C )
-							+ getTextResourceService().getText( MESSAGE_XML_C_MISSINGFILE,
+							+ getTextResourceService().getText( ERROR_XML_C_MISSINGFILE,
 									fGrepExe.getAbsolutePath() ) );
 			return false;
 		} else {
@@ -90,7 +79,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				// msys-1.0.dll existiert nicht --> Abbruch
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_MODUL_C )
-								+ getTextResourceService().getText( MESSAGE_XML_C_MISSINGFILE,
+								+ getTextResourceService().getText( ERROR_XML_C_MISSINGFILE,
 										fMsys10dll.getAbsolutePath() ) );
 				return false;
 			}
@@ -124,7 +113,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 				 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
-				System.out.println( command );
+				// System.out.println( command );
 
 				Process proc = null;
 				Runtime rt = null;
@@ -168,7 +157,12 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 				Scanner scanner = new Scanner( tempOutFile );
 				content = "";
-				content = scanner.useDelimiter( "\\Z" ).next();
+				try {
+					content = scanner.useDelimiter( "\\Z" ).next();
+				} catch ( Exception e ) {
+					// Grep ergab kein treffer Content Null
+					content = "";
+				}
 				scanner.close();
 
 				getMessageService().logError(
@@ -199,7 +193,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 		// Ende MainTable
 
-		// TODO: grep der SubTables
+		// grep der SubTables
 		try {
 			String name = null;
 			String folder = null;
@@ -222,7 +216,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				folder = subtable.getChild( "folder", ns ).getText();
 				cell = subtable.getChild( "foreignkeycell", ns ).getText();
 
-				System.out.println( name + " - " + folder + " - " + cell );
+				// System.out.println( name + " - " + folder + " - " + cell );
 				File fSubtable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
 						+ File.separator + "schema0" + File.separator + folder + File.separator + folder
 						+ ".xml" );
@@ -235,7 +229,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 					 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
-					System.out.println( command );
+					// System.out.println( command );
 
 					Process proc = null;
 					Runtime rt = null;
@@ -307,8 +301,28 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				}
 
 				// Ende SubTables
-
+				if ( onWork == 41 ) {
+					onWork = 2;
+					System.out.print( "-   " );
+					System.out.print( "\r" );
+				} else if ( onWork == 11 ) {
+					onWork = 12;
+					System.out.print( "\\   " );
+					System.out.print( "\r" );
+				} else if ( onWork == 21 ) {
+					onWork = 22;
+					System.out.print( "|   " );
+					System.out.print( "\r" );
+				} else if ( onWork == 31 ) {
+					onWork = 32;
+					System.out.print( "/   " );
+					System.out.print( "\r" );
+				} else {
+					onWork = onWork + 1;
+				}
 			}
+			System.out.print( "   " );
+			System.out.print( "\r" );
 		} catch ( Exception e ) {
 			getMessageService().logError(
 					getTextResourceService().getText( MESSAGE_XML_MODUL_C )

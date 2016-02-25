@@ -16,11 +16,17 @@
 package ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
 
+import ch.enterag.utils.zip.EntryInputStream;
+import ch.enterag.utils.zip.FileEntry;
+import ch.enterag.utils.zip.Zip64File;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAZipException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptAZipModule;
 import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
+import ch.kostceco.tools.siardexcerpt.util.Util;
 
 /** SIARD-Datei entpacken */
 public class ExcerptAZipModuleImpl extends ValidationModuleImpl implements ExcerptAZipModule
@@ -41,20 +47,100 @@ public class ExcerptAZipModuleImpl extends ValidationModuleImpl implements Excer
 	}
 
 	@Override
-	public boolean validate( File siardDatei, File outFile, String excerptString )
+	public boolean validate( File siardDatei, File siardDateiNew, String noString )
 			throws ExcerptAZipException
 	{
-		boolean isValid = true;
-		File content = new File( siardDatei.getAbsolutePath() + File.separator + "content" );
-		File header = new File( siardDatei.getAbsolutePath() + File.separator + "header" );
-		File xsd = new File( siardDatei.getAbsolutePath() + File.separator + "header" + File.separator
-				+ "metadata.xsd" );
-		File metadata = new File( siardDatei.getAbsolutePath() + File.separator + "header"
-				+ File.separator + "metadata.xml" );
+		// Ausgabe -> Ersichtlich das SIARDexcerpt arbeitet
+		int onWork = 41;
 
-		if ( !content.exists() || !header.exists() || !xsd.exists() || !metadata.exists() ) {
-			isValid = false;
+		boolean result = true;
+
+		String toplevelDir = siardDatei.getName();
+		int lastDotIdx = toplevelDir.lastIndexOf( "." );
+		toplevelDir = toplevelDir.substring( 0, lastDotIdx );
+
+		try {
+			/* Nicht vergessen in "src/main/resources/config/applicationContext-services.xml" beim
+			 * entsprechenden Modul die property anzugeben: <property name="configurationService"
+			 * ref="configurationService" /> */
+			// Arbeitsverzeichnis zum Entpacken des Archivs erstellen
+			if ( siardDateiNew.exists() ) {
+				Util.deleteDir( siardDateiNew );
+			}
+			if ( !siardDateiNew.exists() ) {
+				siardDateiNew.mkdir();
+			}
+
+			/* Das metadata.xml und sein xsd müssen in das Filesystem extrahiert werden, weil bei bei
+			 * Verwendung eines Inputstreams bei der Validierung ein Problem mit den xs:include Statements
+			 * besteht, die includes können so nicht aufgelöst werden. Es werden hier jedoch nicht nur
+			 * diese Files extrahiert, sondern gleich die ganze Zip-Datei, weil auch spätere Validierungen
+			 * nur mit den extrahierten Files arbeiten können. */
+			Zip64File zipfile = new Zip64File( siardDatei );
+			List<FileEntry> fileEntryList = zipfile.getListFileEntries();
+			for ( FileEntry fileEntry : fileEntryList ) {
+				if ( !fileEntry.isDirectory() ) {
+					byte[] buffer = new byte[8192];
+					// Scheibe die Datei an den richtigen Ort respektive in den richtigen Ordner der ggf
+					// angelegt werden muss.
+					EntryInputStream eis = zipfile.openEntryInputStream( fileEntry.getName() );
+					File newFile = new File( siardDateiNew, fileEntry.getName() );
+					File parent = newFile.getParentFile();
+					if ( !parent.exists() ) {
+						parent.mkdirs();
+					}
+					FileOutputStream fos = new FileOutputStream( newFile );
+					for ( int iRead = eis.read( buffer ); iRead >= 0; iRead = eis.read( buffer ) ) {
+						fos.write( buffer, 0, iRead );
+					}
+					eis.close();
+					fos.close();
+				} else {
+					/* Scheibe den Ordner wenn noch nicht vorhanden an den richtigen Ort respektive in den
+					 * richtigen Ordner der ggf angelegt werden muss. Dies muss gemacht werden, damit auch
+					 * leere Ordner ins Work geschrieben werden. Diese werden danach im J als Fehler angegeben */
+					EntryInputStream eis = zipfile.openEntryInputStream( fileEntry.getName() );
+					File newFolder = new File( siardDateiNew, fileEntry.getName() );
+					if ( !newFolder.exists() ) {
+						File parent = newFolder.getParentFile();
+						if ( !parent.exists() ) {
+							parent.mkdirs();
+						}
+						newFolder.mkdirs();
+					}
+					eis.close();
+				}
+
+				if ( onWork == 41 ) {
+					onWork = 2;
+					System.out.print( "-   " );
+					System.out.print( "\r" );
+				} else if ( onWork == 11 ) {
+					onWork = 12;
+					System.out.print( "\\   " );
+					System.out.print( "\r" );
+				} else if ( onWork == 21 ) {
+					onWork = 22;
+					System.out.print( "|   " );
+					System.out.print( "\r" );
+				} else if ( onWork == 31 ) {
+					onWork = 32;
+					System.out.print( "/   " );
+					System.out.print( "\r" );
+				} else {
+					onWork = onWork + 1;
+				}
+			}
+			System.out.print( "   " );
+			System.out.print( "\r" );
+
+			zipfile.close();
+		} catch ( Exception e ) {
+			getMessageService().logError(
+					getTextResourceService().getText( MESSAGE_XML_MODUL_A )
+							+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+			return false;
 		}
-		return isValid;
+		return result;
 	}
 }
