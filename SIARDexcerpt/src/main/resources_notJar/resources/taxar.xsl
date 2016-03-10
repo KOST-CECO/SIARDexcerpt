@@ -883,27 +883,103 @@
 			<table width="100%">
 				<tr>
 					<td class="caption">Auszahlung</td>
+					<td class="caption" />
+					<td class="caption" />
+					<td class="caption" />
 					<td>
 						<xsl:for-each select="table/payment/row">
 							<xsl:choose>
-								<xsl:when test="cd = 1">aus AHV/IV</xsl:when>
-								<xsl:when test="cd = 2">Freizuegigkeitskonto/-police</xsl:when>
-								<xsl:when test="cd = 3">Tod oder Invalidität</xsl:when>
-								<xsl:when test="cd = 4">2. Saeule</xsl:when>
-								<xsl:when test="cd = 5">3. Saeule a</xsl:when>
-								<xsl:when test="cd = 6">Sonstiges</xsl:when>
+								<xsl:when test="c2 = 1">aus AHV/IV</xsl:when>
+								<xsl:when test="c2 = 2">Freizuegigkeitskonto/-police</xsl:when>
+								<xsl:when test="c2 = 3">Tod oder Invalidität</xsl:when>
+								<xsl:when test="c2 = 4">2. Saeule</xsl:when>
+								<xsl:when test="c2 = 5">3. Saeule a</xsl:when>
+								<xsl:when test="c2 = 6">Sonstiges</xsl:when>
 							</xsl:choose>
 						</xsl:for-each>
 					</td>
 					<td width="45" class="caption">510:</td>
 					<td width="120" class="right"><xsl:value-of select="table/payment/row/c3" /></td>
 				</tr>
+				<tr>
+					<td class="caption">Erhaltene Leistung</td>
+					<td>
+						<xsl:for-each select="table/paymentReceived/row">
+							<xsl:choose>
+								<xsl:when test="c18 = 1">Schenkung</xsl:when>
+								<xsl:when test="c18 = 2">Erbvorbezug</xsl:when>
+								<xsl:when test="c18 = 3">Erbschaften</xsl:when>
+								<xsl:when test="c18 = 4">Beteiligung an Erbengemeinschaften</xsl:when>
+							</xsl:choose>
+						</xsl:for-each>
+					</td>
+					<td><xsl:value-of select="table/paymentReceived/row/c2" />&#160; <xsl:value-of select="table/paymentReceived/row/c3" /></td>
+					<td><xsl:value-of select="table/paymentReceived/row/c15" /></td> <td><xsl:value-of select="table/paymentReceived/row/c17" /></td>
+					<td width="45" class="caption">516:</td>
+					<td width="120" class="right"><xsl:value-of select="table/paymentReceived/row/c19" /></td>
+				</tr>
+				<tr>
+					<td class="caption">Ausgerichtete Leistung</td>
+					<td>
+						<xsl:for-each select="table/paidOut/row">
+							<xsl:choose>
+								<xsl:when test="c18 = 1">Schenkung</xsl:when>
+								<xsl:when test="c18 = 2">Erbvorbezug</xsl:when>
+								<xsl:when test="c18 = 3">Erbschaften</xsl:when>
+								<xsl:when test="c18 = 4">Beteiligung an Erbengemeinschaften</xsl:when>
+							</xsl:choose>
+						</xsl:for-each>
+					</td>
+					<td><xsl:value-of select="table/paidOut/row/c2" />&#160; <xsl:value-of select="table/paidOut/row/c3" /></td>
+					<td><xsl:value-of select="table/PaidOut/row/c15" /></td>
+					<td><xsl:value-of select="table/paidOut/row/c17" /></td>
+					<td width="45" class="caption">519:</td>
+					<td width="120" class="right"><xsl:value-of select="table/paidOut/row/c19" /></td>
+				</tr>
+				<tr>
+					<td class="caption">Bemerkungen</td>
+					<td><xsl:value-of select="table/taxDeclarationMainForm/row/c167" /></td>
+				</tr>
 			</table>
-
 			</div>
-		<br />
-		<hr noshade="noshade" size="1" />
-		<br />
-		<p class="footer">Dieser Steuerregisterauszug stammt aus dem entsprechenden Staatsarchiv basierend auf eCH-XXXX.</p>
+		<br /><br />
+		<h2>Steuerregisterauszug&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c1" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c7" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c6" />&#xA0;(<xsl:value-of select="table/taxDeclarationMainForm/row/c11" />):</h2>
+		<h2>Teil 5 von 5</h2>
+		<div>
+			<br />
+			<h3>Wertschriften- und Guthabenverzeichnis:</h3>
+			<table width="100%">
+				<tr class="captionb">
+					<td>Code</td>
+					<td>Währung</td>
+					<td>Nennwert, Stückzahl</td>
+					<td>Valoren-Nr.</td>
+					<td>Genaue Bezeichnung</td>
+					<td>Zugang</td>
+					<td>Abgang</td>
+					<td>Steuerwert</td>
+					<td>Bruttoertrag mit VSt.</td>
+					<td>Bruttoertrag ohne VSt.</td>
+				</tr>
+				<xsl:for-each select="table/securityEntry/row">
+					<tr>
+						<td><xsl:value-of select="c2"/></td>
+						<td><xsl:value-of select="c3"/></td>
+						<td><xsl:value-of select="c4"/></td>
+						<td><xsl:value-of select="c5"/></td>
+						<td><xsl:value-of select="c6"/></td>
+						<td><xsl:value-of select="c7"/></td>
+						<td><xsl:value-of select="c8"/></td>
+						<td><xsl:value-of select="c9"/></td>
+						<td><xsl:value-of select="c10"/></td>
+						<td><xsl:value-of select="c11"/></td>
+					</tr>
+				</xsl:for-each>
+			</table>		
+		</div>
+	<br />
+	<hr noshade="noshade" size="1" />
+	<br />
+	<p class="footer">Dieser Steuerregisterauszug stammt aus dem entsprechenden Staatsarchiv basierend auf eCH-XXXX.</p>
 	</body>
 </html></xsl:template></xsl:stylesheet>

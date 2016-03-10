@@ -94,6 +94,8 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			File fSearchtable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
 					+ File.separator + "schema0" + File.separator + folder + File.separator + folder + ".xml" );
 
+			searchString = searchString.replaceAll( "\\.", "\\.*" );
+
 			try {
 				// grep -E "REGEX-Suchbegriff" table13.xml >> output.txt
 				String command = "cmd /c \"" + pathToGrepExe + " -E \"" + searchString + "\" "

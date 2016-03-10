@@ -26,6 +26,11 @@ public interface ConfigurationService extends Service
 	 * @return Pfad des XSL-File zum extrahierten Record */
 	String getPathToXSL();
 
+	/** Pfad zu XSL-File, damit das Suchergebnis dargestellt werden kann
+	 * 
+	 * @return Pfad des XSL-File zum Suchergebnis */
+	String getPathToXSLsearch();
+
 	/** Gibt den Pfad des Arbeitsverzeichnisses zurück. Dieses Verzeichnis wird z.B. zum Entpacken des
 	 * .zip-Files verwendet.
 	 * 

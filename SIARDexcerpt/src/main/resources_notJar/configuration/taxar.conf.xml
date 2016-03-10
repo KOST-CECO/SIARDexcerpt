@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <configuration>
-	<pathtooutput>excerpt</pathtooutput>
+	<pathtooutput>Output</pathtooutput>
 	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
 	<pathtoxsl>resources\taxar.xsl</pathtoxsl>
+	<pathtoxslsearch>resources\taxarSearch.xsl</pathtoxslsearch>
 	<archive>Staatsarchiv Zuerich</archive>
 
 	<searchtable>

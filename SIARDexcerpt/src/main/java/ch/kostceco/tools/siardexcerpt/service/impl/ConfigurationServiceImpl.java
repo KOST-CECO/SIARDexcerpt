@@ -115,6 +115,18 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	@Override
+	public String getPathToXSLsearch()
+	{
+		/** Gibt den Pfad des XSL zurück. */
+		Object prop = getConfig().getProperty( "pathtoxslsearch" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		return null;
+	}
+
+	@Override
 	public String getArchive()
 	{
 		/** Gibt den Namen des Archivs zurück. */

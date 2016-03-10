@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.0.2 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.0.3 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016 Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -306,7 +306,7 @@ public class SIARDexcerpt implements MessageConstants
 			 * 
 			 * a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext
 			 * 
-			 * b) config zu den Suchfelder herauslesen und Suchtext einlesen
+			 * b) Suchtext einlesen
 			 * 
 			 * c) search.xml vorbereiten (Header) und xsl in Output kopieren
 			 * 
@@ -317,6 +317,14 @@ public class SIARDexcerpt implements MessageConstants
 			 * TODO: Noch offen */
 
 			System.out.println( "SIARDexcerpt: search" );
+
+			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
+
+			directoryOfOutput = new File( pathToOutput );
+
+			if ( !directoryOfOutput.exists() ) {
+				directoryOfOutput.mkdir();
+			}
 
 			/** a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext */
 			if ( args.length < 4 ) {
@@ -335,7 +343,7 @@ public class SIARDexcerpt implements MessageConstants
 				}
 			}
 
-			/** TODO: b) config zu den Suchfelder herauslesen und Suchtext einlesen */
+			/** b) Suchtext einlesen */
 			String searchString = new String( args[3] );
 
 			/** c) search.xml vorbereiten (Header) und xsl in Output kopieren */
@@ -367,7 +375,7 @@ public class SIARDexcerpt implements MessageConstants
 			// Ab hier kann ins Output geschrieben werden...
 
 			// Informationen zum XSL holen
-			String pathToXSLS = siardexcerpt.getConfigurationService().getPathToXSL();
+			String pathToXSLS = siardexcerpt.getConfigurationService().getPathToXSLsearch();
 
 			File xslOrigS = new File( pathToXSLS );
 			File xslCopyS = new File( directoryOfOutput.getAbsolutePath() + File.separator
@@ -407,6 +415,10 @@ public class SIARDexcerpt implements MessageConstants
 				System.exit( 2 );
 			} else {
 				// Suche konnte durchgeführt werden
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
+				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
+
+				// Record konnte extrahiert werden
 				System.exit( 0 );
 			}
 
@@ -427,6 +439,14 @@ public class SIARDexcerpt implements MessageConstants
 			 * TODO: Erledigt */
 
 			System.out.println( "SIARDexcerpt: extract" );
+
+			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
+
+			directoryOfOutput = new File( pathToOutput );
+
+			if ( !directoryOfOutput.exists() ) {
+				directoryOfOutput.mkdir();
+			}
 
 			/** a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext */
 			if ( args.length < 4 ) {
