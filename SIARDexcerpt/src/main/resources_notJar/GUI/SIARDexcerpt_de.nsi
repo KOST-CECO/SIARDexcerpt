@@ -1,5 +1,5 @@
 ; The name of the installer
-Name "SIARDexcerpt v0.0.3"
+Name "SIARDexcerpt v0.0.4"
 ; Sets the icon of the installer
 Icon "excerpt.ico"
 ; remove the text 'Nullsoft Install System vX.XX' from the installer window 
@@ -316,7 +316,7 @@ Function LeaveDialog
 ;      ${If} $T_FLAG == '--sip'
 ;        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.zip' 'SIP Files|*.zip'
 ;      ${Else}
-        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.siard' '$SIARDEXCERPT\*.xml'
+        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.siard' '|*.*'
 ;      ${EndIf}
       Pop $R3
       ${If} $R3 == ''
@@ -333,7 +333,7 @@ Function LeaveDialog
 ;      ${If} $T_FLAG == '--sip'
 ;        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.zip' 'SIP Files|*.zip'
 ;      ${Else}
-        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.xml' ''
+        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.xml' '|*.*'
 ;      ${EndIf}
       Pop $R2
       ${If} $R2 == ''

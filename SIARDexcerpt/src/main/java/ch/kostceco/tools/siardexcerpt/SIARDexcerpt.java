@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.0.3 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.0.4 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016 Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -15,11 +15,24 @@
 
 package ch.kostceco.tools.siardexcerpt;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import ch.kostceco.tools.siardexcerpt.controller.Controllerexcerpt;
 import ch.kostceco.tools.siardexcerpt.logging.LogConfigurator;
@@ -415,7 +428,45 @@ public class SIARDexcerpt implements MessageConstants
 				System.exit( 2 );
 			} else {
 				// Suche konnte durchgeführt werden
+
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
+
+				// Die Konfiguration hereinkopieren
+				try {
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					factory.setValidating( false );
+
+					factory.setExpandEntityReferences( false );
+
+					Document docConfig = factory.newDocumentBuilder().parse( configFile );
+					NodeList list = docConfig.getElementsByTagName( "configuration" );
+					Element element = (Element) list.item( 0 );
+
+					Document docLog = factory.newDocumentBuilder().parse( outFileSearch );
+
+					Node dup = docLog.importNode( element, true );
+
+					docLog.getDocumentElement().appendChild( dup );
+					FileWriter writer = new FileWriter( outFileSearch );
+
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ElementToStream( docLog.getDocumentElement(), baos );
+					String stringDoc2 = new String( baos.toByteArray() );
+					writer.write( stringDoc2 );
+					writer.close();
+
+					// Der Header wird dabei leider verschossen, wieder zurück ändern
+					String newstring = siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
+					xslCopyS.getName() );
+					String oldstring = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><table>";
+					Util.oldnewstring( oldstring, newstring, outFileSearch );
+
+				} catch ( Exception e ) {
+					LOGGER.logError( "<Error>"
+							+ siardexcerpt.getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+					System.out.println( "Exception: " + e.getMessage() );
+				}
+
 				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
 
 				// Record konnte extrahiert werden
@@ -526,6 +577,43 @@ public class SIARDexcerpt implements MessageConstants
 			} else {
 				// Record konnte extrahiert werden
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
+
+				// Die Konfiguration hereinkopieren
+				try {
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					factory.setValidating( false );
+
+					factory.setExpandEntityReferences( false );
+
+					Document docConfig = factory.newDocumentBuilder().parse( configFile );
+					NodeList list = docConfig.getElementsByTagName( "configuration" );
+					Element element = (Element) list.item( 0 );
+
+					Document docLog = factory.newDocumentBuilder().parse( outFile );
+
+					Node dup = docLog.importNode( element, true );
+
+					docLog.getDocumentElement().appendChild( dup );
+					FileWriter writer = new FileWriter( outFile );
+
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ElementToStream( docLog.getDocumentElement(), baos );
+					String stringDoc2 = new String( baos.toByteArray() );
+					writer.write( stringDoc2 );
+					writer.close();
+
+					// Der Header wird dabei leider verschossen, wieder zurück ändern
+					String newstring = siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
+					xslCopy.getName() );
+					String oldstring = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><table>";
+					Util.oldnewstring( oldstring, newstring, outFile );
+
+				} catch ( Exception e ) {
+					LOGGER.logError( "<Error>"
+							+ siardexcerpt.getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+					System.out.println( "Exception: " + e.getMessage() );
+				}
+
 				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
 
 				// Record konnte extrahiert werden
@@ -554,4 +642,17 @@ public class SIARDexcerpt implements MessageConstants
 		} // End finish
 
 	}
+
+	public static void ElementToStream( Element element, OutputStream out )
+	{
+		try {
+			DOMSource source = new DOMSource( element );
+			StreamResult result = new StreamResult( out );
+			TransformerFactory transFactory = TransformerFactory.newInstance();
+			Transformer transformer = transFactory.newTransformer();
+			transformer.transform( source, result );
+		} catch ( Exception ex ) {
+		}
+	}
+
 }

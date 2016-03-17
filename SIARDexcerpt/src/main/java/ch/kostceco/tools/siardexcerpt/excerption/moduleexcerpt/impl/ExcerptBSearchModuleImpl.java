@@ -88,7 +88,8 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			 * entsprechenden Modul die property anzugeben: <property name="configurationService"
 			 * ref="configurationService" /> */
 
-			String name = getConfigurationService().getSearchtableName();
+//			String name = getConfigurationService().getSearchtableName();
+			String name = "siardexcerptsearch";
 			String folder = getConfigurationService().getSearchtableFolder();
 
 			File fSearchtable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
@@ -153,24 +154,58 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 				content = contentAll;
 				/* im contentAll ist jetzt der Gesamtstring, dieser soll anschliessend nur noch aus den 4
 				 * Such-Zellen und den weiteren 4 ResultateZellen bestehen -> content */
+				String nr0 = getConfigurationService().getcellNumberkey();
 				String nr1 = getConfigurationService().getcellNumber1();
 				String nr2 = getConfigurationService().getcellNumber2();
 				String nr3 = getConfigurationService().getcellNumber3();
 				String nr4 = getConfigurationService().getcellNumber4();
-				String nr5 = getConfigurationService().getcellNumberResult1();
-				String nr6 = getConfigurationService().getcellNumberResult2();
-				String nr7 = getConfigurationService().getcellNumberResult3();
-				String nr8 = getConfigurationService().getcellNumberResult4();
+				String nr5 = getConfigurationService().getcellNumber5();
+				String nr6 = getConfigurationService().getcellNumber6();
+				String nr7 = getConfigurationService().getcellNumber7();
 
 				String cellLoop = "";
+				String modifString = "";
 				// Loop von 1, 2, 3 ... bis 499999.
 				for ( int i = 1; i < 500000; i++ ) {
 					cellLoop = "";
 					cellLoop = "c" + i;
-					if ( cellLoop.equals( nr1 ) || cellLoop.equals( nr2 ) || cellLoop.equals( nr3 )
+					if ( cellLoop.equals( nr0 ) || cellLoop.equals( nr1 ) || cellLoop.equals( nr2 ) || cellLoop.equals( nr3 )
 							|| cellLoop.equals( nr4 ) || cellLoop.equals( nr5 ) || cellLoop.equals( nr6 )
-							|| cellLoop.equals( nr7 ) || cellLoop.equals( nr8 ) ) {
+							|| cellLoop.equals( nr7 ) ) {
 						// wird behalten
+						 modifString = "c" + i + ">";
+
+						if ( cellLoop.equals( nr0 ) ) {
+							content = content.replaceAll( modifString, "col0>" );
+						} else {
+							if ( cellLoop.equals( nr1 ) ) {
+								content = content.replaceAll( modifString, "col1>" );
+							} else {
+								if ( cellLoop.equals( nr2 ) ) {
+									content = content.replaceAll( modifString, "col2>" );
+								} else {
+									if ( cellLoop.equals( nr3 ) ) {
+										content = content.replaceAll( modifString, "col3>" );
+									} else {
+										if ( cellLoop.equals( nr4 ) ) {
+											content = content.replaceAll( modifString, "col4>" );
+										} else {
+											if ( cellLoop.equals( nr5 ) ) {
+												content = content.replaceAll( modifString, "col5>" );
+											} else {
+												if ( cellLoop.equals( nr6 ) ) {
+													content = content.replaceAll( modifString, "col6>" );
+												} else {
+													if ( cellLoop.equals( nr7 ) ) {
+														content = content.replaceAll( modifString, "col7>" );
+													} 
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					} else {
 						String deletString = "<c" + i + ">" + ".*" + "</c" + i + ">";
 						content = content.replaceAll( deletString, "" );

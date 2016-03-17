@@ -3,12 +3,15 @@
 	<pathtooutput>Output</pathtooutput>
 	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
 	<pathtoxsl>resources\taxar.xsl</pathtoxsl>
-	<pathtoxslsearch>resources\taxarSearch.xsl</pathtoxslsearch>
+	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
 	<archive>Staatsarchiv Zuerich</archive>
 
 	<searchtable>
+		<title>Suchergebnis aus dem Steuerregister:</title>
 		<folder>table13</folder>
 		<name>taxDeclarationMainForm</name>
+		<cellnamekey>AHV-Nr P1</cellnamekey>
+		<cellnumberkey>c11</cellnumberkey>
 		<cellname1>Name P1</cellname1>
 		<cellnumber1>c6</cellnumber1>
 		<cellname2>Vorname P1</cellname2>
@@ -17,14 +20,12 @@
 		<cellnumber3>c10</cellnumber3>
 		<cellname4>Ort P1</cellname4>
 		<cellnumber4>c18</cellnumber4>
-		<cellnameresult1>AHV-Nr P1</cellnameresult1>
-		<cellnumberresult1>c11</cellnumberresult1>
-		<cellnameresult2>Name P2</cellnameresult2>
-		<cellnumberresult2>c26</cellnumberresult2>
-		<cellnameresult3>Vorname P2</cellnameresult3>
-		<cellnumberresult3>c27</cellnumberresult3>
-		<cellnameresult4>Geburtsdatum P2</cellnameresult4>
-		<cellnumberresult4>c30</cellnumberresult4>
+		<cellname5>Name P2</cellname5>
+		<cellnumber5>c26</cellnumber5>
+		<cellname6>Vorname P2</cellname6>
+		<cellnumber6>c27</cellnumber6>
+		<cellname7>Geburtsdatum P2</cellname7>
+		<cellnumber7>c30</cellnumber7>
 	</searchtable>
 	
 	<maintable>

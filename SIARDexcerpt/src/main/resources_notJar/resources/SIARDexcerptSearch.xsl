@@ -29,30 +29,37 @@
 		</style>
 	</head>
 	<body>
-		<h1>Suchergebnis aus dem Steuerregister: 
+		<p class="logow">
+			<span class="logol">.</span>
+			<span class="logo">SIARD</span>
+			<span class="logov">excerpt</span>
+			<span class="logol">.</span>
+		</p>
+		<br />
+		<h1><xsl:value-of select="table/configuration/searchtable/title"/> 
 		</h1>
 		<div>
 			<table width="100%">
 				<tr class="caption">
-					<td>Name P1:</td>
-					<td>Vorname P1:</td>
-					<td>Geburtsdatum P1:</td>
-					<td class="captionb">AHV-Nr P1:</td>
-					<td>Ort P1:</td>
-					<td>Name P2:</td>
-					<td>Vorname P2:</td>
-					<td>Geburtsdatum P2:</td>
+					<td class="captionb"><xsl:value-of select="table/configuration/searchtable/cellnamekey"/></td>
+					<td><xsl:value-of select="table/configuration/searchtable/cellname1"/></td>
+					<td><xsl:value-of select="table/configuration/searchtable/cellname2"/></td>
+					<td><xsl:value-of select="table/configuration/searchtable/cellname3"/></td>
+					<td><xsl:value-of select="table/configuration/searchtable/cellname4"/></td>
+					<td><xsl:value-of select="table/configuration/searchtable/cellname5"/></td>
+					<td><xsl:value-of select="table/configuration/searchtable/cellname6"/></td>
+					<td><xsl:value-of select="table/configuration/searchtable/cellname7"/></td>
 				</tr>
-				<xsl:for-each select="table/taxDeclarationMainForm/row">
+				<xsl:for-each select="table/siardexcerptsearch/row">
 					<tr>
-						<td><xsl:value-of select="c6" /></td>
-						<td><xsl:value-of select="c7" /></td>
-						<td><xsl:value-of select="c10" /></td>
-						<td  class="captionkey"><xsl:value-of select="c11" /></td>
-						<td><xsl:value-of select="c18" /></td>
-						<td><xsl:value-of select="c26" /></td>
-						<td><xsl:value-of select="c27" /></td>
-						<td><xsl:value-of select="c30" /></td>
+						<td  class="captionkey"><xsl:value-of select="col0"/></td>
+						<td><xsl:value-of select="col1"/></td>
+						<td><xsl:value-of select="col2" /></td>
+						<td><xsl:value-of select="col3" /></td>
+						<td><xsl:value-of select="col4" /></td>
+						<td><xsl:value-of select="col5" /></td>
+						<td><xsl:value-of select="col6" /></td>
+						<td><xsl:value-of select="col7" /></td>
 					</tr>
 				</xsl:for-each>
 			</table>

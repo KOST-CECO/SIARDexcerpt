@@ -139,6 +139,19 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	// ------------------------ Suche ------------------------
+
+	@Override
+	public String getSearchtableTitle()
+	{
+		/** Gibt den Titel der Suche zurück. */
+		Object prop = getConfig().getProperty( "searchtable.title" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		return null;
+	}
+
 	@Override
 	public String getSearchtableFolder()
 	{
@@ -156,6 +169,30 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	{
 		/** Gibt den Namen der Suchtabelle zurück. */
 		Object prop = getConfig().getProperty( "searchtable.name" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		return null;
+	}
+
+	@Override
+	public String getcellNamekey()
+	{
+		/** Gibt den Namen der Suchzelle Nr0 respektive Schlüssel zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellnamekey" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		return null;
+	}
+
+	@Override
+	public String getcellNumberkey()
+	{
+		/** Gibt den Nummer der Suchzelle Nr0 zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellnumberkey" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
@@ -260,10 +297,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	@Override
-	public String getcellNameResult1()
+	public String getcellName5()
 	{
-		/** Gibt den Namen der Suchzelle ResultNr1 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnameresult1" );
+		/** Gibt den Namen der Suchzelle Nr5 zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellname5" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
@@ -272,10 +309,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	@Override
-	public String getcellNumberResult1()
+	public String getcellNumber5()
 	{
-		/** Gibt den Nummer der Suchzelle ResultNr1 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumberresult1" );
+		/** Gibt den Nummer der Suchzelle Nr5 zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellnumber5" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
@@ -284,10 +321,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	@Override
-	public String getcellNameResult2()
+	public String getcellName6()
 	{
-		/** Gibt den Namen der Suchzelle ResultNr2 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnameresult2" );
+		/** Gibt den Namen der Suchzelle Nr6 zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellname6" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
@@ -296,10 +333,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	@Override
-	public String getcellNumberResult2()
+	public String getcellNumber6()
 	{
-		/** Gibt den Nummer der Suchzelle ResultNr2 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumberresult2" );
+		/** Gibt den Nummer der Suchzelle Nr6 zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellnumber6" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
@@ -308,10 +345,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	@Override
-	public String getcellNameResult3()
+	public String getcellName7()
 	{
-		/** Gibt den Namen der Suchzelle ResultNr3 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnameresult3" );
+		/** Gibt den Namen der Suchzelle Nr7 zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellname7" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
@@ -320,34 +357,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	}
 
 	@Override
-	public String getcellNumberResult3()
+	public String getcellNumber7()
 	{
-		/** Gibt den Nummer der Suchzelle ResultNr3 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumberresult3" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNameResult4()
-	{
-		/** Gibt den Namen der Suchzelle ResultNr4 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnameresult4" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumberResult4()
-	{
-		/** Gibt den Nummer der Suchzelle ResultNr4 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumberresult4" );
+		/** Gibt den Nummer der Suchzelle Nr7 zurück. */
+		Object prop = getConfig().getProperty( "searchtable.cellnumber7" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;

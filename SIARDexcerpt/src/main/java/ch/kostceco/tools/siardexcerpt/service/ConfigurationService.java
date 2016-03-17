@@ -48,6 +48,11 @@ public interface ConfigurationService extends Service
 	String getArchive();
 
 	// ------------------------ Suche ------------------------
+	/** Gibt den Titel der Suche zurück.
+	 * 
+	 * @return Titel der Suche */
+	String getSearchtableTitle();
+
 	/** Gibt den Ordner der Suchtabelle zurück.
 	 * 
 	 * @return Ordner der Suchtabelle */
@@ -57,6 +62,16 @@ public interface ConfigurationService extends Service
 	 * 
 	 * @return Name der Suchtabelle */
 	String getSearchtableName();
+
+	/** Gibt den Namen der Suchzelle Nr0 respektive Schlüssel zurück.
+	 * 
+	 * @return Name der Suchzelle Nr0 */
+	String getcellNamekey();
+
+	/** Gibt den Nummer der Suchzelle Nr0 zurück.
+	 * 
+	 * @return Nummer der Suchzelle Nr0 */
+	String getcellNumberkey();
 
 	/** Gibt den Namen der Suchzelle Nr1 zurück.
 	 * 
@@ -98,45 +113,35 @@ public interface ConfigurationService extends Service
 	 * @return Nummer der Suchzelle Nr4 */
 	String getcellNumber4();
 
-	/** Gibt den Namen der Suchzelle ResultNr1 zurück.
+	/** Gibt den Namen der Suchzelle Nr5 zurück.
 	 * 
-	 * @return Name der Suchzelle ResultNr1 */
-	String getcellNameResult1();
+	 * @return Name der Suchzelle Nr5 */
+	String getcellName5();
 
-	/** Gibt den Nummer der Suchzelle ResultNr1 zurück.
+	/** Gibt den Nummer der Suchzelle Nr5 zurück.
 	 * 
-	 * @return Nummer der Suchzelle ResultNr1 */
-	String getcellNumberResult1();
+	 * @return Nummer der Suchzelle Nr5 */
+	String getcellNumber5();
 
-	/** Gibt den Namen der Suchzelle ResultNr2 zurück.
+	/** Gibt den Namen der Suchzelle Nr6 zurück.
 	 * 
-	 * @return Name der Suchzelle ResultNr2 */
-	String getcellNameResult2();
+	 * @return Name der Suchzelle Nr6 */
+	String getcellName6();
 
-	/** Gibt den Nummer der Suchzelle ResultNr2 zurück.
+	/** Gibt den Nummer der Suchzelle Nr6 zurück.
 	 * 
-	 * @return Nummer der Suchzelle ResultNr2 */
-	String getcellNumberResult2();
+	 * @return Nummer der Suchzelle Nr6 */
+	String getcellNumber6();
 
-	/** Gibt den Namen der Suchzelle ResultNr3 zurück.
+	/** Gibt den Namen der Suchzelle Nr7 zurück.
 	 * 
-	 * @return Name der Suchzelle ResultNr3 */
-	String getcellNameResult3();
+	 * @return Name der Suchzelle Nr7 */
+	String getcellName7();
 
-	/** Gibt den Nummer der Suchzelle NrResult3 zurück.
+	/** Gibt den Nummer der Suchzelle Nr7 zurück.
 	 * 
-	 * @return Nummer der Suchzelle NrResult3 */
-	String getcellNumberResult3();
-
-	/** Gibt den Namen der Suchzelle NrResult4 zurück.
-	 * 
-	 * @return Name der Suchzelle NrResult4 */
-	String getcellNameResult4();
-
-	/** Gibt den Nummer der Suchzelle NrResult4 zurück.
-	 * 
-	 * @return Nummer der Suchzelle NrResult4 */
-	String getcellNumberResult4();
+	 * @return Nummer der Suchzelle Nr7 */
+	String getcellNumber7();
 
 	// ------------------------ Extraktion ------------------------
 	/** Gibt den Ordner der Haupttabelle zurück.
