@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<pathtooutput>Output</pathtooutput>
+	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
+	<pathtoxsl>resources\SIARDexcerptNoXSL_10_150.xsl</pathtoxsl>
+	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
+	<archive>Staatsarchiv Zuerich</archive>
+
+	<searchtable>
+		<title>Suchergebnis aus den Gebäudedaten:</title>
+		<folder>table0</folder>
+		<name>gv_gebaeude</name>
+		<cellnamekey>Eindeutiger Schlüssel für das Gebäude</cellnamekey>
+		<cellnumberkey>c1</cellnumberkey>
+		<cellname1>Grundstücknummer</cellname1>
+		<cellnumber1>c2</cellnumber1>
+		<cellname2>Nummer der Gebäude Police</cellname2>
+		<cellnumber2>c3</cellnumber2>
+		<cellname3>Gebäudestatus im Klartext</cellname3>
+		<cellnumber3>c5</cellnumber3>
+		<cellname4>Bauart massiv oder nicht massiv</cellname4>
+		<cellnumber4>c8</cellnumber4>
+		<cellname5>Strasse oder Flurbezeichnung</cellname5>
+		<cellnumber5>c14</cellnumber5>
+		<cellname6>4-stellige Plz</cellname6>
+		<cellnumber6>c17</cellnumber6>
+		<cellname7>Ort</cellname7>
+		<cellnumber7>c18</cellnumber7>
+	</searchtable>
+
+	<maintable>
+		<folder>table0</folder>
+		<name>gv_gebaeude</name>
+		<primarykeyname>gebaeude_id</primarykeyname>
+		<primarykeycell>c1</primarykeycell>
+	</maintable>
+	<subtables>
+		<subtable>
+			<name>gv_person</name>
+			<folder>table1</folder>
+			<foreignkeyname>id_gebaeude</foreignkeyname>
+			<foreignkeycell>c3</foreignkeycell>
+		</subtable>
+		<subtable>
+			<name>gv_anlage</name>
+			<folder>table2</folder>
+			<foreignkeyname>id_gebaeude</foreignkeyname>
+			<foreignkeycell>c2</foreignkeycell>
+		</subtable>
+		<subtable>
+			<name>gv_schaetzung</name>
+			<folder>table3</folder>
+			<foreignkeyname>id_gebaeude</foreignkeyname>
+			<foreignkeycell>c2</foreignkeycell>
+		</subtable>
+		<subtable>
+			<name>gv_schaden</name>
+			<folder>table5</folder>
+			<foreignkeyname>id_gebaeude</foreignkeyname>
+			<foreignkeycell>c2</foreignkeycell>
+		</subtable>
+	</subtables>
+</configuration>

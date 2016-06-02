@@ -390,53 +390,15 @@
 				</tr>
 				<tr>
 					<td class="caption">
-						<table width="100%">
-							<tr class="caption">
-								<td width="20%">Wert der Eigennutzung (Ziffer 180):</td>
-								<td width="20%">Mietzins (Ziffer 181):</td>
-								<td width="20%">Bruttoertrag (Ziffer 183):</td>
-								<td width="20%">Pauschalabzug (Ziffer 184):</td>
-								<td width="20%">Effektiver Abzug (Ziffer 185):</td>
-							</tr>
-							<tr>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c76" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c77" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c78" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c79" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c80" /></td>
-							</tr>
-						</table>
+						Totalertrag aus allen Liegenschaften:
 					</td>
-					<td class="caption">186:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c81" /></td>
-				</tr>
-				<tr>
-					<td class="caption">
-						<table width="100%">
-							<tr class="caption">
-								<td width="25%">Ort:</td>
-								<td width="25%">Steuerwert (Anteil Geschaeftsbetrieb):</td>
-								<td width="25%">Verkehrswert (Anteil Geschaeftsbetrieb):</td>
-								<td width="25%">Ertragswert (Anteil Geschaeftsbetrieb):</td>
-							</tr>
-							<xsl:for-each select="table/propertyHouseOrFlat/row">
-								<tr>
-									<td><xsl:value-of select="c2"/>&#xA0;<xsl:value-of select="c3"/></td>
-									<td class="right"><xsl:value-of select="c4"/>&#xA0;(<xsl:value-of select="c5"/>)</td>
-									<td class="right"><xsl:value-of select="c6"/>&#xA0;(<xsl:value-of select="c7"/>)</td>
-									<td class="right"><xsl:value-of select="c8"/>&#xA0;(<xsl:value-of select="c9"/>)</td>
-								</tr>
-							</xsl:for-each>
-						</table>
-						Totalertrag aus anderen Liegenschaften:
-					</td>
-					<td class="caption">188:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c82" /></td>
+					<td class="caption">186 + 188:</td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c76" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Total der Einkuenfte</td>
 					<td class="caption">199:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c83" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c77" /></td>
 				</tr>				
 			</table>
 			
@@ -460,66 +422,66 @@
 				<tr>
 					<td class="caption">Berufsauslagen unselbstaendig P1:</td>
 					<td width="45" class="caption">220:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c84" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c78" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Berufsauslagen unselbstaendig P2:</td>
 					<td class="caption">240:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c85" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c79" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Schuldzinsen:</td>
 					<td class="caption">250:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c86" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c80" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Unterhaltsbeitraege an den geschiedenen oder getrennt lebenden Partner:</td>
 					<td class="caption">254:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c87" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c81" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Unterhaltsbeitraege fue minderjaehrige Kinder:</td>
 					<td class="caption">255:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c88" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c82" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
 						<table width="100%">
 							<tr>
 								<td width="50%" class="caption">Rentenleistungen:</td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c90" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c84" /></td>
 								<td class="caption">Abzugsfaehig:</td>
 							</tr>
 						</table>
 					</td>
 					<td class="caption">256:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c89" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c83" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
 						<table width="100%">
 							<tr>
 								<td width="50%" class="caption">Beitraege an 3a P1:</td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c92" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c86" /></td>
 								<td class="caption">Abzugsfaehig:</td>
 							</tr>
 						</table>
 					</td>
 					<td class="caption">260:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c91" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c85" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
 						<table width="100%">
 							<tr>
 								<td width="50%" class="caption">Beitraege an 3a P2:</td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c94" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c88" /></td>
 								<td class="caption">Abzugsfaehig:</td>
 							</tr>
 						</table>
 					</td>
 					<td class="caption">261:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c93" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c87" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
@@ -556,65 +518,65 @@
 								<td>A:</td>
 							</tr>
 							<tr>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c112" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c113" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c114" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c115" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c116" /></td>
+								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c117" /></td>
 								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c118" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c119" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c120" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c121" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c122" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c123" /></td>
-								<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c124" /></td>
 							</tr>
 						</table>
 					</td>
 					<td class="caption">270:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c95" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c89" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Beitraege an die AHV, IV und 2. Saeule:</td>
 					<td class="caption">280:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c96" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c90" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Beitraege an politische Parteien:</td>
 					<td class="caption">281:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c97" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c91" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Kosten fuer die Verwaltung des Privatvermoegens:</td>
 					<td class="caption">283:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c98" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c92" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Behinderungsbedingte Kosten:</td>
 					<td class="caption">3160:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c99" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c93" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
 						<table width="100%">
 							<tr>
 								<td width="50%" class="caption">Weitere Abzuege, Bezeichnung:</td>
-								<td><xsl:value-of select="table/taxDeclarationMainForm/row/c100" /></td>
+								<td><xsl:value-of select="table/taxDeclarationMainForm/row/c94" /></td>
 							</tr>
 						</table>
 					</td>
 					<td class="caption">284:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c101" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c95" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Abzug fuer fremdbereute Kinder:</td>
 					<td class="caption">376:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c102" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c96" /></td>
 				</tr>
 				<tr>
-					<td class="caption">Abzug Erwerbstaetigkeit beie Partner:</td>
+					<td class="caption">Abzug Erwerbstaetigkeit beide Partner:</td>
 					<td class="caption">290:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c103" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c97" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Total der Abzuege:</td>
 					<td class="caption">299:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c105" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c99" /></td>
 				</tr>
 			</table>
 			<br />
@@ -630,75 +592,77 @@
 				<tr>
 					<td class="caption">Total der Einkuenfte:</td>
 					<td width="45" class="caption">199:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c104" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c98" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Total der Abzuege:</td>
 					<td class="caption">299:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c105" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c99" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Nettoeinkommen:</td>
 					<td class="caption">310:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c106" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c100" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Krankheits- und Unfallkosten:</td>
 					<td class="caption">320:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c107" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c101" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Gemeinnuetzige Zuwendungen:</td>
 					<td class="caption">324:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c108" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c102" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Reineinkommen:</td>
 					<td class="caption">350:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c109" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c103" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Abzug fuer Kinder in Ihrem Haushalt:</td>
 					<td class="caption">370:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c110" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c104" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Abzug fuer Kinder ausserhalb Ihres Haushaltes:</td>
 					<td class="caption">372:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c111" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c105" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Abzug fuer unterstuetzte Personen:</td>
 					<td class="caption">374:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c112" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c106" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Abzug fuer Ehegatten / Partner:</td>
 					<td class="caption">365:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c113" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c107" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Steuerbares Einkommen Gesamt:</td>
 					<td class="caption">390:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c114" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c108" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Davon Anteil in anderen Kantonen:</td>
 					<td class="caption">394:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c115" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c109" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Davon Anteil im Ausland:</td>
 					<td class="caption">396:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c116" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c110" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Steuerbares Einkommen im Kanton:</td>
 					<td class="caption">398:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c117" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c111" /></td>
 				</tr>
 			</table>
 		</div>
+		<br />
+		<hr noshade="noshade" size="1" />
 		<br />
 		<h2>Steuerregisterauszug&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c1" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c7" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c6" />&#xA0;(<xsl:value-of select="table/taxDeclarationMainForm/row/c11" />):</h2>
 		<h2>Teil 4 von 5</h2>
@@ -716,23 +680,25 @@
 				<tr>
 					<td class="caption">Wertschriften und Guthaben:</td>
 					<td width="45" class="caption">400:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c125" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c119" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Bargeld, Gold und andere Edelmetalle:</td>
 					<td class="caption">404:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c127" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c121" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
 						<table width="100%">
 							<tr class="caption">
-								<td width="33%">Abschlussjahr:</td>
-								<td width="33%">Ablaufjahr:</td>
-								<td width="34%">Steuerwert:</td>
+								<td>Bezeichnung:</td>
+								<td>Abschlussjahr:</td>
+								<td>Ablaufjahr:</td>
+								<td>Steuerwert:</td>
 							</tr>
 							<xsl:for-each select="table/movablePropertyLifeInsurance/row">
 								<tr>
+									<td class="right"><xsl:value-of select="c2"/></td>
 									<td class="right"><xsl:value-of select="c3"/></td>
 									<td class="right"><xsl:value-of select="c4"/></td>
 									<td class="right"><xsl:value-of select="c5"/></td>
@@ -742,7 +708,7 @@
 						Lebens- und Rentenversicherungen:
 					</td>
 					<td class="caption">406:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c129" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c123" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
@@ -768,59 +734,39 @@
 				<tr>
 					<td class="caption">Anteile an unverteilten Erbschaften, Geschaefts-/Korporationsanteile:</td>
 					<td class="caption">414:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c130" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c124" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
 						<table width="100%">
 							<tr>
 								<td width="50%" class="caption">Uebrige Vermoegenswerte, Bezeichnung:</td>
-								<td><xsl:value-of select="table/taxDeclarationMainForm/row/c132" /></td>
+								<td><xsl:value-of select="table/taxDeclarationMainForm/row/c126" /></td>
 							</tr>
 						</table>
 					</td>
 					<td class="caption">414:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c133" /></td>
-				</tr>
-				<tr><td class="caption">Liegenschaften: Einfamilienhaus oder Stockwerkeigentum:</td></tr>
-				<tr>
-					<td class="caption">
-						<table width="100%">
-							<tr>
-								<td width="15%" class="caption">Gemeinde:</td>
-								<td width="25%"><xsl:value-of select="table/propertyHouseOrFlat/row/c3" /></td>					
-								<td width="15%" class="caption">Strasse:</td>
-								<td width="45%"><xsl:value-of select="table/propertyHouseOrFlat/row/c2" /></td>
-							</tr>
-						</table>
-					</td>
-					<td class="caption">420:</td>
-					<td class="right"><xsl:value-of select="table/propertyHouseOrFlat/row/c4" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c127" /></td>
 				</tr>
 				<tr>
-					<td class="caption">Zum Verkehrswert besteuert:</td>
-					<td class="caption">421:</td>
-					<td class="right"><xsl:value-of select="table/propertyHouseOrFlat/row/c6" /></td>
-				</tr>
-				<tr>
-					<td class="caption">Zum Ertragswert besteuert:</td>
-					<td class="caption">422:</td>
-					<td class="right"><xsl:value-of select="table/propertyHouseOrFlat/row/c8" /></td>
+					<td class="caption">Liegenschaften: Einfamilienhaus oder Stockwerkeigentum:</td>
+					<td class="caption">420-422:</td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c177" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Geschaefts-/Beteiligungskapital:</td>
 					<td width="45" class="caption">430:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c135" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c129" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Kunden- und andere Guthaben:</td>
 					<td width="45" class="caption">431:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c137" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c131" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Vorraete und Warenlager:</td>
 					<td width="45" class="caption">432:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c139" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c133" /></td>
 				</tr>
 				<tr>
 					<td class="caption">
@@ -828,47 +774,47 @@
 							<tr>
 								<td width="33%" class="caption">Viehhabe:</td>
 								<td width="33%" class="caption">Versicherungswert CHF:</td>
-								<td width="34%"><xsl:value-of select="table/taxDeclarationMainForm/row/c143" /></td>
+								<td width="34%"><xsl:value-of select="table/taxDeclarationMainForm/row/c137" /></td>
 							</tr>
 						</table>
 					</td>
 					<td class="caption">433:</td>
-					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c141" /></td>
+					<td class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c135" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Anlagevermoegen ohne Grundeigentum:</td>
 					<td width="45" class="caption">434:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c144" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c138" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Total der Vermoegenswerte:</td>
 					<td width="45" class="caption">460:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c146" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c140" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Schulden:</td>
 					<td width="45" class="caption">470:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c152" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c146" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Steuerbares Vermoegen gesamt:</td>
 					<td width="45" class="caption">490:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c156" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c150" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Anteil in anderen Kantonen:</td>
 					<td width="45" class="caption">494:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c158" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c152" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Anteil im Ausland:</td>
 					<td width="45" class="caption">496:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c160" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c154" /></td>
 				</tr>
 				<tr>
 					<td class="caption">Steuerbares Vermoegen im Kanton:</td>
 					<td width="45" class="caption">498:</td>
-					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c162" /></td>
+					<td width="120" class="right"><xsl:value-of select="table/taxDeclarationMainForm/row/c156" /></td>
 				</tr>
 			</table>
 			<br />
@@ -938,11 +884,13 @@
 				</tr>
 				<tr>
 					<td class="caption">Bemerkungen</td>
-					<td><xsl:value-of select="table/taxDeclarationMainForm/row/c167" /></td>
+					<td><xsl:value-of select="table/taxDeclarationMainForm/row/c161" /></td>
 				</tr>
 			</table>
-			</div>
-		<br /><br />
+		</div>
+		<br />
+		<hr noshade="noshade" size="1" />
+		<br />
 		<h2>Steuerregisterauszug&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c1" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c7" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c6" />&#xA0;(<xsl:value-of select="table/taxDeclarationMainForm/row/c11" />):</h2>
 		<h2>Teil 5 von 5</h2>
 		<div>
@@ -973,6 +921,43 @@
 						<td><xsl:value-of select="c9"/></td>
 						<td><xsl:value-of select="c10"/></td>
 						<td><xsl:value-of select="c11"/></td>
+					</tr>
+				</xsl:for-each>
+			</table>		
+		</div>
+		<br />
+		<hr noshade="noshade" size="1" />
+		<br />
+		<h2>Steuerregisterauszug&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c1" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c7" />&#xA0;<xsl:value-of select="table/taxDeclarationMainForm/row/c6" />&#xA0;(<xsl:value-of select="table/taxDeclarationMainForm/row/c11" />):</h2>
+		<h2>Teil 6 von 6</h2>
+		<div>
+			<br />
+			<h3>Liegenschaftsverzeichnis:</h3>
+			<table width="100%">
+				<tr class="captionb">
+					<td>Strasse</td>
+					<td>Ort</td>
+					<td>Art</td>
+					<td>Steuerwert (Anteil Geschaeft)</td>
+					<td>Verkehrswert (Anteil Geschaeft)</td>
+					<td>Ertragswert (Anteil Geschaeft)</td>
+					<td>Mietwert / Mietzins</td>
+					<td>Brutto Ertrag</td>
+					<td>Pauschalkosten / eff. Kosten</td>
+					<td>Netto Ertrag</td>
+				</tr>
+				<xsl:for-each select="table/propertyHouseOrFlat/row">
+					<tr>
+						<td><xsl:value-of select="c2"/></td>
+						<td><xsl:value-of select="c3"/></td>
+						<td><xsl:value-of select="c4"/></td>
+						<td><xsl:value-of select="c5"/> (<xsl:value-of select="c6"/>)</td>
+						<td><xsl:value-of select="c7"/> (<xsl:value-of select="c8"/>)</td>
+						<td><xsl:value-of select="c9"/> (<xsl:value-of select="c10"/>)</td>
+						<td><xsl:value-of select="c11"/> / <xsl:value-of select="c12"/></td>
+						<td><xsl:value-of select="c13"/></td>
+						<td><xsl:value-of select="c14"/> / <xsl:value-of select="c15"/></td>
+						<td><xsl:value-of select="c16"/></td>
 					</tr>
 				</xsl:for-each>
 			</table>		

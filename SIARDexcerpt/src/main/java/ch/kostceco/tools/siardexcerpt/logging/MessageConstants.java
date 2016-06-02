@@ -38,7 +38,7 @@ public interface MessageConstants
 	// Globale Meldungen
 	String	MESSAGE_XML_HEADER								= "message.xml.header";
 	String	MESSAGE_XML_START									= "message.xml.start";
-	String	MESSAGE_XML_ARCHIVE								= "message.xml.archive";
+	String	MESSAGE_XML_TEXT									= "message.xml.text";
 	String	MESSAGE_XML_INFO									= "message.xml.info";
 	String	MESSAGE_XML_LOGEND								= "message.xml.logend";
 

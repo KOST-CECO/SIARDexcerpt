@@ -23,10 +23,15 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptCGrepException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
@@ -98,9 +103,15 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			 * entsprechenden Modul die property anzugeben: <property name="configurationService"
 			 * ref="configurationService" /> */
 
-			String name = getConfigurationService().getMaintableName();
+			// String name = getConfigurationService().getMaintableName();
 			String folder = getConfigurationService().getMaintableFolder();
 			String cell = getConfigurationService().getMaintablePrimarykeyCell();
+			String tabfolder = "";
+			String tabname = "";
+			String tabdescription = "";
+			String tabdescriptionProv = "";
+			String cellname = "";
+			String celldescription = "";
 
 			File fMaintable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
 					+ File.separator + "schema0" + File.separator + folder + File.separator + folder + ".xml" );
@@ -119,7 +130,75 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				Runtime rt = null;
 
 				getMessageService().logError(
-						getTextResourceService().getText( MESSAGE_XML_ELEMENT_OPEN, name ) );
+						getTextResourceService().getText( MESSAGE_XML_ELEMENT_OPEN, folder ) );
+
+				// Informationen zur Tabelle aus metadata.xml herausholen
+
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				// dbf.setValidating(false);
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				org.w3c.dom.Document doc = db.parse( new FileInputStream( new File( siardDatei
+						.getAbsolutePath() + File.separator + "header" + File.separator + "metadata.xml" ) ) );
+				doc.getDocumentElement().normalize();
+
+				dbf.setFeature( "http://xml.org/sax/features/namespaces", false );
+
+				NodeList nlTable = doc.getElementsByTagName( "table" );
+				for ( int i = 0; i < nlTable.getLength(); i++ ) {
+					Node nodenlTable = nlTable.item( i );
+					NodeList childNodes = nodenlTable.getChildNodes();
+					for ( int x = 0; x < childNodes.getLength(); x++ ) {
+						Node subNodeI = childNodes.item( x );
+						if ( subNodeI.getNodeName().equals( "folder" ) ) {
+							// System.out.println( subNodeI.getTextContent() );
+							if ( subNodeI.getTextContent().equals( folder ) ) {
+								/* Es ist die richtige Tabelle. Ensprechend wird i ans ende Gestellt, damit die
+								 * i-Schlaufe beendet wird. */
+								tabfolder = subNodeI.getTextContent();
+								i = nlTable.getLength();
+							}
+						} else if ( subNodeI.getNodeName().equals( "name" ) ) {
+							tabname = subNodeI.getTextContent();
+						} else if ( subNodeI.getNodeName().equals( "description" ) ) {
+							tabdescriptionProv = new String( subNodeI.getTextContent().getBytes(), "UTF-8" );
+							/* in der description generiert mit csv2siard wird nach "word" der Select Befehl
+							 * angehängt. Dieser soll nicht mit ausgegeben werden. */
+							String word = "\\u000A";
+							int endIndex = tabdescriptionProv.indexOf( word );
+							tabdescription = tabdescriptionProv.substring( 0, endIndex );
+						} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
+							NodeList childNodesColumns = subNodeI.getChildNodes();
+							for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
+								Node subNodeII = childNodesColumns.item( y );
+								NodeList childNodesColumn = subNodeII.getChildNodes();
+								for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
+									int cellNumber = (y + 1) / 2;
+									// System.out.println( "Zelle Nr " + cellNumber );
+									Node subNodeIII = childNodesColumn.item( z );
+									if ( subNodeIII.getNodeName().equals( "name" ) ) {
+										cellname = cellname + "<c" + cellNumber + ">" + subNodeIII.getTextContent()
+												+ "</c" + cellNumber + ">";
+									} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
+										celldescription = celldescription + "<c" + cellNumber + ">"
+												+ new String( subNodeIII.getTextContent().getBytes(), "UTF-8" ) + "</c"
+												+ cellNumber + ">";
+									}
+								}
+							}
+						}
+					}
+				}
+
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_TEXT, tabname, "tabname" ) );
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_TEXT, tabfolder, "tabfolder" ) );
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_TEXT, tabdescription, "tabdescription" ) );
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_TEXT, cellname, "name" ) );
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_TEXT, celldescription, "description" ) );
 
 				try {
 					Util.switchOffConsole();
@@ -168,7 +247,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_ELEMENT_CONTENT, content ) );
 				getMessageService().logError(
-						getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, name ) );
+						getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, folder ) );
 
 				if ( tempOutFile.exists() ) {
 					Util.deleteDir( tempOutFile );
@@ -195,7 +274,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 		// grep der SubTables
 		try {
-			String name = null;
+			// String name = null;
 			String folder = null;
 			String cell = null;
 
@@ -212,9 +291,15 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			List<Element> subtables = document.getRootElement().getChild( "subtables", ns )
 					.getChildren( "subtable", ns );
 			for ( Element subtable : subtables ) {
-				name = subtable.getChild( "name", ns ).getText();
+				// name = subtable.getChild( "name", ns ).getText();
 				folder = subtable.getChild( "folder", ns ).getText();
 				cell = subtable.getChild( "foreignkeycell", ns ).getText();
+				String tabfolder = "";
+				String tabname = "";
+				String tabdescription = "";
+				String tabdescriptionProv = "";
+				String cellname = "";
+				String celldescription = "";
 
 				// System.out.println( name + " - " + folder + " - " + cell );
 				File fSubtable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
@@ -235,7 +320,91 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					Runtime rt = null;
 
 					getMessageService().logError(
-							getTextResourceService().getText( MESSAGE_XML_ELEMENT_OPEN, name ) );
+							getTextResourceService().getText( MESSAGE_XML_ELEMENT_OPEN, folder ) );
+					// TODO Start Wie maintable
+					// Informationen zur Tabelle aus metadata.xml herausholen
+
+					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+					// dbf.setValidating(false);
+					DocumentBuilder db = dbf.newDocumentBuilder();
+					org.w3c.dom.Document doc = db.parse( new FileInputStream( new File( siardDatei
+							.getAbsolutePath() + File.separator + "header" + File.separator + "metadata.xml" ) ) );
+					doc.getDocumentElement().normalize();
+
+					dbf.setFeature( "http://xml.org/sax/features/namespaces", false );
+
+					NodeList nlTable = doc.getElementsByTagName( "table" );
+					for ( int i = 0; i < nlTable.getLength(); i++ ) {
+						// für jede Tabelle (table) ...
+						tabfolder = "";
+						tabname = "";
+						tabdescription = "";
+						tabdescriptionProv = "";
+						cellname = "";
+						celldescription = "";
+
+						Node nodenlTable = nlTable.item( i );
+						NodeList childNodes = nodenlTable.getChildNodes();
+						for ( int x = 0; x < childNodes.getLength(); x++ ) {
+							Node subNodeI = childNodes.item( x );
+							if ( subNodeI.getNodeName().equals( "folder" ) ) {
+								// System.out.println( subNodeI.getTextContent() );
+								if ( subNodeI.getTextContent().equals( folder ) ) {
+									/* Es ist die richtige Tabelle. Ensprechend wird i ans ende Gestellt, damit die
+									 * i-Schlaufe beendet wird. */
+									tabfolder = subNodeI.getTextContent();
+									i = nlTable.getLength();
+								}
+							} else if ( subNodeI.getNodeName().equals( "name" ) ) {
+								tabname = subNodeI.getTextContent();
+							} else if ( subNodeI.getNodeName().equals( "description" ) ) {
+								tabdescriptionProv = new String( subNodeI.getTextContent().getBytes(), "UTF-8" );
+								/* in der description generiert mit csv2siard wird nach "word" der Select Befehl
+								 * angehängt. Dieser soll nicht mit ausgegeben werden. */
+								String word = "\\u000A";
+								int endIndex = tabdescriptionProv.indexOf( word );
+								tabdescription = tabdescriptionProv.substring( 0, endIndex );
+							} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
+								NodeList childNodesColumns = subNodeI.getChildNodes();
+								for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
+									// für jede Zelle (column) ...
+									Node subNodeII = childNodesColumns.item( y );
+									NodeList childNodesColumn = subNodeII.getChildNodes();
+									for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
+										// für jedes Subelement der Zelle (name, description...) ...
+										int cellNumber = (y + 1) / 2;
+										// System.out.println( "Zelle Nr " + cellNumber );
+										Node subNodeIII = childNodesColumn.item( z );
+										if ( subNodeIII.getNodeName().equals( "name" ) ) {
+											cellname = cellname + "<c" + cellNumber + ">" + subNodeIII.getTextContent()
+													+ "</c" + cellNumber + ">";
+											// System.out.println( cellname );
+										} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
+											celldescription = celldescription + "<c" + cellNumber + ">"
+													+ new String( subNodeIII.getTextContent().getBytes(), "UTF-8" ) + "</c"
+													+ cellNumber + ">";
+										}
+									}
+								}
+							}
+						}
+						if ( i == nlTable.getLength() ) {
+							// Ausgabe für jede Tabelle
+							getMessageService().logError(
+									getTextResourceService().getText( MESSAGE_XML_TEXT, tabname, "tabname" ) );
+							getMessageService().logError(
+									getTextResourceService().getText( MESSAGE_XML_TEXT, tabfolder, "tabfolder" ) );
+							getMessageService().logError(
+									getTextResourceService().getText( MESSAGE_XML_TEXT, tabdescription,
+											"tabdescription" ) );
+							getMessageService().logError(
+									getTextResourceService().getText( MESSAGE_XML_TEXT, cellname, "name" ) );
+							getMessageService().logError(
+									getTextResourceService().getText( MESSAGE_XML_TEXT, celldescription,
+											"description" ) );
+						}
+					}
+					// TODO End Wie maintable
 
 					try {
 						Util.switchOffConsole();
@@ -284,7 +453,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					getMessageService().logError(
 							getTextResourceService().getText( MESSAGE_XML_ELEMENT_CONTENT, content ) );
 					getMessageService().logError(
-							getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, name ) );
+							getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, folder ) );
 
 					if ( tempOutFile.exists() ) {
 						Util.deleteDir( tempOutFile );

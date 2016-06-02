@@ -17,10 +17,12 @@ package ch.kostceco.tools.siardexcerpt;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -401,8 +403,8 @@ public class SIARDexcerpt implements MessageConstants
 					xslCopyS.getName() ) );
 			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_START,
 					ausgabeStartS ) );
-			LOGGER.logError( siardexcerpt.getTextResourceService()
-					.getText( MESSAGE_XML_ARCHIVE, archiveS ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_TEXT, archiveS,
+					"Archive" ) );
 			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_INFO ) );
 
 			/** d) search: dies ist in einem eigenen Modul realisiert */
@@ -457,7 +459,7 @@ public class SIARDexcerpt implements MessageConstants
 
 					// Der Header wird dabei leider verschossen, wieder zurück ändern
 					String newstring = siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
-					xslCopyS.getName() );
+							xslCopyS.getName() );
 					String oldstring = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><table>";
 					Util.oldnewstring( oldstring, newstring, outFileSearch );
 
@@ -539,18 +541,76 @@ public class SIARDexcerpt implements MessageConstants
 			String pathToXSL = siardexcerpt.getConfigurationService().getPathToXSL();
 
 			File xslOrig = new File( pathToXSL );
+			if ( !xslOrig.exists() ) {
+				System.out.println( siardexcerpt.getTextResourceService().getText(
+						ERROR_CONFIGFILE_FILENOTEXISTING, pathToXSL ) );
+				System.exit( 1 );
+			}
 			File xslCopy = new File( directoryOfOutput.getAbsolutePath() + File.separator
 					+ xslOrig.getName() );
 			if ( !xslCopy.exists() ) {
 				Util.copyFile( xslOrig, xslCopy );
 			}
 
+			// Information aus metadata holen
+			String dbname = "";
+			String dataOriginTimespan = "";
+			String dbdescription = "";
+			String keyexcerpt = "";
+
+			try {
+
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				// dbf.setValidating(false);
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document doc = db.parse( new FileInputStream( new File( siardDatei.getAbsolutePath()
+						+ File.separator + "header" + File.separator + "metadata.xml" ) ) );
+				doc.getDocumentElement().normalize();
+
+				dbf.setFeature( "http://xml.org/sax/features/namespaces", false );
+
+				NodeList nlDbname = doc.getElementsByTagName( "dbname" );
+				Node nodeDbname = nlDbname.item( 0 );
+				dbname = nodeDbname.getTextContent();
+
+				NodeList nlDataOriginTimespan = doc.getElementsByTagName( "dataOriginTimespan" );
+				Node nodeDataOriginTimespan = nlDataOriginTimespan.item( 0 );
+				dataOriginTimespan = nodeDataOriginTimespan.getTextContent();
+
+				NodeList nlSiardArchive = doc.getElementsByTagName( "siardArchive" );
+				Node nodeSiardArchive = nlSiardArchive.item( 0 );
+				NodeList childNodes = nodeSiardArchive.getChildNodes();
+				for ( int x = 0; x < childNodes.getLength(); x++ ) {
+					Node subNode = childNodes.item( x );
+					if ( subNode.getNodeName().equals( "description" ) ) {
+						dbdescription = new String( subNode.getTextContent().getBytes(), "UTF-8");
+						// TODO: leider funktioniert das encoding nicht :-(
+					}
+				}
+
+				String primarykeyname = siardexcerpt.getConfigurationService().getMaintablePrimarykeyName();
+				keyexcerpt = primarykeyname + " = " + excerptString;
+
+			} catch ( Exception e ) {
+				LOGGER.logError( "<Error>"
+						+ siardexcerpt.getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+				System.out.println( "Exception: " + e.getMessage() );
+			}
+
 			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
 					xslCopy.getName() ) );
 			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_START,
 					ausgabeStart ) );
-			LOGGER
-					.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_ARCHIVE, archive ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_TEXT, archive,
+					"Archive" ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_TEXT, dbname,
+					"dbname" ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_TEXT,
+					dataOriginTimespan, "dataOriginTimespan" ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_TEXT,
+					dbdescription, "dbdescription" ) );
+			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_TEXT, keyexcerpt,
+					"keyexcerpt" ) );
 			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_INFO ) );
 
 			/** c) extraktion: dies ist in einem eigenen Modul realisiert */
@@ -604,7 +664,7 @@ public class SIARDexcerpt implements MessageConstants
 
 					// Der Header wird dabei leider verschossen, wieder zurück ändern
 					String newstring = siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
-					xslCopy.getName() );
+							xslCopy.getName() );
 					String oldstring = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><table>";
 					Util.oldnewstring( oldstring, newstring, outFile );
 
