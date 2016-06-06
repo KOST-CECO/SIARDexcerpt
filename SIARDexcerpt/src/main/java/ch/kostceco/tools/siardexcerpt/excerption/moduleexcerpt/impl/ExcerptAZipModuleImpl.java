@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire RÃ¶thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -71,11 +71,11 @@ public class ExcerptAZipModuleImpl extends ValidationModuleImpl implements Excer
 				siardDateiNew.mkdir();
 			}
 
-			/* Das metadata.xml und sein xsd müssen in das Filesystem extrahiert werden, weil bei bei
+			/* Das metadata.xml und sein xsd mÃ¼ssen in das Filesystem extrahiert werden, weil bei bei
 			 * Verwendung eines Inputstreams bei der Validierung ein Problem mit den xs:include Statements
-			 * besteht, die includes können so nicht aufgelöst werden. Es werden hier jedoch nicht nur
-			 * diese Files extrahiert, sondern gleich die ganze Zip-Datei, weil auch spätere Validierungen
-			 * nur mit den extrahierten Files arbeiten können. */
+			 * besteht, die includes kÃ¶nnen so nicht aufgelÃ¶st werden. Es werden hier jedoch nicht nur
+			 * diese Files extrahiert, sondern gleich die ganze Zip-Datei, weil auch spÃ¤tere Validierungen
+			 * nur mit den extrahierten Files arbeiten kÃ¶nnen. */
 			Zip64File zipfile = new Zip64File( siardDatei );
 			List<FileEntry> fileEntryList = zipfile.getListFileEntries();
 			for ( FileEntry fileEntry : fileEntryList ) {

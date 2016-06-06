@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire RÃ¶thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -40,7 +40,7 @@ import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.StreamGobbler;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
-/** Besteht eine korrekte primäre Verzeichnisstruktur: /header/metadata.xml sowie
+/** Besteht eine korrekte primÃ¤re Verzeichnisstruktur: /header/metadata.xml sowie
  * /header/metadata.xsd und /content */
 public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements ExcerptCGrepModule
 {
@@ -91,6 +91,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 		}
 
 		File tempOutFile = new File( outFile.getAbsolutePath() + ".tmp" );
+		File xmlExtracted = new File( siardDatei.getAbsolutePath() + File.separator + "header"
+				+ File.separator + "metadata.xml" );
 		String content = "";
 
 		// Record aus Maintable herausholen
@@ -121,7 +123,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				String command = "cmd /c \"" + pathToGrepExe + " \"<" + cell + ">" + excerptString + "</"
 						+ cell + ">\" " + fMaintable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath()
 						+ "\"";
-				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
+				/* Das redirect Zeichen verunmÃ¶glicht eine direkte eingabe. mit dem geschachtellten Befehl
 				 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
 				// System.out.println( command );
@@ -137,8 +139,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				// dbf.setValidating(false);
 				DocumentBuilder db = dbf.newDocumentBuilder();
-				org.w3c.dom.Document doc = db.parse( new FileInputStream( new File( siardDatei
-						.getAbsolutePath() + File.separator + "header" + File.separator + "metadata.xml" ) ) );
+				org.w3c.dom.Document doc = db.parse( new FileInputStream( xmlExtracted ), "UTF8" );
 				doc.getDocumentElement().normalize();
 
 				dbf.setFeature( "http://xml.org/sax/features/namespaces", false );
@@ -160,9 +161,9 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 						} else if ( subNodeI.getNodeName().equals( "name" ) ) {
 							tabname = subNodeI.getTextContent();
 						} else if ( subNodeI.getNodeName().equals( "description" ) ) {
-							tabdescriptionProv = new String( subNodeI.getTextContent().getBytes(), "UTF-8" );
+							tabdescriptionProv = new String( subNodeI.getTextContent() );
 							/* in der description generiert mit csv2siard wird nach "word" der Select Befehl
-							 * angehängt. Dieser soll nicht mit ausgegeben werden. */
+							 * angehÃ¤ngt. Dieser soll nicht mit ausgegeben werden. */
 							String word = "\\u000A";
 							int endIndex = tabdescriptionProv.indexOf( word );
 							tabdescription = tabdescriptionProv.substring( 0, endIndex );
@@ -180,8 +181,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 												+ "</c" + cellNumber + ">";
 									} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
 										celldescription = celldescription + "<c" + cellNumber + ">"
-												+ new String( subNodeIII.getTextContent().getBytes(), "UTF-8" ) + "</c"
-												+ cellNumber + ">";
+												+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber + ">";
 									}
 								}
 							}
@@ -234,7 +234,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					}
 				}
 
-				Scanner scanner = new Scanner( tempOutFile );
+				Scanner scanner = new Scanner( tempOutFile, "UTF-8" );
 				content = "";
 				try {
 					content = scanner.useDelimiter( "\\Z" ).next();
@@ -311,7 +311,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					String command = "cmd /c \"" + pathToGrepExe + " \"<" + cell + ">" + excerptString + "</"
 							+ cell + ">\" " + fSubtable.getAbsolutePath() + " >> "
 							+ tempOutFile.getAbsolutePath() + "\"";
-					/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
+					/* Das redirect Zeichen verunmÃ¶glicht eine direkte eingabe. mit dem geschachtellten Befehl
 					 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
 					// System.out.println( command );
@@ -327,15 +327,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 					// dbf.setValidating(false);
 					DocumentBuilder db = dbf.newDocumentBuilder();
-					org.w3c.dom.Document doc = db.parse( new FileInputStream( new File( siardDatei
-							.getAbsolutePath() + File.separator + "header" + File.separator + "metadata.xml" ) ) );
+					org.w3c.dom.Document doc = db.parse( new FileInputStream( xmlExtracted ), "UTF8" );
 					doc.getDocumentElement().normalize();
 
 					dbf.setFeature( "http://xml.org/sax/features/namespaces", false );
 
 					NodeList nlTable = doc.getElementsByTagName( "table" );
 					for ( int i = 0; i < nlTable.getLength(); i++ ) {
-						// für jede Tabelle (table) ...
+						// fÃ¼r jede Tabelle (table) ...
 						tabfolder = "";
 						tabname = "";
 						tabdescription = "";
@@ -358,20 +357,20 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 							} else if ( subNodeI.getNodeName().equals( "name" ) ) {
 								tabname = subNodeI.getTextContent();
 							} else if ( subNodeI.getNodeName().equals( "description" ) ) {
-								tabdescriptionProv = new String( subNodeI.getTextContent().getBytes(), "UTF-8" );
+								tabdescriptionProv = new String( subNodeI.getTextContent() );
 								/* in der description generiert mit csv2siard wird nach "word" der Select Befehl
-								 * angehängt. Dieser soll nicht mit ausgegeben werden. */
+								 * angehÃ¤ngt. Dieser soll nicht mit ausgegeben werden. */
 								String word = "\\u000A";
 								int endIndex = tabdescriptionProv.indexOf( word );
 								tabdescription = tabdescriptionProv.substring( 0, endIndex );
 							} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
 								NodeList childNodesColumns = subNodeI.getChildNodes();
 								for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
-									// für jede Zelle (column) ...
+									// fÃ¼r jede Zelle (column) ...
 									Node subNodeII = childNodesColumns.item( y );
 									NodeList childNodesColumn = subNodeII.getChildNodes();
 									for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
-										// für jedes Subelement der Zelle (name, description...) ...
+										// fÃ¼r jedes Subelement der Zelle (name, description...) ...
 										int cellNumber = (y + 1) / 2;
 										// System.out.println( "Zelle Nr " + cellNumber );
 										Node subNodeIII = childNodesColumn.item( z );
@@ -381,15 +380,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 											// System.out.println( cellname );
 										} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
 											celldescription = celldescription + "<c" + cellNumber + ">"
-													+ new String( subNodeIII.getTextContent().getBytes(), "UTF-8" ) + "</c"
-													+ cellNumber + ">";
+													+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber + ">";
 										}
 									}
 								}
 							}
 						}
 						if ( i == nlTable.getLength() ) {
-							// Ausgabe für jede Tabelle
+							// Ausgabe fÃ¼r jede Tabelle
 							getMessageService().logError(
 									getTextResourceService().getText( MESSAGE_XML_TEXT, tabname, "tabname" ) );
 							getMessageService().logError(
@@ -440,7 +438,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 						}
 					}
 
-					Scanner scanner = new Scanner( tempOutFile );
+					Scanner scanner = new Scanner( tempOutFile, "UTF-8" );
 					content = "";
 					try {
 						content = scanner.useDelimiter( "\\Z" ).next();

@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire RÃ¶thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -27,7 +27,7 @@ import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.StreamGobbler;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
-/** Besteht eine korrekte primäre Verzeichnisstruktur: /header/metadata.xml sowie
+/** Besteht eine korrekte primÃ¤re Verzeichnisstruktur: /header/metadata.xml sowie
  * /header/metadata.xsd und /content */
 public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements ExcerptBSearchModule
 {
@@ -88,7 +88,7 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			 * entsprechenden Modul die property anzugeben: <property name="configurationService"
 			 * ref="configurationService" /> */
 
-//			String name = getConfigurationService().getSearchtableName();
+			// String name = getConfigurationService().getSearchtableName();
 			String name = "siardexcerptsearch";
 			String folder = getConfigurationService().getSearchtableFolder();
 
@@ -101,7 +101,7 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 				// grep -E "REGEX-Suchbegriff" table13.xml >> output.txt
 				String command = "cmd /c \"" + pathToGrepExe + " -E \"" + searchString + "\" "
 						+ fSearchtable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath() + "\"";
-				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
+				/* Das redirect Zeichen verunmÃ¶glicht eine direkte eingabe. mit dem geschachtellten Befehl
 				 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
 				// System.out.println( command );
@@ -169,11 +169,11 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 				for ( int i = 1; i < 500000; i++ ) {
 					cellLoop = "";
 					cellLoop = "c" + i;
-					if ( cellLoop.equals( nr0 ) || cellLoop.equals( nr1 ) || cellLoop.equals( nr2 ) || cellLoop.equals( nr3 )
-							|| cellLoop.equals( nr4 ) || cellLoop.equals( nr5 ) || cellLoop.equals( nr6 )
-							|| cellLoop.equals( nr7 ) ) {
+					if ( cellLoop.equals( nr0 ) || cellLoop.equals( nr1 ) || cellLoop.equals( nr2 )
+							|| cellLoop.equals( nr3 ) || cellLoop.equals( nr4 ) || cellLoop.equals( nr5 )
+							|| cellLoop.equals( nr6 ) || cellLoop.equals( nr7 ) ) {
 						// wird behalten
-						 modifString = "c" + i + ">";
+						modifString = "c" + i + ">";
 
 						if ( cellLoop.equals( nr0 ) ) {
 							content = content.replaceAll( modifString, "col0>" );
@@ -198,7 +198,7 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 												} else {
 													if ( cellLoop.equals( nr7 ) ) {
 														content = content.replaceAll( modifString, "col7>" );
-													} 
+													}
 												}
 											}
 										}
