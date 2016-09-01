@@ -1,9 +1,9 @@
 ; The name of the installer
-Name "SIARDexcerpt v0.0.4"
+Name "SIARDexcerpt v0.0.5"
 ; Sets the icon of the installer
 Icon "excerpt.ico"
 ; remove the text 'Nullsoft Install System vX.XX' from the installer window 
-BrandingText "Copyright © KOST/CECO"
+BrandingText "Copyright: KOST/CECO"
 ; The file to write
 OutFile "SIARDexcerpt_fr.exe"
 ; The default installation directory

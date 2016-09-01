@@ -27,8 +27,7 @@ import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.StreamGobbler;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
-/** Besteht eine korrekte primäre Verzeichnisstruktur: /header/metadata.xml sowie
- * /header/metadata.xsd und /content */
+/** 2) search: gemäss config die Tabelle mit Suchtext befragen und Ausgabe des Resultates */
 public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements ExcerptBSearchModule
 {
 
@@ -90,11 +89,19 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 
 			// String name = getConfigurationService().getSearchtableName();
 			String name = "siardexcerptsearch";
-			String folder = getConfigurationService().getSearchtableFolder();
+			String folder = getConfigurationService().getMaintableFolder();
+			if ( folder.startsWith( "Configuration-Error:" ) ) {
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + folder );
+				return false;
+			}
 
 			File fSearchtable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
 					+ File.separator + "schema0" + File.separator + folder + File.separator + folder + ".xml" );
 
+			/* Der SearchString kann Leerschläge enthalten, welche bei grep Problem verursachen.
+			 * Entsprechend werden diese durch . ersetzt (Wildcard) */
+			searchString = searchString.replaceAll( " ", "." );
 			searchString = searchString.replaceAll( "\\.", "\\.*" );
 
 			try {
@@ -146,15 +153,15 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 					}
 				}
 
-				Scanner scanner = new Scanner( tempOutFile );
+				Scanner scanner = new Scanner( tempOutFile, "UTF-8" );
 				contentAll = "";
 				content = "";
 				contentAll = scanner.useDelimiter( "\\Z" ).next();
 				scanner.close();
 				content = contentAll;
-				/* im contentAll ist jetzt der Gesamtstring, dieser soll anschliessend nur noch aus den 4
-				 * Such-Zellen und den weiteren 4 ResultateZellen bestehen -> content */
-				String nr0 = getConfigurationService().getcellNumberkey();
+				/* im contentAll ist jetzt der Gesamtstring, dieser soll anschliessend nur noch aus den 12
+				 * ResultateZellen bestehen -> content */
+				String nr0 = getConfigurationService().getMaintablePrimarykeyCell();
 				String nr1 = getConfigurationService().getcellNumber1();
 				String nr2 = getConfigurationService().getcellNumber2();
 				String nr3 = getConfigurationService().getcellNumber3();
@@ -162,6 +169,70 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 				String nr5 = getConfigurationService().getcellNumber5();
 				String nr6 = getConfigurationService().getcellNumber6();
 				String nr7 = getConfigurationService().getcellNumber7();
+				String nr8 = getConfigurationService().getcellNumber8();
+				String nr9 = getConfigurationService().getcellNumber9();
+				String nr10 = getConfigurationService().getcellNumber10();
+				String nr11 = getConfigurationService().getcellNumber11();
+				if ( nr0.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr0 );
+					return false;
+				}
+				if ( nr1.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr1 );
+					return false;
+				}
+				if ( nr2.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr2 );
+					return false;
+				}
+				if ( nr3.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr3 );
+					return false;
+				}
+				if ( nr4.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr4 );
+					return false;
+				}
+				if ( nr5.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr5 );
+					return false;
+				}
+				if ( nr6.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr6 );
+					return false;
+				}
+				if ( nr7.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr7 );
+					return false;
+				}
+				if ( nr8.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr8 );
+					return false;
+				}
+				if ( nr9.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr9 );
+					return false;
+				}
+				if ( nr10.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr10 );
+					return false;
+				}
+				if ( nr11.startsWith( "Configuration-Error:" ) ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr11 );
+					return false;
+				}
 
 				String cellLoop = "";
 				String modifString = "";
@@ -171,7 +242,8 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 					cellLoop = "c" + i;
 					if ( cellLoop.equals( nr0 ) || cellLoop.equals( nr1 ) || cellLoop.equals( nr2 )
 							|| cellLoop.equals( nr3 ) || cellLoop.equals( nr4 ) || cellLoop.equals( nr5 )
-							|| cellLoop.equals( nr6 ) || cellLoop.equals( nr7 ) ) {
+							|| cellLoop.equals( nr6 ) || cellLoop.equals( nr7 ) || cellLoop.equals( nr8 )
+							|| cellLoop.equals( nr9 ) || cellLoop.equals( nr10 ) || cellLoop.equals( nr11 ) ) {
 						// wird behalten
 						modifString = "c" + i + ">";
 
@@ -198,6 +270,22 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 												} else {
 													if ( cellLoop.equals( nr7 ) ) {
 														content = content.replaceAll( modifString, "col7>" );
+													} else {
+														if ( cellLoop.equals( nr8 ) ) {
+															content = content.replaceAll( modifString, "col8>" );
+														} else {
+															if ( cellLoop.equals( nr9 ) ) {
+																content = content.replaceAll( modifString, "col9>" );
+															} else {
+																if ( cellLoop.equals( nr10 ) ) {
+																	content = content.replaceAll( modifString, "col10>" );
+																} else {
+																	if ( cellLoop.equals( nr11 ) ) {
+																		content = content.replaceAll( modifString, "col11>" );
+																	}
+																}
+															}
+														}
 													}
 												}
 											}

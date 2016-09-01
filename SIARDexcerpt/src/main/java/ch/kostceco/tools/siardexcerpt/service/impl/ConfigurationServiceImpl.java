@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire RÃ¶thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -76,7 +76,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 	@Override
 	public String getPathToWorkDir()
 	{
-		/** Gibt den Pfad des Arbeitsverzeichnisses zurück. Dieses Verzeichnis wird zum Entpacken des
+		/** Gibt den Pfad des Arbeitsverzeichnisses zurÃ¼ck. Dieses Verzeichnis wird zum Entpacken des
 		 * .zip-Files verwendet.
 		 * 
 		 * @return Pfad des Arbeitsverzeichnisses */
@@ -85,13 +85,14 @@ public class ConfigurationServiceImpl implements ConfigurationService
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing pathtoworkdir";
+		return error;
 	}
 
 	@Override
 	public String getPathToOutput()
 	{
-		/** Gibt den Pfad des Outputverzeichnisses zurück.
+		/** Gibt den Pfad des Outputverzeichnisses zurÃ¼ck.
 		 * 
 		 * @return Pfad des Outputverzeichnisses */
 		Object prop = getConfig().getProperty( "pathtooutput" );
@@ -99,322 +100,437 @@ public class ConfigurationServiceImpl implements ConfigurationService
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing pathtooutput";
+		return error;
 	}
 
 	@Override
 	public String getPathToXSL()
 	{
-		/** Gibt den Pfad des XSL zurück. */
+		/** Gibt den Pfad des XSL zurÃ¼ck. */
 		Object prop = getConfig().getProperty( "pathtoxsl" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing pathtoxsl";
+		return error;
 	}
 
 	@Override
 	public String getPathToXSLsearch()
 	{
-		/** Gibt den Pfad des XSL zurück. */
+		/** Gibt den Pfad des XSL zurÃ¼ck. */
 		Object prop = getConfig().getProperty( "pathtoxslsearch" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing pathtoxslsearch";
+		return error;
 	}
 
 	@Override
 	public String getArchive()
 	{
-		/** Gibt den Namen des Archivs zurück. */
+		/** Gibt den Namen des Archivs zurÃ¼ck. */
 		Object prop = getConfig().getProperty( "archive" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
 		}
-		return null;
-	}
-
-	// ------------------------ Suche ------------------------
-
-	@Override
-	public String getSearchtableTitle()
-	{
-		/** Gibt den Titel der Suche zurück. */
-		Object prop = getConfig().getProperty( "searchtable.title" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getSearchtableFolder()
-	{
-		/** Gibt den Ordner der Suchtabelle zurück. */
-		Object prop = getConfig().getProperty( "searchtable.folder" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getSearchtableName()
-	{
-		/** Gibt den Namen der Suchtabelle zurück. */
-		Object prop = getConfig().getProperty( "searchtable.name" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNamekey()
-	{
-		/** Gibt den Namen der Suchzelle Nr0 respektive Schlüssel zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnamekey" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumberkey()
-	{
-		/** Gibt den Nummer der Suchzelle Nr0 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumberkey" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellName1()
-	{
-		/** Gibt den Namen der Suchzelle Nr1 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellname1" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumber1()
-	{
-		/** Gibt den Nummer der Suchzelle Nr1 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumber1" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellName2()
-	{
-		/** Gibt den Namen der Suchzelle Nr2 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellname2" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumber2()
-	{
-		/** Gibt den Nummer der Suchzelle Nr2 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumber2" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellName3()
-	{
-		/** Gibt den Namen der Suchzelle Nr3 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellname3" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumber3()
-	{
-		/** Gibt den Nummer der Suchzelle Nr3 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumber3" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellName4()
-	{
-		/** Gibt den Namen der Suchzelle Nr4 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellname4" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumber4()
-	{
-		/** Gibt den Nummer der Suchzelle Nr4 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumber4" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellName5()
-	{
-		/** Gibt den Namen der Suchzelle Nr5 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellname5" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumber5()
-	{
-		/** Gibt den Nummer der Suchzelle Nr5 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumber5" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellName6()
-	{
-		/** Gibt den Namen der Suchzelle Nr6 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellname6" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumber6()
-	{
-		/** Gibt den Nummer der Suchzelle Nr6 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumber6" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellName7()
-	{
-		/** Gibt den Namen der Suchzelle Nr7 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellname7" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
-	}
-
-	@Override
-	public String getcellNumber7()
-	{
-		/** Gibt den Nummer der Suchzelle Nr7 zurück. */
-		Object prop = getConfig().getProperty( "searchtable.cellnumber7" );
-		if ( prop instanceof String ) {
-			String value = (String) prop;
-			return value;
-		}
-		return null;
+		String error = "Configuration-Error: Missing archive";
+		return error;
 	}
 
 	// ------------------------ Extraktion ------------------------
 	@Override
 	public String getMaintableFolder()
 	{
-		/** Gibt den Ordner der Haupttabelle zurück. */
-		Object prop = getConfig().getProperty( "maintable.folder" );
+		/** Gibt den Ordner der Haupttabelle zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.mainfolder" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing maintable.mainfolder";
+		return error;
 	}
 
 	@Override
 	public String getMaintableName()
 	{
-		/** Gibt den Namen der Haupttabelle zurück. */
-		Object prop = getConfig().getProperty( "maintable.name" );
+		/** Gibt den Namen der Haupttabelle zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.mainname" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing maintable.mainname";
+		return error;
+	}
+
+	@Override
+	public String getSearchtableTitle()
+	{
+		/** Gibt den Titel der Suche zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.title" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.title";
+		return error;
 	}
 
 	@Override
 	public String getMaintablePrimarykeyName()
 	{
-		/** Gibt den Namen des Primärschlüssel der Haupttabelle zurück. */
+		/** Gibt den Namen des PrimÃ¤rschlÃ¼ssel der Haupttabelle zurÃ¼ck. */
 		Object prop = getConfig().getProperty( "maintable.primarykeyname" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing maintable.primarykeyname";
+		return error;
 	}
 
 	@Override
 	public String getMaintablePrimarykeyCell()
 	{
-		/** Gibt die Zelle des Primärschlüssel der Haupttabelle zurück. */
+		/** Gibt die Zelle des PrimÃ¤rschlÃ¼ssel der Haupttabelle zurÃ¼ck. */
 		Object prop = getConfig().getProperty( "maintable.primarykeycell" );
 		if ( prop instanceof String ) {
 			String value = (String) prop;
 			return value;
 		}
-		return null;
+		String error = "Configuration-Error: Missing maintable.primarykeycell";
+		return error;
 	}
 
+	@Override
+	public String getcellName1()
+	{
+		/** Gibt den Namen der Suchzelle Nr1 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname1" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname1";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber1()
+	{
+		/** Gibt den Nummer der Suchzelle Nr1 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber1" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber1";
+		return error;
+	}
+
+	@Override
+	public String getcellName2()
+	{
+		/** Gibt den Namen der Suchzelle Nr2 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname2" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname2";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber2()
+	{
+		/** Gibt den Nummer der Suchzelle Nr2 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber2" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber2";
+		return error;
+	}
+
+	@Override
+	public String getcellName3()
+	{
+		/** Gibt den Namen der Suchzelle Nr3 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname3" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname3";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber3()
+	{
+		/** Gibt den Nummer der Suchzelle Nr3 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber3" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber3";
+		return error;
+	}
+
+	@Override
+	public String getcellName4()
+	{
+		/** Gibt den Namen der Suchzelle Nr4 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname4" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname4";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber4()
+	{
+		/** Gibt den Nummer der Suchzelle Nr4 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber4" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber4";
+		return error;
+	}
+
+	@Override
+	public String getcellName5()
+	{
+		/** Gibt den Namen der Suchzelle Nr5 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname5" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname5";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber5()
+	{
+		/** Gibt den Nummer der Suchzelle Nr5 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber5" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber5";
+		return error;
+	}
+
+	@Override
+	public String getcellName6()
+	{
+		/** Gibt den Namen der Suchzelle Nr6 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname6" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname6";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber6()
+	{
+		/** Gibt den Nummer der Suchzelle Nr6 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber6" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber6";
+		return error;
+	}
+
+	@Override
+	public String getcellName7()
+	{
+		/** Gibt den Namen der Suchzelle Nr7 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname7" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname7";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber7()
+	{
+		/** Gibt den Nummer der Suchzelle Nr7 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber7" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber7";
+		return error;
+	}
+
+	@Override
+	public String getcellName8()
+	{
+		/** Gibt den Namen der Suchzelle Nr8 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname8" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname8";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber8()
+	{
+		/** Gibt den Nummer der Suchzelle Nr8 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber8" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber8";
+		return error;
+	}
+
+	@Override
+	public String getcellName9()
+	{
+		/** Gibt den Namen der Suchzelle Nr9 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname9" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname9";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber9()
+	{
+		/** Gibt den Nummer der Suchzelle Nr9 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber9" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber";
+		return error;
+	}
+
+	@Override
+	public String getcellName10()
+	{
+		/** Gibt den Namen der Suchzelle Nr10 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname10" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname10";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber10()
+	{
+		/** Gibt den Nummer der Suchzelle Nr10 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber10" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber10";
+		return error;
+	}
+
+	@Override
+	public String getcellName11()
+	{
+		/** Gibt den Namen der Suchzelle Nr11 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellname11" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellname11";
+		return error;
+	}
+
+	@Override
+	public String getcellNumber11()
+	{
+		/** Gibt den Nummer der Suchzelle Nr11 zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "maintable.cellnumber11" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing maintable.cellnumber11";
+		return error;
+	}
+
+	@Override
+	public String getSubtableFolder()
+	{
+		/** Gibt den Ordner der Subtabelle zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "subtables.subtable.folder" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing subtables.subtable.folder";
+		return error;
+	}
+
+	@Override
+	public String getSubtableName()
+	{
+		/** Gibt den Namen der Subtabelle zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "subtables.subtable.name" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing subtables.subtable.name";
+		return error;
+	}
+
+	@Override
+	public String getSubtableForeignkeyCell()
+	{
+		/** Gibt die Zelle des FremdschlÃ¼ssel der Subtabelle zurÃ¼ck. */
+		Object prop = getConfig().getProperty( "subtables.subtable.foreignkeycell" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing subtables.subtable.foreignkeycell";
+		return error;
+	}
 }

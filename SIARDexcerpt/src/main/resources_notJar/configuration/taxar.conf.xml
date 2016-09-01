@@ -6,111 +6,99 @@
 	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
 	<archive>Staatsarchiv Zuerich</archive>
 
-	<searchtable>
+	<maintable>
+		<mainfolder>table13</mainfolder>
+		<mainname>taxDeclarationMainForm</mainname>
 		<title>Suchergebnis aus dem Steuerregister:</title>
-		<folder>table13</folder>
-		<name>taxDeclarationMainForm</name>
-		<cellnamekey>AHV-Nr P1</cellnamekey>
-		<cellnumberkey>c11</cellnumberkey>
+		<primarykeyname>AHV-Nr P1</primarykeyname>
+		<primarykeycell>c11</primarykeycell>
 		<cellname1>Name P1</cellname1>
 		<cellnumber1>c6</cellnumber1>
-		<cellname2>Vorname P1</cellname2>
-		<cellnumber2>c7</cellnumber2>
-		<cellname3>Geburtsdatum P1</cellname3>
-		<cellnumber3>c10</cellnumber3>
-		<cellname4>Ort P1</cellname4>
-		<cellnumber4>c18</cellnumber4>
-		<cellname5>Name P2</cellname5>
-		<cellnumber5>c26</cellnumber5>
-		<cellname6>Vorname P2</cellname6>
-		<cellnumber6>c27</cellnumber6>
-		<cellname7>Geburtsdatum P2</cellname7>
-		<cellnumber7>c30</cellnumber7>
-	</searchtable>
-	
-	<maintable>
-		<folder>table13</folder>
-		<name>taxDeclarationMainForm</name>
-		<primarykeyname>vnP1</primarykeyname>
-		<primarykeycell>c11</primarykeycell>
+		<cellname2>Ledigname P1</cellname2>
+		<cellnumber2>c8</cellnumber2>
+		<cellname3>Vorname P1</cellname3>
+		<cellnumber3>c7</cellnumber3>
+		<cellname4>Geburtsdatum P1</cellname4>
+		<cellnumber4>c10</cellnumber4>
+		<cellname5>Strasse P1</cellname5>
+		<cellnumber5>c15</cellnumber5>
+		<cellname6>Hausnummer P1</cellname6>
+		<cellnumber6>c16</cellnumber6>
+		<cellname7>Ort P1</cellname7>
+		<cellnumber7>c18</cellnumber7>
+		<cellname8>Name P2</cellname8>
+		<cellnumber8>c26</cellnumber8>
+		<cellname9>Ledigname P2</cellname9>
+		<cellnumber9>c28</cellnumber9>
+		<cellname10>Vorname P2</cellname10>
+		<cellnumber10>c27</cellnumber10>
+		<cellname11>Geburtsdatum P2</cellname11>
+		<cellnumber11>c30</cellnumber11>
 	</maintable>
 	<subtables>
 		<subtable>
 			<name>businessLiabilitiesListing</name>
 			<folder>table0</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>businessQualifiedInvestment</name>
 			<folder>table1</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>childData</name>
 			<folder>table2</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>disabledPersonSupport</name>
 			<folder>table3</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>movablePropertyLifeInsurance</name>
 			<folder>table4</folder>
- 			<foreignkeyname>vnP1</foreignkeyname>
-			<foreignkeycell>c1</foreignkeycell>
+ 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>movablePropertyVehicle</name>
 			<folder>table5</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>paidOut</name>
 			<folder>table6</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>payment</name>
 			<folder>table7</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>paymentReceived</name>
 			<folder>table8</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>privateLiabilitiesListing</name>
 			<folder>table9</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>privateQualifiedInvestments</name>
 			<folder>table10</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>propertyHouseOrFlat</name>
 			<folder>table11</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 		<subtable>
 			<name>securityEntry</name>
 			<folder>table12</folder>
-			<foreignkeyname>vnP1</foreignkeyname>
 			<foreignkeycell>c1</foreignkeycell>
 		</subtable>
 	</subtables>

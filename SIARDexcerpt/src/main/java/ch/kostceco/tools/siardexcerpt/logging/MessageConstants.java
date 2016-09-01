@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire Rï¿½thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -15,9 +15,9 @@
 
 package ch.kostceco.tools.siardexcerpt.logging;
 
-/** Interface für den Zugriff auf Resourcen aus dem ResourceBundle.
+/** Interface fï¿½r den Zugriff auf Resourcen aus dem ResourceBundle.
  * 
- * @author Rc Claire Röthlisberger, KOST-CECO */
+ * @author Rc Claire Rï¿½thlisberger, KOST-CECO */
 public interface MessageConstants
 {
 
@@ -41,6 +41,7 @@ public interface MessageConstants
 	String	MESSAGE_XML_TEXT									= "message.xml.text";
 	String	MESSAGE_XML_INFO									= "message.xml.info";
 	String	MESSAGE_XML_LOGEND								= "message.xml.logend";
+	String	MESSAGE_XML_TITLE									= "message.xml.title";
 
 	String	MESSAGE_XML_MODUL_A								= "message.xml.modul.a";
 	String	MESSAGE_XML_MODUL_B								= "message.xml.modul.b";
@@ -55,15 +56,28 @@ public interface MessageConstants
 	String	MESSAGE_XML_ELEMENT_CONTENT				= "message.xml.element.content";
 	String	MESSAGE_XML_ELEMENT_CLOSE					= "message.xml.element.close";
 
+	// ************* AutoXSL *************************************************************************
+	String	AUTO_XSL_TABLE_START							= "auto.xsl.table.start";
+	String	AUTO_XSL_COLUMN										= "auto.xsl.column";
+	String	AUTO_XSL_TABLE_END								= "auto.xsl.table.end";
+	String	AUTO_XSL_FOOTER										= "auto.xsl.footer";
+
 	// *************Meldungen*************************************************************************
 	// Modul a Meldungen
 	String	ERROR_XML_A_CANNOTEXTRACTZIP			= "error.xml.a.cannotextractzip";
+	String	MESSAGE_A_INIT_OK									= "message.a.init.ok";
+	String	MESSAGE_A_INIT_NOK								= "message.a.init.nok";
+	String	MESSAGE_A_INIT_NOK_CONFIG					= "message.a.init.nok.config";
 
 	// Modul b Meldungen
 	String	ERROR_XML_B_STRUCTURE							= "error.xml.b.structure";
 	String	ERROR_XML_B_CANNOTSEARCHRECORD		= "error.xml.b.cannotsearchrecord";
+	String	MESSAGE_B_SEARCH_OK								= "message.b.search.ok";
+	String	MESSAGE_B_SEARCH_NOK							= "message.b.search.nok";
 
 	// Modul c Meldungen
 	String	ERROR_XML_C_MISSINGFILE						= "error.xml.c.missingfile";
 	String	ERROR_XML_C_CANNOTEXTRACTRECORD		= "error.xml.c.cannotextractrecord";
+	String	MESSAGE_C_EXCERPT_OK							= "message.c.excerpt.ok";
+	String	MESSAGE_C_EXCERPT_NOK							= "message.c.excerpt.nok";
 }

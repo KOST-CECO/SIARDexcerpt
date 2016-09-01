@@ -50,8 +50,6 @@ public class ExcerptAZipModuleImpl extends ValidationModuleImpl implements Excer
 	public boolean validate( File siardDatei, File siardDateiNew, String noString )
 			throws ExcerptAZipException
 	{
-		// Ausgabe -> Ersichtlich das SIARDexcerpt arbeitet
-		int onWork = 41;
 
 		boolean result = true;
 
@@ -110,29 +108,7 @@ public class ExcerptAZipModuleImpl extends ValidationModuleImpl implements Excer
 					}
 					eis.close();
 				}
-
-				if ( onWork == 41 ) {
-					onWork = 2;
-					System.out.print( "-   " );
-					System.out.print( "\r" );
-				} else if ( onWork == 11 ) {
-					onWork = 12;
-					System.out.print( "\\   " );
-					System.out.print( "\r" );
-				} else if ( onWork == 21 ) {
-					onWork = 22;
-					System.out.print( "|   " );
-					System.out.print( "\r" );
-				} else if ( onWork == 31 ) {
-					onWork = 32;
-					System.out.print( "/   " );
-					System.out.print( "\r" );
-				} else {
-					onWork = onWork + 1;
-				}
 			}
-			System.out.print( "   " );
-			System.out.print( "\r" );
 
 			zipfile.close();
 		} catch ( Exception e ) {

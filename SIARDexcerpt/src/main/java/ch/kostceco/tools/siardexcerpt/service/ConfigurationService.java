@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire RÃ¶thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -15,9 +15,9 @@
 
 package ch.kostceco.tools.siardexcerpt.service;
 
-/** Service Interface für die Konfigurationsdatei.
+/** Service Interface fÃ¼r die Konfigurationsdatei.
  * 
- * @author Rc Claire Röthlisberger, KOST-CECO */
+ * @author Rc Claire RÃ¶thlisberger, KOST-CECO */
 public interface ConfigurationService extends Service
 {
 	// ------------------------ Allgemeines ------------------------
@@ -31,137 +31,171 @@ public interface ConfigurationService extends Service
 	 * @return Pfad des XSL-File zum Suchergebnis */
 	String getPathToXSLsearch();
 
-	/** Gibt den Pfad des Arbeitsverzeichnisses zurück. Dieses Verzeichnis wird z.B. zum Entpacken des
+	/** Gibt den Pfad des Arbeitsverzeichnisses zurÃ¼ck. Dieses Verzeichnis wird z.B. zum Entpacken des
 	 * .zip-Files verwendet.
 	 * 
 	 * @return Pfad des Arbeitsverzeichnisses */
 	String getPathToWorkDir();
 
-	/** Gibt den Pfad des Outputverzeichnisses zurück.
+	/** Gibt den Pfad des Outputverzeichnisses zurÃ¼ck.
 	 * 
 	 * @return Pfad des Outputverzeichnisses */
 	String getPathToOutput();
 
-	/** Gibt den Namen des Archivs zurück.
+	/** Gibt den Namen des Archivs zurÃ¼ck.
 	 * 
 	 * @return Namen des Archivs */
 	String getArchive();
 
-	// ------------------------ Suche ------------------------
-	/** Gibt den Titel der Suche zurück.
-	 * 
-	 * @return Titel der Suche */
-	String getSearchtableTitle();
-
-	/** Gibt den Ordner der Suchtabelle zurück.
-	 * 
-	 * @return Ordner der Suchtabelle */
-	String getSearchtableFolder();
-
-	/** Gibt den Namen der Suchtabelle zurück.
-	 * 
-	 * @return Name der Suchtabelle */
-	String getSearchtableName();
-
-	/** Gibt den Namen der Suchzelle Nr0 respektive Schlüssel zurück.
-	 * 
-	 * @return Name der Suchzelle Nr0 */
-	String getcellNamekey();
-
-	/** Gibt den Nummer der Suchzelle Nr0 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr0 */
-	String getcellNumberkey();
-
-	/** Gibt den Namen der Suchzelle Nr1 zurück.
-	 * 
-	 * @return Name der Suchzelle Nr1 */
-	String getcellName1();
-
-	/** Gibt den Nummer der Suchzelle Nr1 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr1 */
-	String getcellNumber1();
-
-	/** Gibt den Namen der Suchzelle Nr2 zurück.
-	 * 
-	 * @return Name der Suchzelle Nr2 */
-	String getcellName2();
-
-	/** Gibt den Nummer der Suchzelle Nr2 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr2 */
-	String getcellNumber2();
-
-	/** Gibt den Namen der Suchzelle Nr3 zurück.
-	 * 
-	 * @return Name der Suchzelle Nr3 */
-	String getcellName3();
-
-	/** Gibt den Nummer der Suchzelle Nr3 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr3 */
-	String getcellNumber3();
-
-	/** Gibt den Namen der Suchzelle Nr4 zurück.
-	 * 
-	 * @return Name der Suchzelle Nr4 */
-	String getcellName4();
-
-	/** Gibt den Nummer der Suchzelle Nr4 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr4 */
-	String getcellNumber4();
-
-	/** Gibt den Namen der Suchzelle Nr5 zurück.
-	 * 
-	 * @return Name der Suchzelle Nr5 */
-	String getcellName5();
-
-	/** Gibt den Nummer der Suchzelle Nr5 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr5 */
-	String getcellNumber5();
-
-	/** Gibt den Namen der Suchzelle Nr6 zurück.
-	 * 
-	 * @return Name der Suchzelle Nr6 */
-	String getcellName6();
-
-	/** Gibt den Nummer der Suchzelle Nr6 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr6 */
-	String getcellNumber6();
-
-	/** Gibt den Namen der Suchzelle Nr7 zurück.
-	 * 
-	 * @return Name der Suchzelle Nr7 */
-	String getcellName7();
-
-	/** Gibt den Nummer der Suchzelle Nr7 zurück.
-	 * 
-	 * @return Nummer der Suchzelle Nr7 */
-	String getcellNumber7();
-
 	// ------------------------ Extraktion ------------------------
-	/** Gibt den Ordner der Haupttabelle zurück.
+	/** Gibt den Ordner der Haupttabelle zurÃ¼ck.
 	 * 
 	 * @return Ordner der Haupttabelle */
 	String getMaintableFolder();
 
-	/** Gibt den Namen der Haupttabelle zurück.
+	/** Gibt den Namen der Haupttabelle zurÃ¼ck.
 	 * 
 	 * @return Name der Haupttabelle */
 	String getMaintableName();
 
-	/** Gibt den Namen des Primärschlüssel der Haupttabelle zurück.
+	/** Gibt den Titel der Suche zurÃ¼ck.
 	 * 
-	 * @return Namen des Primärschlüssel der Haupttabelle */
+	 * @return Titel der Suche */
+	String getSearchtableTitle();
+
+	/** Gibt den Namen des PrimÃ¤rschlÃ¼ssel der Haupttabelle zurÃ¼ck.
+	 * 
+	 * @return Namen des PrimÃ¤rschlÃ¼ssel der Haupttabelle */
 	String getMaintablePrimarykeyName();
 
-	/** Gibt die Zelle des Primärschlüssel der Haupttabelle zurück.
+	/** Gibt die Zelle des PrimÃ¤rschlÃ¼ssel der Haupttabelle zurÃ¼ck.
 	 * 
-	 * @return Zelle des Primärschlüssel der Haupttabelle */
+	 * @return Zelle des PrimÃ¤rschlÃ¼ssel der Haupttabelle */
 	String getMaintablePrimarykeyCell();
+
+	/** Gibt den Namen der Suchzelle Nr1 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr1 */
+	String getcellName1();
+
+	/** Gibt den Nummer der Suchzelle Nr1 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr1 */
+	String getcellNumber1();
+
+	/** Gibt den Namen der Suchzelle Nr2 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr2 */
+	String getcellName2();
+
+	/** Gibt den Nummer der Suchzelle Nr2 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr2 */
+	String getcellNumber2();
+
+	/** Gibt den Namen der Suchzelle Nr3 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr3 */
+	String getcellName3();
+
+	/** Gibt den Nummer der Suchzelle Nr3 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr3 */
+	String getcellNumber3();
+
+	/** Gibt den Namen der Suchzelle Nr4 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr4 */
+	String getcellName4();
+
+	/** Gibt den Nummer der Suchzelle Nr4 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr4 */
+	String getcellNumber4();
+
+	/** Gibt den Namen der Suchzelle Nr5 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr5 */
+	String getcellName5();
+
+	/** Gibt den Nummer der Suchzelle Nr5 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr5 */
+	String getcellNumber5();
+
+	/** Gibt den Namen der Suchzelle Nr6 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr6 */
+	String getcellName6();
+
+	/** Gibt den Nummer der Suchzelle Nr6 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr6 */
+	String getcellNumber6();
+
+	/** Gibt den Namen der Suchzelle Nr7 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr7 */
+	String getcellName7();
+
+	/** Gibt den Nummer der Suchzelle Nr7 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr7 */
+	String getcellNumber7();
+
+	/** Gibt den Namen der Suchzelle Nr8 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr8 */
+	String getcellName8();
+
+	/** Gibt den Nummer der Suchzelle Nr8 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr8 */
+	String getcellNumber8();
+
+	/** Gibt den Namen der Suchzelle Nr9 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr9 */
+	String getcellName9();
+
+	/** Gibt den Nummer der Suchzelle Nr9 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr9 */
+	String getcellNumber9();
+
+	/** Gibt den Namen der Suchzelle Nr10 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr10 */
+	String getcellName10();
+
+	/** Gibt den Nummer der Suchzelle Nr10 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr10 */
+	String getcellNumber10();
+
+	/** Gibt den Namen der Suchzelle Nr11 zurÃ¼ck.
+	 * 
+	 * @return Name der Suchzelle Nr11 */
+	String getcellName11();
+
+	/** Gibt den Nummer der Suchzelle Nr11 zurÃ¼ck.
+	 * 
+	 * @return Nummer der Suchzelle Nr11 */
+	String getcellNumber11();
+
+	/** Gibt den Ordner der Subtabelle zurÃ¼ck.
+	 * 
+	 * @return Ordner der Subtabelle */
+	String getSubtableFolder();
+
+	/** Gibt den Namen der Subtabelle zurÃ¼ck.
+	 * 
+	 * @return Name der Subtabelle */
+	String getSubtableName();
+
+	/** Gibt die Zelle des FremdschlÃ¼ssel der Subtabelle zurÃ¼ck.
+	 * 
+	 * @return Zelle des FremdschlÃ¼ssel der Subtabelle */
+	String getSubtableForeignkeyCell();
 
 }

@@ -36,19 +36,23 @@
 			<span class="logol">.</span>
 		</p>
 		<br />
-		<h1><xsl:value-of select="table/configuration/searchtable/title"/> 
+		<h1><xsl:value-of select="table/configuration/maintable/title"/> 
 		</h1>
 		<div>
 			<table width="100%">
 				<tr class="caption">
-					<td class="captionb"><xsl:value-of select="table/configuration/searchtable/cellnamekey"/></td>
-					<td><xsl:value-of select="table/configuration/searchtable/cellname1"/></td>
-					<td><xsl:value-of select="table/configuration/searchtable/cellname2"/></td>
-					<td><xsl:value-of select="table/configuration/searchtable/cellname3"/></td>
-					<td><xsl:value-of select="table/configuration/searchtable/cellname4"/></td>
-					<td><xsl:value-of select="table/configuration/searchtable/cellname5"/></td>
-					<td><xsl:value-of select="table/configuration/searchtable/cellname6"/></td>
-					<td><xsl:value-of select="table/configuration/searchtable/cellname7"/></td>
+					<td class="captionb"><xsl:value-of select="table/configuration/maintable/primarykeyname"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname1"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname2"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname3"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname4"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname5"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname6"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname7"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname8"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname9"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname10"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/cellname11"/></td>
 				</tr>
 				<xsl:for-each select="table/siardexcerptsearch/row">
 					<tr>
@@ -60,6 +64,10 @@
 						<td><xsl:value-of select="col5" /></td>
 						<td><xsl:value-of select="col6" /></td>
 						<td><xsl:value-of select="col7" /></td>
+						<td><xsl:value-of select="col8"/></td>
+						<td><xsl:value-of select="col9" /></td>
+						<td><xsl:value-of select="col10" /></td>
+						<td><xsl:value-of select="col11" /></td>
 					</tr>
 				</xsl:for-each>
 			</table>

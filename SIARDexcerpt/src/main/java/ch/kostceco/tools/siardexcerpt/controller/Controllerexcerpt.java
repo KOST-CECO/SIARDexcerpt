@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire RÃ¶thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -18,16 +18,18 @@ package ch.kostceco.tools.siardexcerpt.controller;
 import java.io.File;
 
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAZipException;
+import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAConfigException;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptBSearchException;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptCGrepException;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptAZipModule;
+import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptAConfigModule;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptBSearchModule;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptCGrepModule;
 import ch.kostceco.tools.siardexcerpt.logging.Logger;
 import ch.kostceco.tools.siardexcerpt.logging.MessageConstants;
 import ch.kostceco.tools.siardexcerpt.service.TextResourceService;
 
-/** Der Controller ruft die benötigten Module zur Extraktion in der benötigten Reihenfolge auf.
+/** Der Controller ruft die benÃ¶tigten Module zur Extraktion in der benÃ¶tigten Reihenfolge auf.
  * 
  * Die Validierungs-Module werden mittels Spring-Dependency-Injection eingebunden. */
 
@@ -37,6 +39,7 @@ public class Controllerexcerpt implements MessageConstants
 	private static final Logger		LOGGER	= new Logger( Controllerexcerpt.class );
 
 	private ExcerptAZipModule			excerptAZipModule;
+	private ExcerptAConfigModule	excerptAConfigModule;
 
 	private ExcerptBSearchModule	excerptBSearchModule;
 
@@ -52,6 +55,16 @@ public class Controllerexcerpt implements MessageConstants
 	public void setExcerptAZipModule( ExcerptAZipModule excerptAZipModule )
 	{
 		this.excerptAZipModule = excerptAZipModule;
+	}
+
+	public ExcerptAConfigModule getExcerptAConfigModule()
+	{
+		return excerptAConfigModule;
+	}
+
+	public void setExcerptAConfigModule( ExcerptAConfigModule excerptAConfigModule )
+	{
+		this.excerptAConfigModule = excerptAConfigModule;
 	}
 
 	public ExcerptBSearchModule getExcerptBSearchModule()
@@ -101,6 +114,34 @@ public class Controllerexcerpt implements MessageConstants
 			LOGGER.logError( getTextResourceService().getText( MESSAGE_XML_MODUL_A )
 					+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
 			this.getExcerptAZipModule().getMessageService().print();
+			return false;
+		} catch ( Exception e ) {
+			LOGGER.logError( getTextResourceService().getText( MESSAGE_XML_MODUL_A )
+					+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+			return false;
+		}
+
+		return valid;
+
+	}
+
+	public boolean executeAConfig( File siardDatei, File configFileHard, String noString )
+	{
+		boolean valid = true;
+
+		// Excerpt Step A Config (Config Datei ausfÃ¼llen)
+
+		try {
+			if ( this.getExcerptAConfigModule().validate( siardDatei, configFileHard, noString ) ) {
+				this.getExcerptAConfigModule().getMessageService().print();
+			} else {
+				this.getExcerptAConfigModule().getMessageService().print();
+				valid = false;
+			}
+		} catch ( ExcerptAConfigException e ) {
+			LOGGER.logError( getTextResourceService().getText( MESSAGE_XML_MODUL_A )
+					+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+			this.getExcerptAConfigModule().getMessageService().print();
 			return false;
 		} catch ( Exception e ) {
 			LOGGER.logError( getTextResourceService().getText( MESSAGE_XML_MODUL_A )

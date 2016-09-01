@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.0.4 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.0.5 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016 Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 // import java.io.OutputStreamWriter;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -97,7 +98,8 @@ public class SIARDexcerpt implements MessageConstants
 
 		/** SIARDexcerpt: Aufbau des Tools
 		 * 
-		 * 1) init: Config Kopieren und ggf SIARD-Datei ins Workverzeichnis entpacken
+		 * 1) init: Config Kopieren und ggf SIARD-Datei ins Workverzeichnis entpacken, config bei Bedarf
+		 * ausfüllen
 		 * 
 		 * 2) search: gemäss config die Tabelle mit Suchtext befragen und Ausgabe des Resultates
 		 * 
@@ -132,6 +134,7 @@ public class SIARDexcerpt implements MessageConstants
 		File tmpDir = new File( "temp_SIARDexcerpt" );
 
 		boolean okA = false;
+		boolean okAConfig = false;
 		boolean okB = false;
 		boolean okC = false;
 
@@ -141,6 +144,8 @@ public class SIARDexcerpt implements MessageConstants
 			System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_WRONG_JRE ) );
 			System.exit( 1 );
 		}
+
+		System.out.println( "" );
 
 		if ( module.equalsIgnoreCase( "--init" ) ) {
 
@@ -155,6 +160,8 @@ public class SIARDexcerpt implements MessageConstants
 			 * d) SIARD-Datei entpacken
 			 * 
 			 * e) Struktur-Check SIARD-Verzeichnis
+			 * 
+			 * f) TODO: Config bei Bedarf (..) gemäss metadata.xml ausfüllen
 			 * 
 			 * TODO: Erledigt */
 
@@ -176,6 +183,10 @@ public class SIARDexcerpt implements MessageConstants
 
 			/** b) Excerptverzeichnis mit schreibrechte und ggf anlegen */
 			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
+			if ( pathToOutput.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( pathToOutput );
+				System.exit( 1 );
+			}
 
 			directoryOfOutput = new File( pathToOutput );
 
@@ -206,6 +217,10 @@ public class SIARDexcerpt implements MessageConstants
 
 			/** c) Workverzeichnis muss leer sein und mit schreibrechte */
 			String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
+			if ( pathToWorkDir.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( pathToWorkDir );
+				System.exit( 1 );
+			}
 
 			tmpDir = new File( pathToWorkDir );
 
@@ -268,8 +283,9 @@ public class SIARDexcerpt implements MessageConstants
 
 				if ( !okA ) {
 					// SIARD Datei konte nicht entpackt werden
-					System.out.println( MESSAGE_XML_MODUL_A );
-					System.out.println( ERROR_XML_A_CANNOTEXTRACTZIP );
+					System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_MODUL_A ) );
+					System.out.println( siardexcerpt.getTextResourceService().getText(
+							ERROR_XML_A_CANNOTEXTRACTZIP ) );
 
 					// Löschen des Arbeitsverzeichnisses und configFileHard, falls eines angelegt wurde
 					if ( tmpDir.exists() ) {
@@ -279,6 +295,7 @@ public class SIARDexcerpt implements MessageConstants
 						Util.deleteDir( configFileHard );
 					}
 					// Fehler Extraktion --> invalide
+					System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_A_INIT_NOK ) );
 					System.exit( 2 );
 				} else {
 					@SuppressWarnings("unused")
@@ -294,14 +311,17 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			/** e) Struktur-Check SIARD-Verzeichnis */
-			File content = new File( siardDatei.getAbsolutePath() + File.separator + "content" );
+			/* File content = new File( siardDatei.getAbsolutePath() + File.separator + "content" );
+			 * 
+			 * Content darf nicht existieren. Dann handelt es sich um eine Reine Strukturablieferung
+			 */
 			File header = new File( siardDatei.getAbsolutePath() + File.separator + "header" );
 			File xsd = new File( siardDatei.getAbsolutePath() + File.separator + "header"
 					+ File.separator + "metadata.xsd" );
 			File metadata = new File( siardDatei.getAbsolutePath() + File.separator + "header"
 					+ File.separator + "metadata.xml" );
 
-			if ( !content.exists() || !header.exists() || !xsd.exists() || !metadata.exists() ) {
+			if ( !header.exists() || !xsd.exists() || !metadata.exists() ) {
 				System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_XML_B_STRUCTURE ) );
 				// Löschen des Arbeitsverzeichnisses und configFileHard, falls eines angelegt wurde
 				if ( tmpDir.exists() ) {
@@ -311,10 +331,34 @@ public class SIARDexcerpt implements MessageConstants
 					Util.deleteDir( configFileHard );
 				}
 				// Fehler Extraktion --> invalide
+				System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_A_INIT_NOK ) );
 				System.exit( 2 );
 			} else {
-				// Struktur sieht plausibel aus, extraktion kann starten
+				// Struktur sieht plausibel aus
 			}
+
+			if ( Util.stringInFile( "(..)", configFileHard ) ) {
+				Controllerexcerpt controllerexcerptConfig = (Controllerexcerpt) context
+						.getBean( "controllerexcerpt" );
+				okAConfig = controllerexcerptConfig.executeAConfig( siardDatei, configFileHard, "" );
+
+				if ( !okAConfig ) {
+					// Löschen des Arbeitsverzeichnisses und configFileHard, falls eines angelegt wurde
+					if ( tmpDir.exists() ) {
+						Util.deleteDir( tmpDir );
+					}
+					if ( configFileHard.exists() ) {
+						Util.deleteDir( configFileHard );
+					}
+					// Fehler beim Ausfüllen der Config --> invalide
+					System.out.println( siardexcerpt.getTextResourceService().getText(
+							MESSAGE_A_INIT_NOK_CONFIG ) );
+					System.exit( 2 );
+				}
+			}
+			// Initialisierung konnte durchgeführt werden
+			System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_A_INIT_OK ) );
+			System.exit( 0 );
 
 		} // End init
 
@@ -329,6 +373,14 @@ public class SIARDexcerpt implements MessageConstants
 			 * c) search.xml vorbereiten (Header) und xsl in Output kopieren
 			 * 
 			 * d) grep ausführen
+			 * 
+			 * d1) grep
+			 * 
+			 * d2) TODO: die 12 searchCells definieren: auslesen der Vorgaben oder automatisch erstellen
+			 * (1. pk dann [TODO: trefferspalten dann bB anhand column.name (name, id, ort, town) dann bB]
+			 * auffüllen mit den ersten Spalten bis 12 existieren).
+			 * 
+			 * d3) grep auf die 12 searchCells kürzen
 			 * 
 			 * e) Suchergebnis speichern und anzeigen (via GUI)
 			 * 
@@ -384,6 +436,10 @@ public class SIARDexcerpt implements MessageConstants
 
 			// Informationen zum Archiv holen
 			String archiveS = siardexcerpt.getConfigurationService().getArchive();
+			if ( archiveS.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( archiveS );
+				System.exit( 1 );
+			}
 
 			// Konfiguration des Outputs, ein File Logger wird zusätzlich erstellt
 			LogConfigurator logConfiguratorS = (LogConfigurator) context.getBean( "logconfigurator" );
@@ -394,6 +450,10 @@ public class SIARDexcerpt implements MessageConstants
 
 			// Informationen zum XSL holen
 			String pathToXSLS = siardexcerpt.getConfigurationService().getPathToXSLsearch();
+			if ( pathToXSLS.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( pathToXSLS );
+				System.exit( 1 );
+			}
 
 			File xslOrigS = new File( pathToXSLS );
 			File xslCopyS = new File( directoryOfOutput.getAbsolutePath() + File.separator
@@ -423,9 +483,8 @@ public class SIARDexcerpt implements MessageConstants
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText(
 						ERROR_XML_B_CANNOTSEARCHRECORD ) );
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
-				System.out.println( MESSAGE_XML_MODUL_B );
-				System.out.println( ERROR_XML_B_CANNOTSEARCHRECORD );
-				System.out.println( "" );
+				System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_B_SEARCH_NOK,
+						outFileNameS ) );
 
 				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
 
@@ -443,7 +502,7 @@ public class SIARDexcerpt implements MessageConstants
 
 					factory.setExpandEntityReferences( false );
 
-					Document docConfig = factory.newDocumentBuilder().parse( configFile );
+					Document docConfig = factory.newDocumentBuilder().parse( configFileHard );
 					NodeList list = docConfig.getElementsByTagName( "configuration" );
 					Element element = (Element) list.item( 0 );
 
@@ -470,11 +529,14 @@ public class SIARDexcerpt implements MessageConstants
 					LOGGER.logError( "<Error>"
 							+ siardexcerpt.getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
 					System.out.println( "Exception: " + e.getMessage() );
+					System.exit( 2 );
 				}
 
 				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
 
 				// Record konnte extrahiert werden
+				System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_B_SEARCH_OK,
+						outFileNameS ) );
 				System.exit( 0 );
 			}
 
@@ -528,10 +590,26 @@ public class SIARDexcerpt implements MessageConstants
 			String ausgabeStart = sdfStart.format( nowStart );
 
 			String excerptString = new String( args[3] );
-			String outDateiName = siardDatei.getName() + "_" + excerptString + "_SIARDexcerpt.xml";
+
+			/* Der excerptString kann zeichen enthalten, welche nicht im Dateinamen vorkommen dürfen.
+			 * Entsprechend werden diese normalisiert */
+			String excerptStringFilename = excerptString.replaceAll( "/", "_" );
+			excerptStringFilename = excerptStringFilename.replaceAll( ">", "_" );
+			excerptStringFilename = excerptStringFilename.replaceAll( "<", "_" );
+			excerptStringFilename = excerptStringFilename.replace( ".*", "_" );
+			excerptStringFilename = excerptStringFilename.replaceAll( "___", "_" );
+			excerptStringFilename = excerptStringFilename.replaceAll( "__", "_" );
+
+			String outDateiName = siardDatei.getName() + "_" + excerptStringFilename
+					+ "_SIARDexcerpt.xml";
+			outDateiName = outDateiName.replaceAll( "__", "_" );
 
 			// Informationen zum Archiv holen
 			String archive = siardexcerpt.getConfigurationService().getArchive();
+			if ( archive.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( archive );
+				System.exit( 1 );
+			}
 
 			// Konfiguration des Outputs, ein File Logger wird zusätzlich erstellt
 			LogConfigurator logConfigurator = (LogConfigurator) context.getBean( "logconfigurator" );
@@ -543,21 +621,99 @@ public class SIARDexcerpt implements MessageConstants
 			 * File( outFileName + "_new.xml" ) ), "UTF-8" ) ); try { */
 			// Informationen zum XSL holen
 			String pathToXSL = siardexcerpt.getConfigurationService().getPathToXSL();
+			if ( pathToXSL.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( pathToXSL );
+				System.exit( 1 );
+			}
 
 			File xslOrig = new File( pathToXSL );
 			File xmlExtracted = new File( siardDatei.getAbsolutePath() + File.separator + "header"
 					+ File.separator + "metadata.xml" );
-			if ( !xslOrig.exists() ) {
-				System.out.println( siardexcerpt.getTextResourceService().getText(
-						ERROR_CONFIGFILE_FILENOTEXISTING, pathToXSL ) );
-				System.exit( 1 );
-			}
-			File xslCopy = new File( directoryOfOutput.getAbsolutePath() + File.separator
-					+ xslOrig.getName() );
-			if ( !xslCopy.exists() ) {
-				Util.copyFile( xslOrig, xslCopy );
-			}
+			File xslCopy;
+			if ( !xslOrig.exists() || pathToXSL.equals( "(.. )" ) ) {
+				// XSL AutoGenerating mit resources/SIARDexcerptAutoXSL.txt
+				File xsltxt = new File( "resources" + File.separator + "SIARDexcerptAutoXSL.txt" );
+				if ( !xsltxt.exists() ) {
+					System.out.println( siardexcerpt.getTextResourceService().getText(
+							ERROR_CONFIGFILE_FILENOTEXISTING, xsltxt.getAbsolutePath() ) );
+					System.exit( 1 );
+				}
+				xslCopy = new File( directoryOfOutput.getAbsolutePath() + File.separator
+						+ "SIARDexcerptAutoXSL_" + siardDatei.getName() + ".xsl" );
+				if ( !xslCopy.exists() ) {
+					Util.copyFile( xsltxt, xslCopy );
 
+					/* xslCopy mit den Werten befüllen
+					 * 
+					 * AUTO_XSL_TABLE_START -> Für jede Tabelle anlegen {0} ist die Zahl z.B. 1 für table1
+					 * AUTO_XSL_COLUMN -> Für jede Zeile anlegen {0} ist die columnNr z.B. 3 fur c3
+					 * AUTO_XSL_TABLE_END -> am Ende der Tabelle Anlegen. Dann wiederholen der ersten drei
+					 * Schritte oder AUTO_XSL_FOOTER zum Abschluss anlegen */
+
+					// aus xmlExtracted die Tabelle herauslesen
+
+					try {
+
+						DocumentBuilderFactory dbfConfig = DocumentBuilderFactory.newInstance();
+						DocumentBuilder dbConfig = dbfConfig.newDocumentBuilder();
+						Document docConfig = dbConfig.parse( new FileInputStream( xmlExtracted ), "UTF8" );
+						docConfig.getDocumentElement().normalize();
+						dbfConfig.setFeature( "http://xml.org/sax/features/namespaces", false );
+
+						/* columns.column werden mit number erweitert, damit die Zuordnung nicht jedesmal via
+						 * Zähler erfolgen muss */
+						NodeList nlColumns = docConfig.getElementsByTagName( "columns" );
+						String provEndXSL = "</body></html></xsl:template></xsl:stylesheet>";
+						for ( int x = 0; x < nlColumns.getLength(); x++ ) {
+							int counterColumn = 0;
+							String tableFolder = "";
+							Node nodeColumns = nlColumns.item( x );
+							NodeList nlColumn = nodeColumns.getChildNodes();
+							counterColumn = ((nlColumn.getLength() + 1) / 2);
+							// counterColumn = Anzahl Column plus 1
+							Node nTable = nodeColumns.getParentNode();
+							// table
+							NodeList nlTable = nTable.getChildNodes();
+							for ( int y = 0; y < nlTable.getLength(); y++ ) {
+								Node subNode = nlTable.item( y );
+								if ( subNode.getNodeName().equals( "folder" ) ) {
+									tableFolder = subNode.getTextContent();
+									// System.out.println( tableFolder + ": " + (counterColumn-1) + " Spalten." );
+									Util.oldnewstring(
+											provEndXSL,
+											siardexcerpt.getTextResourceService().getText( AUTO_XSL_TABLE_START,
+													tableFolder ), xslCopy );
+									for ( int z = 1; z < counterColumn; z++ ) {
+										Util.oldnewstring(
+												provEndXSL,
+												siardexcerpt.getTextResourceService().getText( AUTO_XSL_COLUMN,
+														z ), xslCopy );
+									}
+									Util.oldnewstring( provEndXSL,
+											siardexcerpt.getTextResourceService().getText( AUTO_XSL_TABLE_END ), xslCopy );
+								}
+							}
+						}
+						Util.oldnewstring( provEndXSL,
+								siardexcerpt.getTextResourceService().getText( AUTO_XSL_FOOTER ), xslCopy );
+					} catch ( Exception e ) {
+						LOGGER
+								.logError( "<Error>"
+										+ siardexcerpt.getTextResourceService().getText( ERROR_XML_UNKNOWN,
+												e.getMessage() ) );
+						LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
+						System.out.println( "Exception: " + e.getMessage() );
+						System.exit( 2 );
+					}
+				}
+			} else {
+				// Original Xsl in output kopieren
+				xslCopy = new File( directoryOfOutput.getAbsolutePath() + File.separator
+						+ xslOrig.getName() );
+				if ( !xslCopy.exists() ) {
+					Util.copyFile( xslOrig, xslCopy );
+				}
+			}
 			// Information aus metadata holen
 			String dbname = "";
 			String dataOriginTimespan = "";
@@ -591,17 +747,22 @@ public class SIARDexcerpt implements MessageConstants
 					Node subNode = childNodes.item( x );
 					if ( subNode.getNodeName().equals( "description" ) ) {
 						dbdescription = new String( subNode.getTextContent() );
-						System.out.println( dbdescription );
 					}
 				}
 
 				String primarykeyname = siardexcerpt.getConfigurationService().getMaintablePrimarykeyName();
+				if ( primarykeyname.startsWith( "Configuration-Error:" ) ) {
+					System.out.println( primarykeyname );
+					System.exit( 1 );
+				}
 				keyexcerpt = primarykeyname + " = " + excerptString;
 
 			} catch ( Exception e ) {
 				LOGGER.logError( "<Error>"
 						+ siardexcerpt.getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
 				System.out.println( "Exception: " + e.getMessage() );
+				System.exit( 2 );
 			}
 
 			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_HEADER,
@@ -633,9 +794,8 @@ public class SIARDexcerpt implements MessageConstants
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText(
 						ERROR_XML_C_CANNOTEXTRACTRECORD ) );
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
-				System.out.println( MESSAGE_XML_MODUL_C );
-				System.out.println( ERROR_XML_C_CANNOTEXTRACTRECORD );
-				System.out.println( "" );
+				System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_C_EXCERPT_NOK,
+						outFileName ) );
 
 				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
 
@@ -678,11 +838,12 @@ public class SIARDexcerpt implements MessageConstants
 				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
 
 				// Record konnte extrahiert werden
+				System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_C_EXCERPT_OK,
+						outFileName ) );
 				System.exit( 0 );
 
 			}
-			/*
-			 * } finally { out.flush(); out.close(); } */
+			/* } finally { out.flush(); out.close(); } */
 
 		} // End extract
 

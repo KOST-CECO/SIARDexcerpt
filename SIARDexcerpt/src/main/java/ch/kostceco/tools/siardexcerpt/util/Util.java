@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire RÃ¶thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -31,7 +31,7 @@ import java.util.Map;
 
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
-/** @author Rc Claire Röthlisberger, KOST-CECO */
+/** @author Rc Claire RÃ¶thlisberger, KOST-CECO */
 
 public class Util
 {
@@ -69,7 +69,7 @@ public class Util
 		}
 	}
 
-	/** Schaltet die Konsolen-Ausgabe in ein file um und beendet den Stream, damit dieser gelöscht
+	/** Schaltet die Konsolen-Ausgabe in ein file um und beendet den Stream, damit dieser gelÃ¶scht
 	 * werden kann. */
 	public static void switchOffConsoleToTxtClose( File file ) throws FileNotFoundException
 	{
@@ -96,11 +96,11 @@ public class Util
 		System.setOut( original );
 	}
 
-	/** Löscht ein Verzeichnis rekursiv.
+	/** LÃ¶scht ein Verzeichnis rekursiv.
 	 * 
 	 * @param dir
-	 *          das zu löschende Verzeichnis
-	 * @return true wenn alle Files und Verzeichnisse gelöscht werden konnten */
+	 *          das zu lÃ¶schende Verzeichnis
+	 * @return true wenn alle Files und Verzeichnisse gelÃ¶scht werden konnten */
 	public static boolean deleteDir( File dir )
 	{
 		if ( dir.isDirectory() ) {
@@ -195,11 +195,11 @@ public class Util
 
 		File[] files = quelle.listFiles();
 		File newFile = null;
-		// in diesem Objekt wird für jedes File der Zielpfad gespeichert.
+		// in diesem Objekt wird fÃ¼r jedes File der Zielpfad gespeichert.
 		// 1. Der alte Zielpfad
 		// 2. Das systemspezifische Pfadtrennungszeichen
 		// 3. Der Name des aktuellen Ordners/der aktuellen Datei
-		ziel.mkdirs(); // erstellt alle benötigten Ordner
+		ziel.mkdirs(); // erstellt alle benÃ¶tigten Ordner
 		if ( files != null ) {
 			for ( int i = 0; i < files.length; i++ ) {
 				newFile = new File( ziel.getAbsolutePath() + System.getProperty( "file.separator" )
@@ -232,9 +232,32 @@ public class Util
 		out.close();
 	}
 
-	/** Verändert ersetzt oldstring mit newstring in file
+	/** Kontrolliert ob String existiert in file
 	 * 
-	 * ! Solche Ersetzungen dürfen nicht in einer Schleife gemacht werden sondern erst am Schluss, da
+	 * Solche Sachen dÃ¼rfen nicht in einer Schleife gemacht werden, da diese sehr Zeitintensiv sind!
+	 * 
+	 * @return true wenn String im File vorhanden @throws IOException */
+	public static boolean stringInFile( String string, File file ) throws IOException
+	{
+		boolean stringInFile = false;
+		try {
+			BufferedReader reader = new BufferedReader( new FileReader( file ) );
+			String line = "";
+			while ( (line = reader.readLine()) != null ) {
+				if ( line.contains( string ) ) {
+					stringInFile = true;
+				}
+			}
+			reader.close();
+		} catch ( IOException ioe ) {
+			ioe.printStackTrace();
+		}
+		return stringInFile;
+	}
+
+	/** VerÃ¤ndert ersetzt oldstring mit newstring in file
+	 * 
+	 * ! Solche Ersetzungen dÃ¼rfen nicht in einer Schleife gemacht werden sondern erst am Schluss, da
 	 * diese sehr Zeitintensiv sind !!!
 	 * 
 	 * @throws IOException */
@@ -244,9 +267,12 @@ public class Util
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader( file ) );
 			String line = "", oldtext = "";
+			StringBuilder sb = new StringBuilder();
 			while ( (line = reader.readLine()) != null ) {
-				oldtext += line + "\r\n";
+				sb.append( line );
+				sb.append( "\r\n" );
 			}
+			oldtext = sb.toString();
 			reader.close();
 			String newtext = oldtext.replace( oldstring, newstring );
 			newtext = newtext.replace( (char) 0, (char) 32 );
@@ -258,9 +284,9 @@ public class Util
 		}
 	}
 
-	/** Verändert & mit &amp;
+	/** VerÃ¤ndert & mit &amp;
 	 * 
-	 * ! Solche Ersetzungen dürfen nicht in einer Schleife gemacht werden sondern erst am Schluss, da
+	 * ! Solche Ersetzungen dÃ¼rfen nicht in einer Schleife gemacht werden sondern erst am Schluss, da
 	 * diese sehr Zeitintensiv sind !!!
 	 * 
 	 * @throws IOException */
@@ -269,9 +295,12 @@ public class Util
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader( file ) );
 			String line = "", oldtext = "";
+			StringBuilder sb = new StringBuilder();
 			while ( (line = reader.readLine()) != null ) {
-				oldtext += line + "\r\n";
+				sb.append( line );
+				sb.append( "\r\n" );
 			}
+			oldtext = sb.toString();
 			reader.close();
 			String newtext = oldtext.replace( "&", "&amp;" );
 			newtext = newtext.replace( (char) 0, (char) 32 );

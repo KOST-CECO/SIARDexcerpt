@@ -40,8 +40,7 @@ import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.StreamGobbler;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
-/** Besteht eine korrekte primäre Verzeichnisstruktur: /header/metadata.xml sowie
- * /header/metadata.xsd und /content */
+/** 3) extract: mit den Keys anhand der config einen Records herausziehen und anzeigen */
 public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements ExcerptCGrepModule
 {
 
@@ -108,6 +107,16 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			// String name = getConfigurationService().getMaintableName();
 			String folder = getConfigurationService().getMaintableFolder();
 			String cell = getConfigurationService().getMaintablePrimarykeyCell();
+			if ( folder.startsWith( "Configuration-Error:" ) ) {
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + folder );
+				return false;
+			}
+			if ( cell.startsWith( "Configuration-Error:" ) ) {
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + cell );
+				return false;
+			}
 			String tabfolder = "";
 			String tabname = "";
 			String tabdescription = "";
@@ -119,10 +128,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					+ File.separator + "schema0" + File.separator + folder + File.separator + folder + ".xml" );
 
 			try {
+				/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
+				 * Entsprechend werden diese durch . ersetzt (Wildcard) */
+				String excerptStringM = excerptString.replaceAll( " ", "." );
+				excerptStringM = excerptStringM.replaceAll( "\\.", "\\.*" );
+				excerptStringM = "<" + cell + ">" + excerptStringM + "</" + cell + ">";
 				// grep "<c11>7561234567890</c11>" table13.xml >> output.txt
-				String command = "cmd /c \"" + pathToGrepExe + " \"<" + cell + ">" + excerptString + "</"
-						+ cell + ">\" " + fMaintable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath()
-						+ "\"";
+				String command = "cmd /c \"" + pathToGrepExe + " -E \"" + excerptStringM + "\" "
+						+ fMaintable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath() + "\"";
 				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 				 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
@@ -166,7 +179,11 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 							 * angehängt. Dieser soll nicht mit ausgegeben werden. */
 							String word = "\\u000A";
 							int endIndex = tabdescriptionProv.indexOf( word );
-							tabdescription = tabdescriptionProv.substring( 0, endIndex );
+							if ( endIndex == -1 ) {
+								tabdescription = tabdescriptionProv;
+							} else {
+								tabdescription = tabdescriptionProv.substring( 0, endIndex );
+							}
 						} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
 							NodeList childNodesColumns = subNodeI.getChildNodes();
 							for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
@@ -307,10 +324,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 						+ ".xml" );
 
 				try {
+					/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
+					 * Entsprechend werden diese durch . ersetzt (Wildcard) */
+					String excerptStringM = excerptString.replaceAll( " ", "." );
+					excerptStringM = excerptStringM.replaceAll( "\\.", "\\.*" );
+					excerptStringM = "<" + cell + ">" + excerptStringM + "</" + cell + ">";
 					// grep "<c11>7561234567890</c11>" table13.xml >> output.txt
-					String command = "cmd /c \"" + pathToGrepExe + " \"<" + cell + ">" + excerptString + "</"
-							+ cell + ">\" " + fSubtable.getAbsolutePath() + " >> "
-							+ tempOutFile.getAbsolutePath() + "\"";
+					String command = "cmd /c \"" + pathToGrepExe + " -E \"" + excerptStringM + "\" "
+							+ fSubtable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath() + "\"";
 					/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 					 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
@@ -362,7 +383,11 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 								 * angehängt. Dieser soll nicht mit ausgegeben werden. */
 								String word = "\\u000A";
 								int endIndex = tabdescriptionProv.indexOf( word );
-								tabdescription = tabdescriptionProv.substring( 0, endIndex );
+								if ( endIndex == -1 ) {
+									tabdescription = tabdescriptionProv;
+								} else {
+									tabdescription = tabdescriptionProv.substring( 0, endIndex );
+								}
 							} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
 								NodeList childNodesColumns = subNodeI.getChildNodes();
 								for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
@@ -496,7 +521,6 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 							+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
 			return false;
 		}
-
 		return isValid;
 	}
 }

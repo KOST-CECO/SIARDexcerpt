@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
- * Claire Röthlisberger (KOST-CECO)
+ * Claire Rï¿½thlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -20,8 +20,7 @@ import java.io.File;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptBSearchException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModule;
 
-/** Besteht eine korrekte primäre Verzeichnisstruktur: /header/metadata.xml sowie
- * /header/metadata.xsd und /content */
+/** 2) search: gemÃ¤ss config die Tabelle mit Suchtext befragen und Ausgabe des Resultates */
 
 public interface ExcerptBSearchModule extends ValidationModule
 {
