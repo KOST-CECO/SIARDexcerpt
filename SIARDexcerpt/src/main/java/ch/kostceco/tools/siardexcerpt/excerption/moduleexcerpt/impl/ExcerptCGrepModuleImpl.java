@@ -131,6 +131,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
 				 * Entsprechend werden diese durch . ersetzt (Wildcard) */
 				String excerptStringM = excerptString.replaceAll( " ", "." );
+				excerptStringM = excerptStringM.replaceAll( "\\*", "\\." );
 				excerptStringM = excerptStringM.replaceAll( "\\.", "\\.*" );
 				excerptStringM = "<" + cell + ">" + excerptStringM + "</" + cell + ">";
 				// grep "<c11>7561234567890</c11>" table13.xml >> output.txt

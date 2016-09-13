@@ -145,7 +145,6 @@
 		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_de.exe" todir="../SIARDexcerpt_TEST"/>
 		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_fr.exe" todir="../SIARDexcerpt_TEST"/>
 		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_en.exe" todir="../SIARDexcerpt_TEST"/>
-		<copy file="SIARDexcerpt/src/main/resources_notJar/PdfValidatorAPI.dll" overwrite="true" todir="../SIARDexcerpt_TEST"/>
 		<copy file="SIARDexcerpt/src/main/resources/de_messages.properties" overwrite="true" tofile="SIARDexcerpt/target/classes/messages.properties"/>
 	</target>
 </project>

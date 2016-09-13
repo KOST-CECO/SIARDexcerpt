@@ -255,6 +255,23 @@ public class Util
 		return stringInFile;
 	}
 
+	/** ersetzt alle Zeichen mit ""
+	 * 
+	 * @throws IOException */
+	public static void replaceAllChar( File file, String newString )
+			throws IOException
+	{
+		try {
+			BufferedReader reader = new BufferedReader( new FileReader( file ) );
+			reader.close();
+			FileWriter writer = new FileWriter( file );
+			writer.write( newString );
+			writer.close();
+		} catch ( IOException ioe ) {
+			ioe.printStackTrace();
+		}
+	}
+
 	/** Verändert ersetzt oldstring mit newstring in file
 	 * 
 	 * ! Solche Ersetzungen dürfen nicht in einer Schleife gemacht werden sondern erst am Schluss, da

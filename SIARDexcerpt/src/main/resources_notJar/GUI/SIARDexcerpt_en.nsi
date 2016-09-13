@@ -20,6 +20,7 @@ XPStyle on
 !include FileFunc.nsh
 !include LogicLib.nsh
 !include getJavaHome.nsh
+!include ReplaceSubStr.nsh
 !include langSIARDexcerpt_en.nsh
 !include nsDialogs.nsh
 !include XML.nsh
@@ -36,6 +37,7 @@ XPStyle on
 Var DIALOG
 Var CONFIG
 Var SEARCHEXCERPT
+Var SEARCHEXCERPTNAME
 Var SIARDORIG
 Var SIARDNAME
 Var SIARDEXCERPT
@@ -374,6 +376,8 @@ Function LeaveDialog
 			  StrCpy $R4 ''
             ${EndIf}
 			StrCpy $SEARCHEXCERPT $R4
+			StrCpy $SEARCHEXCERPTNAME $R4
+			!insertmacro ReplaceSubStr $SEARCHEXCERPTNAME "*" "_"
 		;${EndIf}
 			ReadINIStr $R3 $DIALOG "${SIARD_FileSelect}" "State"
 			StrCpy $SIARDORIG $R3
@@ -433,7 +437,7 @@ goto_err:
       Goto rm_workdir
     ${Else}
       ${If} $T_FLAG == '--search'
-        MessageBox MB_YESNO|MB_ICONEXCLAMATION "$SIARDEXCERPT$\n${SEARCH_FALSE}" IDYES showlog
+        MessageBox MB_OK|MB_ICONEXCLAMATION "$SIARDEXCERPT$\n${SEARCH_FALSE}"
 		Abort
       ${Else}
         MessageBox MB_YESNO|MB_ICONEXCLAMATION "$SIARDEXCERPT$\n${EXCERPT_FALSE}" IDYES showlog
@@ -442,8 +446,8 @@ goto_err:
     ${EndIf}
 
 prog_err:
-;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n$\n$JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPT"
-    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n $JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPT $\n$LOG\$SIARDNAME_$SEARCHEXCERPT_SIARDxxx.xml"
+;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n$\n$JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME"
+    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n $JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME $\n$LOG\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDxxx.xml"
 ;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n $JAVA\bin\java.exe" -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG"
 	Goto rm_workdir
 
@@ -493,11 +497,11 @@ showlog:
   ; read logfile in detail view
   GetFullPathName $1 $LOG
     ${If} $T_FLAG == '--search'
-        IfFileExists "$1\$SIARDNAME_$SEARCHEXCERPT_SIARDsearch.xml" 0 prog_err
-		ExecShell "" "iexplore.exe" "$1\$SIARDNAME_$SEARCHEXCERPT_SIARDsearch.xml"
+        IfFileExists "$1\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDsearch.xml" 0 prog_err
+		ExecShell "" "iexplore.exe" "$1\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDsearch.xml"
     ${Else}
-        IfFileExists "$1\$SIARDNAME_$SEARCHEXCERPT_SIARDexcerpt.xml" 0 prog_err
-		ExecShell "" "iexplore.exe" "$1\$SIARDNAME_$SEARCHEXCERPT_SIARDexcerpt.xml"
+        IfFileExists "$1\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDexcerpt.xml" 0 prog_err
+		ExecShell "" "iexplore.exe" "$1\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDexcerpt.xml"
     ${EndIf}
 	Abort
   

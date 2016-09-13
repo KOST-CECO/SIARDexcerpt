@@ -18,7 +18,14 @@ package ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Scanner;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptBSearchException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
@@ -50,7 +57,17 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			throws ExcerptBSearchException
 	{
 		boolean isValid = true;
+		boolean time = false;
+		// Zeitstempel für Performance tests wird nur ausgegeben wenn time = true
+		java.util.Date nowTime = new java.util.Date();
+		java.text.SimpleDateFormat sdfStartS = new java.text.SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
+		String stringNowTime = sdfStartS.format( nowTime );
 
+		if ( time ) {
+			nowTime = new java.util.Date();
+			stringNowTime = sdfStartS.format( nowTime );
+			System.out.println( stringNowTime + " Start der Suche" );
+		}
 		File fGrepExe = new File( "resources" + File.separator + "grep" + File.separator + "grep.exe" );
 		String pathToGrepExe = fGrepExe.getAbsolutePath();
 		if ( !fGrepExe.exists() ) {
@@ -102,6 +119,7 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			/* Der SearchString kann Leerschläge enthalten, welche bei grep Problem verursachen.
 			 * Entsprechend werden diese durch . ersetzt (Wildcard) */
 			searchString = searchString.replaceAll( " ", "." );
+			searchString = searchString.replaceAll( "\\*", "\\." );
 			searchString = searchString.replaceAll( "\\.", "\\.*" );
 
 			try {
@@ -118,6 +136,11 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_ELEMENT_OPEN, name ) );
+				if ( time ) {
+					nowTime = new java.util.Date();
+					stringNowTime = sdfStartS.format( nowTime );
+					System.out.println( stringNowTime + " Ende der Initialisierung" );
+				}
 
 				try {
 					Util.switchOffConsole();
@@ -139,18 +162,29 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 					proc.waitFor();
 
 					Util.switchOnConsole();
+					if ( time ) {
+						nowTime = new java.util.Date();
+						stringNowTime = sdfStartS.format( nowTime );
+						System.out.println( stringNowTime + " Ende der Ausführung von GREP" );
+					}
 
 				} catch ( Exception e ) {
 					getMessageService().logError(
 							getTextResourceService().getText( MESSAGE_XML_MODUL_B )
 									+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
-					return false;
+					isValid= false;
 				} finally {
 					if ( proc != null ) {
 						closeQuietly( proc.getOutputStream() );
 						closeQuietly( proc.getInputStream() );
 						closeQuietly( proc.getErrorStream() );
 					}
+				}
+
+				if ( time ) {
+					nowTime = new java.util.Date();
+					stringNowTime = sdfStartS.format( nowTime );
+					System.out.println( stringNowTime + " Start der Bereinigung" );
 				}
 
 				Scanner scanner = new Scanner( tempOutFile, "UTF-8" );
@@ -234,10 +268,24 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 					return false;
 				}
 
+				File xmlExtracted = new File( siardDatei.getAbsolutePath() + File.separator + "header"
+						+ File.separator + "metadata.xml" );
+				DocumentBuilderFactory dbfConfig = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dbConfig = dbfConfig.newDocumentBuilder();
+				Document docConfig = dbConfig.parse( new FileInputStream( xmlExtracted ), "UTF8" );
+				docConfig.getDocumentElement().normalize();
+				dbfConfig.setFeature( "http://xml.org/sax/features/namespaces", false );
+
+				NodeList nlColumn = docConfig.getElementsByTagName( "column" );
+				int counterColumn = nlColumn.getLength();
+				/* counterColumn ist zwar zu hoch aber betreffend der performance am besten. durch break
+				 * wird zudem abgebrochen, sobald alle behalten wurden. */
 				String cellLoop = "";
 				String modifString = "";
-				// Loop von 1, 2, 3 ... bis 499999.
-				for ( int i = 1; i < 500000; i++ ) {
+				// Loop von 1, 2, 3 ... bis counterColumn.
+				boolean col0 = false, col1 = false, col2 = false, col3 = false, col4 = false, col5 = false;
+				boolean col6 = false, col7 = false, col8 = false, col9 = false, col10 = false, col11 = false;
+				for ( int i = 1; i < counterColumn; i++ ) {
 					cellLoop = "";
 					cellLoop = "c" + i;
 					if ( cellLoop.equals( nr0 ) || cellLoop.equals( nr1 ) || cellLoop.equals( nr2 )
@@ -249,39 +297,51 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 
 						if ( cellLoop.equals( nr0 ) ) {
 							content = content.replaceAll( modifString, "col0>" );
+							col0 = true;
 						} else {
 							if ( cellLoop.equals( nr1 ) ) {
 								content = content.replaceAll( modifString, "col1>" );
+								col1 = true;
 							} else {
 								if ( cellLoop.equals( nr2 ) ) {
 									content = content.replaceAll( modifString, "col2>" );
+									col2 = true;
 								} else {
 									if ( cellLoop.equals( nr3 ) ) {
 										content = content.replaceAll( modifString, "col3>" );
+										col3 = true;
 									} else {
 										if ( cellLoop.equals( nr4 ) ) {
 											content = content.replaceAll( modifString, "col4>" );
+											col4 = true;
 										} else {
 											if ( cellLoop.equals( nr5 ) ) {
 												content = content.replaceAll( modifString, "col5>" );
+												col5 = true;
 											} else {
 												if ( cellLoop.equals( nr6 ) ) {
 													content = content.replaceAll( modifString, "col6>" );
+													col6 = true;
 												} else {
 													if ( cellLoop.equals( nr7 ) ) {
 														content = content.replaceAll( modifString, "col7>" );
+														col7 = true;
 													} else {
 														if ( cellLoop.equals( nr8 ) ) {
 															content = content.replaceAll( modifString, "col8>" );
+															col8 = true;
 														} else {
 															if ( cellLoop.equals( nr9 ) ) {
 																content = content.replaceAll( modifString, "col9>" );
+																col9 = true;
 															} else {
 																if ( cellLoop.equals( nr10 ) ) {
 																	content = content.replaceAll( modifString, "col10>" );
+																	col10 = true;
 																} else {
 																	if ( cellLoop.equals( nr11 ) ) {
 																		content = content.replaceAll( modifString, "col11>" );
+																		col11 = true;
 																	}
 																}
 															}
@@ -298,6 +358,19 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 						String deletString = "<c" + i + ">" + ".*" + "</c" + i + ">";
 						content = content.replaceAll( deletString, "" );
 					}
+					if ( col0 && col1 && col2 && col3 && col4 && col5 && col6 && col7 && col8 && col9
+							&& col10 && col11 ) {
+						int j = i + 1;
+						String deletString = "<c" + j + ">" + ".*" + "</row>";
+						content = content.replaceAll( deletString, "</row>" );
+						break;
+					}
+				}
+
+				if ( time ) {
+					nowTime = new java.util.Date();
+					stringNowTime = sdfStartS.format( nowTime );
+					System.out.println( stringNowTime + " Ende der Bereinigung" );
 				}
 
 				getMessageService().logError(

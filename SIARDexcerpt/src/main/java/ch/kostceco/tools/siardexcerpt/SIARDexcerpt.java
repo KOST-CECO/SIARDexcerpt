@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 // import java.io.OutputStreamWriter;
 
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -121,11 +120,12 @@ public class SIARDexcerpt implements MessageConstants
 
 		String module = new String( args[2] );
 		File siardDatei = new File( args[0] );
-		File configFile = new File( args[1] );
+		String configString = new String( args[1] );
 
 		/* arg 1 gibt den Pfad zur configdatei an. Da dieser in ConfigurationServiceImpl hartcodiert
 		 * ist, wird diese nach "configuration/SIARDexcerpt.conf.xml" kopiert. */
 		File configFileHard = new File( "configuration" + File.separator + "SIARDexcerpt.conf.xml" );
+		File configFileNo = new File( "configuration" + File.separator + "NoConfig.conf.xml" );
 
 		// excerpt ist der Standardwert wird aber anhand der config dann gesetzt
 		File directoryOfOutput = new File( "excerpt" );
@@ -168,6 +168,13 @@ public class SIARDexcerpt implements MessageConstants
 			System.out.println( "SIARDexcerpt: init" );
 
 			/** a) config muss existieren und SIARDexcerpt.conf.xml noch nicht */
+			File configFile = configFileNo;
+			if ( configString.endsWith( ".xml" ) ) {
+				configFile = new File( configString );
+			} else {
+				configFile = configFileNo;
+			}
+
 			if ( !configFile.exists() ) {
 				System.out.println( siardexcerpt.getTextResourceService().getText(
 						ERROR_CONFIGFILE_FILENOTEXISTING, configFile.getAbsolutePath() ) );
@@ -313,8 +320,7 @@ public class SIARDexcerpt implements MessageConstants
 			/** e) Struktur-Check SIARD-Verzeichnis */
 			/* File content = new File( siardDatei.getAbsolutePath() + File.separator + "content" );
 			 * 
-			 * Content darf nicht existieren. Dann handelt es sich um eine Reine Strukturablieferung
-			 */
+			 * Content darf nicht existieren. Dann handelt es sich um eine Reine Strukturablieferung */
 			File header = new File( siardDatei.getAbsolutePath() + File.separator + "header" );
 			File xsd = new File( siardDatei.getAbsolutePath() + File.separator + "header"
 					+ File.separator + "metadata.xsd" );
@@ -340,7 +346,8 @@ public class SIARDexcerpt implements MessageConstants
 			if ( Util.stringInFile( "(..)", configFileHard ) ) {
 				Controllerexcerpt controllerexcerptConfig = (Controllerexcerpt) context
 						.getBean( "controllerexcerpt" );
-				okAConfig = controllerexcerptConfig.executeAConfig( siardDatei, configFileHard, "" );
+				okAConfig = controllerexcerptConfig.executeAConfig( siardDatei, configFileHard,
+						configString );
 
 				if ( !okAConfig ) {
 					// Löschen des Arbeitsverzeichnisses und configFileHard, falls eines angelegt wurde
@@ -427,6 +434,7 @@ public class SIARDexcerpt implements MessageConstants
 			String searchStringFilename = searchString.replaceAll( "/", "_" );
 			searchStringFilename = searchStringFilename.replaceAll( ">", "_" );
 			searchStringFilename = searchStringFilename.replaceAll( "<", "_" );
+			searchStringFilename = searchStringFilename.replace( "*", "_" );
 			searchStringFilename = searchStringFilename.replace( ".*", "_" );
 			searchStringFilename = searchStringFilename.replaceAll( "___", "_" );
 			searchStringFilename = searchStringFilename.replaceAll( "__", "_" );
@@ -483,8 +491,19 @@ public class SIARDexcerpt implements MessageConstants
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText(
 						ERROR_XML_B_CANNOTSEARCHRECORD ) );
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_LOGEND ) );
-				System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_B_SEARCH_NOK,
-						outFileNameS ) );
+				System.out.println( siardexcerpt.getTextResourceService().getText( MESSAGE_B_SEARCH_NOK ) );
+				// Löschen der temporären Suchergebnisse
+				File outFileSearchTmp = new File( outFileSearch.getAbsolutePath() + ".tmp" );
+				if ( outFileSearchTmp.exists() ) {
+					Util.deleteFile( outFileSearchTmp );
+				}
+				String noResult = siardexcerpt.getTextResourceService().getText( MESSAGE_B_SEARCH_NOK );
+				if ( outFileSearchTmp.exists() ) {
+					Util.replaceAllChar( outFileSearchTmp, noResult );
+				}
+				if ( outFileSearch.exists() ) {
+					Util.replaceAllChar( outFileSearch, noResult );
+				}
 
 				// Löschen des Arbeitsverzeichnisses und configFileHard erfolgt erst bei schritt 4 finish
 
@@ -596,6 +615,7 @@ public class SIARDexcerpt implements MessageConstants
 			String excerptStringFilename = excerptString.replaceAll( "/", "_" );
 			excerptStringFilename = excerptStringFilename.replaceAll( ">", "_" );
 			excerptStringFilename = excerptStringFilename.replaceAll( "<", "_" );
+			excerptStringFilename = excerptStringFilename.replace( "*", "_" );
 			excerptStringFilename = excerptStringFilename.replace( ".*", "_" );
 			excerptStringFilename = excerptStringFilename.replaceAll( "___", "_" );
 			excerptStringFilename = excerptStringFilename.replaceAll( "__", "_" );
@@ -684,10 +704,9 @@ public class SIARDexcerpt implements MessageConstants
 											siardexcerpt.getTextResourceService().getText( AUTO_XSL_TABLE_START,
 													tableFolder ), xslCopy );
 									for ( int z = 1; z < counterColumn; z++ ) {
-										Util.oldnewstring(
-												provEndXSL,
-												siardexcerpt.getTextResourceService().getText( AUTO_XSL_COLUMN,
-														z ), xslCopy );
+										Util.oldnewstring( provEndXSL,
+												siardexcerpt.getTextResourceService().getText( AUTO_XSL_COLUMN, z ),
+												xslCopy );
 									}
 									Util.oldnewstring( provEndXSL,
 											siardexcerpt.getTextResourceService().getText( AUTO_XSL_TABLE_END ), xslCopy );

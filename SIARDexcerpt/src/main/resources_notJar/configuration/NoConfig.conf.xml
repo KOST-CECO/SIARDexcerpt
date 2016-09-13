@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<pathtooutput>Output</pathtooutput>
+	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
+	<pathtoxsl>(..)</pathtoxsl>
+	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
+	<archive>Staatsarchiv Zuerich</archive>
+
+	<maintable>
+		<mainfolder>(..)</mainfolder>
+		<mainname>(..)</mainname>
+		<title>(..)</title>
+		<primarykeyname>(..)</primarykeyname>
+		<primarykeycell>(..)</primarykeycell>
+		<cellname1>(..)</cellname1>
+		<cellnumber1>(..)</cellnumber1>
+		<cellname2>(..)</cellname2>
+		<cellnumber2>(..)</cellnumber2>
+		<cellname3>(..)</cellname3>
+		<cellnumber3>(..)</cellnumber3>
+		<cellname4>(..)</cellname4>
+		<cellnumber4>(..)</cellnumber4>
+		<cellname5>(..)</cellname5>
+		<cellnumber5>(..)</cellnumber5>
+		<cellname6>(..)</cellname6>
+		<cellnumber6>(..)</cellnumber6>
+		<cellname7>(..)</cellname7>
+		<cellnumber7>(..)</cellnumber7>
+		<cellname8>(..)</cellname8>
+		<cellnumber8>(..)</cellnumber8>
+		<cellname9>(..)</cellname9>
+		<cellnumber9>(..)</cellnumber9>
+		<cellname10>(..)</cellname10>
+		<cellnumber10>(..)</cellnumber10>
+		<cellname11>(..)</cellname11>
+		<cellnumber11>(..)</cellnumber11>
+	</maintable>
+	<subtables>(..)</subtables>
+</configuration>
