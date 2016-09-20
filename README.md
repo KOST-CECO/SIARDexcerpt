@@ -1,7 +1,7 @@
 SIARDexcerpt
 ============
 
-The SIARDexcerpt application is used for excerpt a record from a SIARD-File.
+SIARDexcerpt is a Java-based application that searches and extracts individual records of SIARD files, then converts them into a human readable form using a user-specific or a generic stylesheet.
 
 SIARDexcerpt, Copyright (C) 2016 Claire Roethlisberger (KOST-CECO)
 

@@ -213,8 +213,8 @@ Function LeaveDialog
       SendMessage $1 ${BM_SETCHECK} 0 0
 ;      ReadINIStr $1 $DIALOG '${1INIT_Text}' 'HWND'
 ;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${1INIT_TextTXT}'
-      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
-      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${1INIT_TextTXT}'
+;      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
+;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${1INIT_TextTXT}'
       StrCpy $T_FLAG '--init'
 	  GetDlgItem $0 $HWND 1205
 	  ShowWindow $0 1   ; SIARD-Lable
@@ -248,9 +248,9 @@ Function LeaveDialog
 ;      ReadINIStr $1 $DIALOG '${1INIT_Text}' 'HWND'
 ;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${2SEARCH_TextTXT}'
       ReadINIStr $1 $DIALOG '${SEARCHEXCERPT_Lable}' 'HWND'
-      SendMessage $1 ${WM_SETTEXT} 1 'STR:${2SEARCH_TextTXT}:'
-      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
-      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${2SEARCH_TextTXT}'
+;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${2SEARCH_TextTXT}:'
+;      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
+;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${2SEARCH_TextTXT}'
       StrCpy $T_FLAG '--search'
 	  ShowWindow $0 1   ; SIARD-Lable
 	  GetDlgItem $0 $HWND 1207
@@ -283,9 +283,9 @@ Function LeaveDialog
 ;      ReadINIStr $1 $DIALOG '${1INIT_Text}' 'HWND'
 ;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${3EXCERPT_TextTXT}'
       ReadINIStr $1 $DIALOG '${SEARCHEXCERPT_Lable}' 'HWND'
-      SendMessage $1 ${WM_SETTEXT} 1 'STR:${3EXCERPT_TextTXT}:'
-      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
-      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${3EXCERPT_TextTXT}'
+;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${3EXCERPT_TextTXT}:'
+;      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
+;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${3EXCERPT_TextTXT}'
       StrCpy $T_FLAG '--excerpt'
 	  ShowWindow $0 1   ; SIARD-Lable
 	  GetDlgItem $0 $HWND 1207
@@ -340,7 +340,7 @@ Function LeaveDialog
       Abort
     ${Break}
 
-    ${Case} '${START_Button}'
+/*  ${Case} '${START_Button}'
 			ReadINIStr $R3 $DIALOG "${SIARD_FileSelect}" "State"
 			StrCpy $SIARDORIG $R3
 			ReadINIStr $R2 $DIALOG "${CONFIG_FileSelect}" "State"
@@ -357,12 +357,28 @@ Function LeaveDialog
 			${GetFileName} $R3 $SIARDNAME 
       Call RunJar
       Abort
-    ${Break}
+    ${Break}*/
 
-    ${Default}
-      ; Abort prevents from leaving the current page
-      ; Abort
-    ${Break}
+   ${Default}
+      ; Dito ${Case} '${START_Button}'
+	  ; Statt Beenden ist es jetzt ausführen, damit Enter funktioniert
+ 			ReadINIStr $R3 $DIALOG "${SIARD_FileSelect}" "State"
+			StrCpy $SIARDORIG $R3
+			ReadINIStr $R2 $DIALOG "${CONFIG_FileSelect}" "State"
+			StrCpy $CONFIG $R2
+			ReadINIStr $R4 $DIALOG "${SEARCHEXCERPT_Text}" "State"
+            ${If} $T_FLAG == '--init'
+			  StrCpy $R4 ''
+            ${EndIf}
+			StrCpy $SEARCHEXCERPT $R4
+			StrCpy $SEARCHEXCERPTNAME $R4
+			!insertmacro ReplaceSubStr $SEARCHEXCERPTNAME "*" "_"
+			ReadINIStr $R3 $DIALOG "${SIARD_FileSelect}" "State"
+			StrCpy $SIARDORIG $R3
+			${GetFileName} $R3 $SIARDNAME 
+      Call RunJar
+      Abort
+   ${Break}
   ${EndSwitch}
   
 FunctionEnd

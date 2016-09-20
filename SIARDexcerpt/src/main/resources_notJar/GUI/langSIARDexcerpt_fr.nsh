@@ -1,5 +1,5 @@
 ; Replaces the default text strings for the four buttons (< Back, Next >, Cancel and Close)
-MiscButtonText "Précédent" "Suivant" "Refuser" "Terminer"
+MiscButtonText "Précédent" "Suivant" "Refuser" "Exécuter"
 
 ; Replaces the default text ("Completed") that is printed at the end of the install process
 ;CompletedText "Die SIARDexcerpt Installation wird überprüft"
@@ -17,7 +17,7 @@ MiscButtonText "Précédent" "Suivant" "Refuser" "Terminer"
 !define PROG_ERR          "Erreur Java lorsque l'exécution du programme:"
 !define LOG_ERR           "Pas d'autorisation d'écriture pour le répertoire de logging:"
 
-!define NextButtonText    "&Terminer"
+!define NextButtonText    "&Exécuter"
 
 ;----------------------
 !define WILDCARD                  "Field 1"
@@ -29,7 +29,7 @@ MiscButtonText "Précédent" "Suivant" "Refuser" "Terminer"
 ;!define INPUT_FolderRequest       "Field 7"
 !define SIARD_FileRequest         "Field 8"
 !define SIARD_FileSelect          "Field 9"
-!define START_Button              "Field 10"
+;!define START_Button              "Field 10"
 ;!define EDIT_Konfiguration        "Field 11"
 ;!define RESET_Konfiguration       "Field 12"
 !define JVM_Droplist              "Field 13"
@@ -54,7 +54,7 @@ MiscButtonText "Précédent" "Suivant" "Refuser" "Terminer"
 ;!define INPUT_FolderRequestTXT   "Choisir un dossier ..."
 !define SIARD_FileRequestTXT     "Fichier..."
 !define SIARD_FileSelectTXT      "Fichier SIARD ou chemin sélectionné"
-!define START_ButtonTXT          "${START_TextTXT} ${1INIT_TextTXT}"
+;!define START_ButtonTXT          "${START_TextTXT} ${1INIT_TextTXT}"
 ;!define EDIT_KonfigurationTXT    "Modifier la configuration ..."
 ;!define RESET_KonfigurationTXT   "Réinitialiser la configuration"
 !define JVM_DroplistTXT          "Option de JVM:"
