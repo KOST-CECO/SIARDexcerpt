@@ -67,6 +67,17 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 		boolean isValid = true;
 
+		// Schema herausfinden
+		File fSchema = new File( siardDatei.getAbsolutePath() + File.separator + "content"
+				+ File.separator + "schema0" );
+		for ( int s = 0; s < 9999999; s++ ) {
+			fSchema = new File( siardDatei.getAbsolutePath() + File.separator + "content"
+					+ File.separator + "schema" + s );
+			if ( fSchema.exists() ) {
+				break;
+			}
+		}
+
 		File fGrepExe = new File( "resources" + File.separator + "grep" + File.separator + "grep.exe" );
 		String pathToGrepExe = fGrepExe.getAbsolutePath();
 		if ( !fGrepExe.exists() ) {
@@ -124,8 +135,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			String cellname = "";
 			String celldescription = "";
 
-			File fMaintable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
-					+ File.separator + "schema0" + File.separator + folder + File.separator + folder + ".xml" );
+			File fMaintable = new File( fSchema.getAbsolutePath() + File.separator + folder
+					+ File.separator + folder + ".xml" );
+			// Bringt die ganze <row>...</row> auf eine Zeile
+			for ( int r = 0; r < 20; r++ ) {
+				Util.oldnewstring( " <", "<", fMaintable );
+			}
+			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fMaintable );
+			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fMaintable );
 
 			try {
 				/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
@@ -320,9 +337,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				String celldescription = "";
 
 				// System.out.println( name + " - " + folder + " - " + cell );
-				File fSubtable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
-						+ File.separator + "schema0" + File.separator + folder + File.separator + folder
-						+ ".xml" );
+				File fSubtable = new File( fSchema.getAbsolutePath() + File.separator + folder
+						+ File.separator + folder + ".xml" );
+				// Bringt die ganze <row>...</row> auf eine Zeile
+				for ( int r = 0; r < 20; r++ ) {
+					Util.oldnewstring( " <", "<", fSubtable );
+				}
+				Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fSubtable );
+				Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSubtable );
 
 				try {
 					/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.

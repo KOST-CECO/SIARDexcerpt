@@ -68,6 +68,17 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			stringNowTime = sdfStartS.format( nowTime );
 			System.out.println( stringNowTime + " Start der Suche" );
 		}
+		// Schema herausfinden
+		File fSchema = new File( siardDatei.getAbsolutePath() + File.separator + "content"
+				+ File.separator + "schema0" );
+		for ( int s = 0; s < 9999999; s++ ) {
+			fSchema = new File( siardDatei.getAbsolutePath() + File.separator + "content"
+					+ File.separator + "schema" + s );
+			if ( fSchema.exists() ) {
+				break;
+			}
+		}
+
 		File fGrepExe = new File( "resources" + File.separator + "grep" + File.separator + "grep.exe" );
 		String pathToGrepExe = fGrepExe.getAbsolutePath();
 		if ( !fGrepExe.exists() ) {
@@ -113,8 +124,14 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 				return false;
 			}
 
-			File fSearchtable = new File( siardDatei.getAbsolutePath() + File.separator + "content"
-					+ File.separator + "schema0" + File.separator + folder + File.separator + folder + ".xml" );
+			File fSearchtable = new File( fSchema.getAbsolutePath() + File.separator + folder
+					+ File.separator + folder + ".xml" );
+			// Bringt die ganze <row>...</row> auf eine Zeile
+			for ( int r = 0; r < 20; r++ ) {
+				Util.oldnewstring( " <", "<", fSearchtable );
+			}
+			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fSearchtable );
+			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSearchtable );
 
 			/* Der SearchString kann Leerschläge enthalten, welche bei grep Problem verursachen.
 			 * Entsprechend werden diese durch . ersetzt (Wildcard) */
@@ -172,7 +189,7 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 					getMessageService().logError(
 							getTextResourceService().getText( MESSAGE_XML_MODUL_B )
 									+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
-					isValid= false;
+					isValid = false;
 				} finally {
 					if ( proc != null ) {
 						closeQuietly( proc.getOutputStream() );

@@ -4,7 +4,7 @@
 	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
 	<pathtoxsl>(..)</pathtoxsl>
 	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
-	<archive>Staatsarchiv Zuerich</archive>
+	<archive>Archiv</archive>
 
 	<maintable>
 		<mainfolder>(..)</mainfolder>

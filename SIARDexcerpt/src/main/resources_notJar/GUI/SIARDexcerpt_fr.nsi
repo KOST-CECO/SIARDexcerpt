@@ -1,5 +1,5 @@
 ; The name of the installer
-Name "SIARDexcerpt v0.0.5"
+Name "SIARDexcerpt v0.0.6"
 ; Sets the icon of the installer
 Icon "excerpt.ico"
 ; remove the text 'Nullsoft Install System vX.XX' from the installer window 
@@ -67,10 +67,6 @@ Function .onInit
   ; initial setting for validation folder/file
   StrCpy $SIARDEXCERPT $EXEDIR
   
-  ; create configuration backup
-  ;CreateDirectory $EXEDIR\${CONFIGPATH}\${BACKUP}
-  ;CopyFiles /SILENT /FILESONLY $EXEDIR\${CONFIGPATH}\*.* $EXEDIR\${CONFIGPATH}\${BACKUP}
-
   ; Initializes the plug-ins dir ($PLUGINSDIR) if not already initialized
   InitPluginsDir
   
@@ -332,11 +328,7 @@ Function LeaveDialog
     ${Break}
     
     ${Case} '${CONFIG_FileRequest}'
-;      ${If} $T_FLAG == '--sip'
-;        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.zip' 'SIP Files|*.zip'
-;      ${Else}
-        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.xml' '|*.*'
-;      ${EndIf}
+      nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.xml' '|*.*'
       Pop $R2
       ${If} $R2 == ''
         MessageBox MB_OK "${FILE_SelectTXT}"
@@ -348,29 +340,11 @@ Function LeaveDialog
       Abort
     ${Break}
 
-/*    ${Case} '${INPUT_FolderRequest}'
-      nsDialogs::SelectFolderDialog "${FOLDER_SelectTXT}" "$SIARDEXCERPT"
-      Pop $R0
-      ${If} $R0 == 'error'
-        MessageBox MB_OK "${FOLDER_SelectTXT}"
-      ${Else}
-        ReadINIStr $1 $DIALOG '${SEL_FileFolder}' 'HWND'
-        SendMessage $1 ${WM_SETTEXT} 1 'STR:$R0'
-        StrCpy $SIARDEXCERPT $R0
-      ${EndIf}
-      Abort
-    ${Break} */
-
     ${Case} '${START_Button}'
- /*       ${If} $SIARDORIG == "${SIARD_FileSelect}"
 			ReadINIStr $R3 $DIALOG "${SIARD_FileSelect}" "State"
 			StrCpy $SIARDORIG $R3
-		${EndIf}
-        ${If} $CONFIG == "${CONFIG_FileSelect}"
 			ReadINIStr $R2 $DIALOG "${CONFIG_FileSelect}" "State"
 			StrCpy $CONFIG $R2
-		${EndIf}*/
-        ;${If} $SEARCHEXCERPT == "${SEARCHEXCERPT_Text}"
 			ReadINIStr $R4 $DIALOG "${SEARCHEXCERPT_Text}" "State"
             ${If} $T_FLAG == '--init'
 			  StrCpy $R4 ''
@@ -378,7 +352,6 @@ Function LeaveDialog
 			StrCpy $SEARCHEXCERPT $R4
 			StrCpy $SEARCHEXCERPTNAME $R4
 			!insertmacro ReplaceSubStr $SEARCHEXCERPTNAME "*" "_"
-		;${EndIf}
 			ReadINIStr $R3 $DIALOG "${SIARD_FileSelect}" "State"
 			StrCpy $SIARDORIG $R3
 			${GetFileName} $R3 $SIARDNAME 
