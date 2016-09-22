@@ -123,6 +123,15 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + folder );
 				return false;
 			}
+			String insensitiveOption = "";
+			String insensitive = getConfigurationService().getInsensitive();
+			if ( insensitive.startsWith( "Configuration-Error:" ) ) {
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + insensitive );
+				return false;
+			} else if ( insensitive.equalsIgnoreCase( "yes" ) ) {
+				insensitiveOption = "i";
+			}
 
 			File fSearchtable = new File( fSchema.getAbsolutePath() + File.separator + folder
 					+ File.separator + folder + ".xml" );
@@ -141,8 +150,9 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 
 			try {
 				// grep -E "REGEX-Suchbegriff" table13.xml >> output.txt
-				String command = "cmd /c \"" + pathToGrepExe + " -E \"" + searchString + "\" "
-						+ fSearchtable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath() + "\"";
+				String command = "cmd /c \"" + pathToGrepExe + " -E" + insensitiveOption + " \""
+						+ searchString + "\" " + fSearchtable.getAbsolutePath() + " >> "
+						+ tempOutFile.getAbsolutePath() + "\"";
 				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 				 * gehts: cmd /c\"urspruenlicher Befehl\" */
 

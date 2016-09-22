@@ -143,6 +143,20 @@ public class ConfigurationServiceImpl implements ConfigurationService
 		return error;
 	}
 
+	@Override
+	public String getInsensitive()
+	{
+		/** Gibt an ob die Suche case sensitive (Gross- und Kleinschreibung werden berücksichtigt) oder
+		 * insensitive (Gross- und Kleinschreibung werden ignoriert) sein soll. */
+		Object prop = getConfig().getProperty( "insensitive" );
+		if ( prop instanceof String ) {
+			String value = (String) prop;
+			return value;
+		}
+		String error = "Configuration-Error: Missing archive";
+		return error;
+	}
+
 	// ------------------------ Extraktion ------------------------
 	@Override
 	public String getMaintableFolder()

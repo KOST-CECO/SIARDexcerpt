@@ -47,6 +47,12 @@ public interface ConfigurationService extends Service
 	 * @return Namen des Archivs */
 	String getArchive();
 
+	/** Gibt an ob die Suche case sensitive (Gross- und Kleinschreibung werden berücksichtigt) oder
+	 * insensitive (Gross- und Kleinschreibung werden ignoriert) sein soll.
+	 * 
+	 * @return grep Option -i */
+	String getInsensitive();
+
 	// ------------------------ Extraktion ------------------------
 	/** Gibt den Ordner der Haupttabelle zurück.
 	 * 

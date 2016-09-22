@@ -5,6 +5,7 @@
 	<pathtoxsl>resources\taxar.xsl</pathtoxsl>
 	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
 	<archive>Staatsarchiv Zuerich</archive>
+	<insensitive>yes</insensitive>
 
 	<maintable>
 		<mainfolder>table13</mainfolder>

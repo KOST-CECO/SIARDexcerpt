@@ -5,6 +5,7 @@
 	<pathtoxsl>(..)</pathtoxsl>
 	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
 	<archive>Archiv</archive>
+	<insensitive>yes</insensitive>
 
 	<maintable>
 		<mainfolder>(..)</mainfolder>
