@@ -142,6 +142,11 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fSearchtable );
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSearchtable );
 
+			/* Der SearchString soll nur über <row>...</row> durchgeführt werden
+			 * 
+			 * einmal mit row erweitern */
+			searchString = "row." + searchString;
+
 			/* Der SearchString kann Leerschläge enthalten, welche bei grep Problem verursachen.
 			 * Entsprechend werden diese durch . ersetzt (Wildcard) */
 			searchString = searchString.replaceAll( " ", "." );
