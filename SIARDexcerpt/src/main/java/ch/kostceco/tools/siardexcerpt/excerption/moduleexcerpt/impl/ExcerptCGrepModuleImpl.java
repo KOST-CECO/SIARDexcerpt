@@ -137,7 +137,10 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 			File fMaintable = new File( fSchema.getAbsolutePath() + File.separator + folder
 					+ File.separator + folder + ".xml" );
-			// Bringt die ganze <row>...</row> auf eine Zeile
+			/* Bringt die ganze <row>...</row> auf eine Zeile
+			 * 
+			 * Zuerst alle Leerstellen zwischen den Elementen löschen und dann der Zeilenumbruch vor <c
+			 * und </row löschen */
 			for ( int r = 0; r < 20; r++ ) {
 				Util.oldnewstring( " <", "<", fMaintable );
 			}
@@ -177,21 +180,27 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 				NodeList nlTable = doc.getElementsByTagName( "table" );
 				for ( int i = 0; i < nlTable.getLength(); i++ ) {
+					/* cellname und celldescription leeren, da vorgängige Tabelle nicht die Richtige war. */
+					cellname = "";
+					celldescription = "";
 					Node nodenlTable = nlTable.item( i );
 					NodeList childNodes = nodenlTable.getChildNodes();
 					for ( int x = 0; x < childNodes.getLength(); x++ ) {
 						Node subNodeI = childNodes.item( x );
 						if ( subNodeI.getNodeName().equals( "folder" ) ) {
-							// System.out.println( subNodeI.getTextContent() );
+							// System.out.println( subNodeI.getNodeName()+": "+subNodeI.getTextContent() );
 							if ( subNodeI.getTextContent().equals( folder ) ) {
 								/* Es ist die richtige Tabelle. Ensprechend wird i ans ende Gestellt, damit die
 								 * i-Schlaufe beendet wird. */
+								// System.out.println ("Richtige Tabelle");
 								tabfolder = subNodeI.getTextContent();
 								i = nlTable.getLength();
 							}
 						} else if ( subNodeI.getNodeName().equals( "name" ) ) {
+							// System.out.println( subNodeI.getNodeName()+": "+subNodeI.getTextContent() );
 							tabname = subNodeI.getTextContent();
 						} else if ( subNodeI.getNodeName().equals( "description" ) ) {
+							// System.out.println( subNodeI.getNodeName()+": "+subNodeI.getTextContent() );
 							tabdescriptionProv = new String( subNodeI.getTextContent() );
 							/* in der description generiert mit csv2siard wird nach "word" der Select Befehl
 							 * angehängt. Dieser soll nicht mit ausgegeben werden. */
@@ -202,6 +211,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 							} else {
 								tabdescription = tabdescriptionProv.substring( 0, endIndex );
 							}
+							// System.out.println( "tabdescription: "+tabdescription );
 						} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
 							NodeList childNodesColumns = subNodeI.getChildNodes();
 							for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
@@ -212,9 +222,13 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 									// System.out.println( "Zelle Nr " + cellNumber );
 									Node subNodeIII = childNodesColumn.item( z );
 									if ( subNodeIII.getNodeName().equals( "name" ) ) {
+										// System.out.println( subNodeIII.getNodeName()+": "+subNodeIII.getTextContent()
+										// );
 										cellname = cellname + "<c" + cellNumber + ">" + subNodeIII.getTextContent()
 												+ "</c" + cellNumber + ">";
 									} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
+										// System.out.println( subNodeIII.getNodeName()+": "+subNodeIII.getTextContent()
+										// );
 										celldescription = celldescription + "<c" + cellNumber + ">"
 												+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber + ">";
 									}
@@ -223,6 +237,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 						}
 					}
 				}
+				// System.out.println(tabname+" "+
+				// tabfolder+" "+tabdescription+" "+cellname+" "+celldescription);
 
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_TEXT, tabname, "tabname" ) );
