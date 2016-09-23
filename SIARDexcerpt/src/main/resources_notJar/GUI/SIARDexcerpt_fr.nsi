@@ -1,5 +1,5 @@
 ; The name of the installer
-Name "SIARDexcerpt v0.0.6"
+Name "SIARDexcerpt v0.0.7"
 ; Sets the icon of the installer
 Icon "excerpt.ico"
 ; remove the text 'Nullsoft Install System vX.XX' from the installer window 
@@ -367,6 +367,12 @@ Function LeaveDialog
 			ReadINIStr $R2 $DIALOG "${CONFIG_FileSelect}" "State"
 			StrCpy $CONFIG $R2
 			ReadINIStr $R4 $DIALOG "${SEARCHEXCERPT_Text}" "State"
+            ${If} $R4 == '*'
+			  StrCpy $R4 'row'
+            ${EndIf}
+            ${If} $R4 == '.'
+			  StrCpy $R4 'row'
+            ${EndIf}
             ${If} $T_FLAG == '--init'
 			  StrCpy $R4 ''
             ${EndIf}

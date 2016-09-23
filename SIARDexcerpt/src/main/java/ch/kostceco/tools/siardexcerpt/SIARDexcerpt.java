@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.0.6 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.0.7 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016 Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -422,6 +422,12 @@ public class SIARDexcerpt implements MessageConstants
 
 			/** b) Suchtext einlesen */
 			String searchString = new String( args[3] );
+
+			/* Der SearchString kann nur die Wildcard (* oder .) enthalten. Da grep es aber nicht
+			 * unterstützt durch row ersetzten */
+			if ( searchString.equals( "*" ) || searchString.equals( "." ) ) {
+				searchString = "row";
+			}
 
 			/** c) search.xml vorbereiten (Header) und xsl in Output kopieren */
 			// Zeitstempel der Datenextraktion
