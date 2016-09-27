@@ -1644,6 +1644,8 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 				String referencedProv = "";
 				String referencedTableProv = "";
 				String referencedColumnProv = "";
+				String subKeyNameProv = "";
+				String subKeyName = "";
 				String subName = "";
 				String subFolder = "";
 				String subKeyCell = "";
@@ -1654,6 +1656,7 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 					// NodeList nlFK = docConfig.getElementsByTagName( "foreignKey" );
 					for ( int x = 0; x < nlFK.getLength(); x++ ) {
 						referencedTableProv = "";
+						subKeyNameProv = "";
 						referencedColumnProv = "";
 						referencedProv = "";
 						Node nodeFK = nlFK.item( x );
@@ -1663,6 +1666,8 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 							Node subNodeFK = childNodesFK.item( y );
 							if ( subNodeFK.getNodeName().equals( "referencedTable" ) ) {
 								referencedTableProv = new String( subNodeFK.getTextContent() );
+							} else if ( subNodeFK.getNodeName().equals( "name" ) ) {
+								subKeyNameProv = new String( subNodeFK.getTextContent() );
 							} else if ( subNodeFK.getNodeName().equals( "reference" ) ) {
 								NodeList nlRef = subNodeFK.getChildNodes();
 								for ( int z = 0; z < nlRef.getLength(); z++ ) {
@@ -1680,9 +1685,11 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 						// System.out.println( valueMainname + " =? " + referencedTableProv );
 						if ( valueMainname.equals( referencedTableProv ) && valuePKname.equals( referencedProv ) ) {
 							// referencedTable = referencedTableProv;
+							subKeyName = subKeyNameProv;
 							referencedColumn = referencedColumnProv;
 							// referenced = referencedProv;
 							referencedTableProv = "";
+							subKeyNameProv = "";
 							referencedColumnProv = "";
 							referencedProv = "";
 							Node nodeParentFK = nodeFK.getParentNode();
@@ -1717,7 +1724,8 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 											}
 											if ( column && subKeyCellProv != "" ) {
 												subKeyCell = subKeyCellProv;
-												subName = " <subtable><name>" + subName + "</name>";
+												subName = " <subtable><keyname>" + subKeyName + "</keyname><name>"
+														+ subName + "</name>";
 												subFolder = "<folder>" + subFolder + "</folder>";
 												subKeyCell = "<foreignkeycell>" + subKeyCell
 														+ "</foreignkeycell></subtable></subtables>";
@@ -1745,6 +1753,7 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 
 						} else {
 							referencedTableProv = "";
+							subKeyNameProv = "";
 							referencedColumnProv = "";
 							referencedProv = "";
 							column = false;

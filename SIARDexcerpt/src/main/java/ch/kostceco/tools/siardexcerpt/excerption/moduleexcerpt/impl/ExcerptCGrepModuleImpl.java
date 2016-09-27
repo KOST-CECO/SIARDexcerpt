@@ -105,7 +105,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				+ File.separator + "metadata.xml" );
 		String content = "";
 
-		// Record aus Maintable herausholen
+		// TODO: Record aus Maintable herausholen
 		try {
 			if ( tempOutFile.exists() ) {
 				Util.deleteDir( tempOutFile );
@@ -323,7 +323,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 		// Ende MainTable
 
-		// grep der SubTables
+		// TODO: grep der SubTables
 		try {
 			// String name = null;
 			String folder = null;
@@ -346,6 +346,7 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				folder = subtable.getChild( "folder", ns ).getText();
 				cell = subtable.getChild( "foreignkeycell", ns ).getText();
 				String tabfolder = "";
+				String tabkeyname = subtable.getChild( "keyname", ns ).getText();
 				String tabname = "";
 				String tabdescription = "";
 				String tabdescriptionProv = "";
@@ -456,6 +457,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 									getTextResourceService().getText( MESSAGE_XML_TEXT, tabname, "tabname" ) );
 							getMessageService().logError(
 									getTextResourceService().getText( MESSAGE_XML_TEXT, tabfolder, "tabfolder" ) );
+							getMessageService().logError(
+									getTextResourceService().getText( MESSAGE_XML_TEXT, tabkeyname, "tabkeyname" ) );
 							getMessageService().logError(
 									getTextResourceService().getText( MESSAGE_XML_TEXT, tabdescription,
 											"tabdescription" ) );
