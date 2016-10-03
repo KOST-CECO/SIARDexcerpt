@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.0.7 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.0.8 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016 Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -182,10 +182,16 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			if ( configFileHard.exists() ) {
+				// es wird versucht das configFileHard zu löschen
+				// Util.deleteFile( configFileHard );
+				configFileHard.delete();
+			}
+			if ( configFileHard.exists() ) {
 				System.out.println( siardexcerpt.getTextResourceService().getText(
 						ERROR_CONFIGFILEHARD_FILEEXISTING ) );
 				System.exit( 1 );
 			}
+			configFileHard = new File( "configuration" + File.separator + "SIARDexcerpt.conf.xml" );
 			Util.copyFile( configFile, configFileHard );
 
 			/** b) Excerptverzeichnis mit schreibrechte und ggf anlegen */
@@ -231,8 +237,11 @@ public class SIARDexcerpt implements MessageConstants
 
 			tmpDir = new File( pathToWorkDir );
 
-			/* bestehendes Workverzeichnis Abbruch wenn nicht leer, da am Schluss das Workverzeichnis
-			 * gelöscht wird und entsprechend bestehende Dateien gelöscht werden können */
+			/* bestehendes Workverzeichnis zuerst versuchen zu löschen. Wenn nicht möglich Abbruch */
+			if ( tmpDir.exists() ) {
+				Util.deleteDirWithoutOnExit( tmpDir );
+			}
+
 			if ( tmpDir.exists() ) {
 				if ( tmpDir.isDirectory() ) {
 					// Get list of file in the directory. When its length is not zero the folder is not empty.
@@ -240,14 +249,11 @@ public class SIARDexcerpt implements MessageConstants
 					if ( files.length > 0 ) {
 						System.out.println( siardexcerpt.getTextResourceService().getText(
 								ERROR_WORKDIRECTORY_EXISTS, pathToWorkDir ) );
-						// Löschen des configFileHard, falls eines angelegt wurde
-						if ( configFileHard.exists() ) {
-							Util.deleteDir( configFileHard );
-						}
 						System.exit( 1 );
 					}
 				}
 			}
+			tmpDir = new File( pathToWorkDir );
 			if ( !tmpDir.exists() ) {
 				tmpDir.mkdir();
 			}

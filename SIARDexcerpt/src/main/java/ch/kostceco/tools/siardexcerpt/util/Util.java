@@ -121,6 +121,44 @@ public class Util
 		return dir.delete();
 	}
 
+	/** Löscht ein Verzeichnis rekursiv.
+	 * 
+	 * @param dir
+	 *          das zu löschende Verzeichnis
+	 * @return true wenn alle Files und Verzeichnisse gelöscht werden konnten */
+	public static boolean deleteDirWithoutOnExit( File dir )
+	{
+		if ( dir.isDirectory() ) {
+			String[] children = dir.list();
+			for ( int i = 0; i < children.length; i++ ) {
+				deleteFileWithoutOnExit( new File( dir, children[i] ) );
+			}
+		}
+		if ( dir.isDirectory() ) {
+			String[] children = dir.list();
+			for ( int i = 0; i < children.length; i++ ) {
+				deleteFileWithoutOnExit( new File( dir, children[i] ) );
+			}
+		}
+		dir.delete();
+		// The directory is now empty so delete it
+		return dir.delete();
+	}
+
+	public static boolean deleteFileWithoutOnExit( File file )
+	{
+		if ( file.isDirectory() ) {
+			String[] children = file.list();
+			for ( int i = 0; i < children.length; i++ ) {
+				deleteFileWithoutOnExit( new File( file, children[i] ) );
+			}
+			file.delete();
+		} else {
+			file.delete();
+		}
+		return file.delete();
+	}
+
 	public static boolean deleteFile( File file )
 	{
 		if ( file.isDirectory() ) {
@@ -258,8 +296,7 @@ public class Util
 	/** ersetzt alle Zeichen mit ""
 	 * 
 	 * @throws IOException */
-	public static void replaceAllChar( File file, String newString )
-			throws IOException
+	public static void replaceAllChar( File file, String newString ) throws IOException
 	{
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader( file ) );
