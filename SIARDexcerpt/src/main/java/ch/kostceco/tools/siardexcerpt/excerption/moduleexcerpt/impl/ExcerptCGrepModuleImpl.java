@@ -146,6 +146,9 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			}
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fMaintable );
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fMaintable );
+			
+			// Trennt ><row>. Nur eine row auf eine neue Zeile
+			Util.oldnewstring( "><row", ">"+System.getProperty( "line.separator" ) + "<row", fMaintable );
 
 			try {
 				/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
@@ -362,6 +365,9 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				}
 				Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fSubtable );
 				Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSubtable );
+
+				// Trennt ><row>. Nur eine row auf eine neue Zeile
+				Util.oldnewstring( "><row", ">"+System.getProperty( "line.separator" ) + "<row", fSubtable );
 
 				try {
 					/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.

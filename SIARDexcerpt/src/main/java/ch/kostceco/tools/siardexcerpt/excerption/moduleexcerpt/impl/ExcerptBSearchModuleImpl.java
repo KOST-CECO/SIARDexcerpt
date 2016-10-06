@@ -141,6 +141,9 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			}
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fSearchtable );
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSearchtable );
+			
+			// Trennt ><row>. Nur eine row auf eine neue Zeile
+			Util.oldnewstring( "><row", ">"+System.getProperty( "line.separator" ) + "<row", fSearchtable );
 
 			/* Der SearchString soll nur über <row>...</row> durchgeführt werden
 			 * 
