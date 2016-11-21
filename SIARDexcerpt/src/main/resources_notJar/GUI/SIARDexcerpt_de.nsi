@@ -1,5 +1,5 @@
 ; The name of the installer
-Name "SIARDexcerpt v0.0.8"
+Name "SIARDexcerpt v0.0.9"
 ; Sets the icon of the installer
 Icon "excerpt.ico"
 ; remove the text 'Nullsoft Install System vX.XX' from the installer window 
@@ -48,6 +48,7 @@ Var HEAPSIZE
 Var JAVA
 Var T_FLAG
 Var HWND
+Var MAINTABLE
 
 ;--------------------------------
 ; Pages
@@ -112,7 +113,7 @@ Function ShowDialog
   ; Writes entry_name=value into [section_name] of ini file
   WriteINIStr $DIALOG "Settings" "NextButtonText" "${NextButtonText}"
   
-  WriteINIStr $DIALOG "${WILDCARD}"              	"Text"  "${WILDCARDTXT}"
+  WriteINIStr $DIALOG "${WILDCARD}"              	"Text"  "${WILDCARDTXT}" 
   WriteINIStr $DIALOG "${HELP_Button}"           	"Text"  "${HELP_ButtonTXT}"
   WriteINIStr $DIALOG "${1INIT_RadioButton}"    	"Text"  "${1INIT_RadioButtonTXT}"
   WriteINIStr $DIALOG "${2SEARCH_RadioButton}"     	"Text"  "${2SEARCH_RadioButtonTXT}"
@@ -122,9 +123,10 @@ Function ShowDialog
 ;  WriteINIStr $DIALOG "${INPUT_FolderRequest}"   	"Text"  "${INPUT_FolderRequestTXT}"
   WriteINIStr $DIALOG "${SIARD_FileRequest}"     	"Text"  "${SIARD_FileRequestTXT}"
   WriteINIStr $DIALOG "${SIARD_FileSelect}"        	"State" "${SIARD_FileSelectTXT}"
-  WriteINIStr $DIALOG "${START_Button}"      		"Text"  "${START_ButtonTXT}"
+;  WriteINIStr $DIALOG "${START_Button}"      		"Text"  "${START_ButtonTXT}"
 ;  WriteINIStr $DIALOG "${EDIT_Konfiguration}"    	"Text"  "${EDIT_KonfigurationTXT}"
 ;  WriteINIStr $DIALOG "${RESET_Konfiguration}"   	"Text"  "${RESET_KonfigurationTXT}"
+;  WriteINIStr $DIALOG "${MAINTABLE_Lable}"          "Text"  "${MAINTABLE_LableTXT}"
   WriteINIStr $DIALOG "${CONFIG_Lable}"           	"Text"  "${CONFIG_LableTXT}"
   WriteINIStr $DIALOG "${CONFIG_FileRequest}"     	"Text"  "${CONFIG_FileRequestTXT}"
   WriteINIStr $DIALOG "${CONFIG_FileSelect}"      	"State" "${CONFIG_FileSelectTXT}"
@@ -161,6 +163,8 @@ Function ShowDialog
   ShowWindow $0 1   ; SIARD-FileButton
   GetDlgItem $0 $HWND 1208
   ShowWindow $0 1   ; SIARD-FileSelected
+  GetDlgItem $0 $HWND 1211
+  ShowWindow $0 0   ; Maintable-Lable
   GetDlgItem $0 $HWND 1215
   ShowWindow $0 1   ; Config-Lable
   GetDlgItem $0 $HWND 1217
@@ -223,6 +227,8 @@ Function LeaveDialog
 	  GetDlgItem $0 $HWND 1208
 	  ShowWindow $0 1   ; SIARD-FileSelected
 	  EnableWindow $0 1
+	  GetDlgItem $0 $HWND 1211
+	  ShowWindow $0 0   ; Maintable-Lable
 	  GetDlgItem $0 $HWND 1215
 	  ShowWindow $0 1   ; Config-Lable
 	  GetDlgItem $0 $HWND 1217
@@ -258,6 +264,8 @@ Function LeaveDialog
 	  GetDlgItem $0 $HWND 1208
 	  ShowWindow $0 1   ; SIARD-FileSelected
 	  EnableWindow $0 0
+;	  GetDlgItem $0 $HWND 1211
+;	  ShowWindow $0 1   ; Maintable-Lable
 	  GetDlgItem $0 $HWND 1215
 	  ShowWindow $0 1   ; Config-Lable
 	  GetDlgItem $0 $HWND 1217
@@ -293,6 +301,8 @@ Function LeaveDialog
 	  GetDlgItem $0 $HWND 1208
 	  ShowWindow $0 1   ; SIARD-FileSelected
 	  EnableWindow $0 0
+;	  GetDlgItem $0 $HWND 1211
+;	  ShowWindow $0 1   ; Maintable-Lable
 	  GetDlgItem $0 $HWND 1215
 	  ShowWindow $0 1   ; Config-Lable
 	  GetDlgItem $0 $HWND 1217
@@ -311,11 +321,7 @@ Function LeaveDialog
     ${Break}
     
     ${Case} '${SIARD_FileRequest}'
-;      ${If} $T_FLAG == '--sip'
-;        nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.zip' 'SIP Files|*.zip'
-;      ${Else}
         nsDialogs::SelectFileDialog 'open' '$SIARDEXCERPT\*.siard' '|*.*'
-;      ${EndIf}
       Pop $R3
       ${If} $R3 == ''
         MessageBox MB_OK "${FILE_SelectTXT}"
@@ -444,18 +450,18 @@ prog_err:
 ;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n$\n$JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME"
     MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n $JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME $\n$LOG\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDxxx.xml"
 ;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n $JAVA\bin\java.exe" -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG"
-	Goto rm_workdir
 
 goto_ok:
   ; ... without error completed
+    Call MainTable
     ${If} $T_FLAG == '--init'
-      MessageBox MB_OK|MB_ICONEXCLAMATION "$SIARDEXCERPT$\n${INIT_OK}"
+      MessageBox MB_OK "$\n${INIT_OK} $\nMaintable: $MAINTABLE"
       ReadINIStr $1 $DIALOG '${1INIT_RadioButton}' 'HWND'
       SendMessage $1 ${BM_SETCHECK} 0 0
       ReadINIStr $1 $DIALOG '${2SEARCH_RadioButton}' 'HWND'
       SendMessage $1 ${BM_SETCHECK} 1 0
-      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
-      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${2SEARCH_TextTXT}'
+;      ReadINIStr $1 $DIALOG '${START_Button}' 'HWND'
+;      SendMessage $1 ${WM_SETTEXT} 1 'STR:${START_TextTXT} ${2SEARCH_TextTXT}'
       StrCpy $T_FLAG '--search'
 	  ShowWindow $0 1   ; SIARD-Lable
 	  GetDlgItem $0 $HWND 1207
@@ -463,6 +469,8 @@ goto_ok:
 	  GetDlgItem $0 $HWND 1208
 	  ShowWindow $0 1   ; SIARD-FileSelected
 	  EnableWindow $0 0
+;	  GetDlgItem $0 $HWND 1211
+;	  ShowWindow $0 1   ; Maintable-Lable
 	  GetDlgItem $0 $HWND 1215
 	  ShowWindow $0 1   ; Config-Lable
 	  GetDlgItem $0 $HWND 1217
@@ -507,6 +515,15 @@ rm_workdir:
   RMDir /r $1
   delete "configuration\SIARDexcerpt.conf.xml" 
   Abort 
+FunctionEnd
+
+;--------------------------------
+Function MainTable
+  StrCpy $MAINTABLE ''
+  ${xml::LoadFile} "$EXEDIR\${CONFIGPATH}\${CONFIG}" $0
+  ${xml::RootElement} $0 $1
+  ${xml::XPathString} "//configuration/maintable/mainname/text()" $MAINTABLE $1
+  ${xml::Unload}
 FunctionEnd
 
 ;--------------------------------

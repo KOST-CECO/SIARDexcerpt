@@ -34,6 +34,7 @@ public interface MessageConstants
 	String	ERROR_LOGGING_NOFILEAPPENDER			= "error.logging.nofileappender";
 	String	ERROR_WRONG_JRE										= "error.wrong.jdk";
 	String	ERROR_NOINIT											= "error.noinit";
+	String	ERROR_SPECIAL_CHARACTER						= "error.special.character";
 
 	// Globale Meldungen
 	String	MESSAGE_XML_HEADER								= "message.xml.header";

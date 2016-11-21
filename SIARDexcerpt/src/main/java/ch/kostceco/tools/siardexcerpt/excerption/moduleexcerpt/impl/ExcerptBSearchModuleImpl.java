@@ -141,9 +141,10 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			}
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fSearchtable );
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSearchtable );
-			
+
 			// Trennt ><row>. Nur eine row auf eine neue Zeile
-			Util.oldnewstring( "><row", ">"+System.getProperty( "line.separator" ) + "<row", fSearchtable );
+			Util.oldnewstring( "><row", ">" + System.getProperty( "line.separator" ) + "<row",
+					fSearchtable );
 
 			/* Der SearchString soll nur über <row>...</row> durchgeführt werden
 			 * 
@@ -158,9 +159,9 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 
 			try {
 				// grep -E "REGEX-Suchbegriff" table13.xml >> output.txt
-				String command = "cmd /c \"" + pathToGrepExe + " -E" + insensitiveOption + " \""
-						+ searchString + "\" " + fSearchtable.getAbsolutePath() + " >> "
-						+ tempOutFile.getAbsolutePath() + "\"";
+				String command = "cmd /c \"\"" + pathToGrepExe + "\" -E" + insensitiveOption + " \""
+						+ searchString + "\" \"" + fSearchtable.getAbsolutePath() + "\" >> \""
+						+ tempOutFile.getAbsolutePath() + "\"\"";
 				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 				 * gehts: cmd /c\"urspruenlicher Befehl\" */
 

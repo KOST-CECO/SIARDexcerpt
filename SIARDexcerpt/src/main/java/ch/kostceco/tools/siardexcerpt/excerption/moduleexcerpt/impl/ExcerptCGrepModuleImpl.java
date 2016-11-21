@@ -108,7 +108,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 		// TODO: Record aus Maintable herausholen
 		try {
 			if ( tempOutFile.exists() ) {
-				Util.deleteDir( tempOutFile );
+				tempOutFile.delete();
+				if ( tempOutFile.exists() ) {
+					Util.replaceAllChar( tempOutFile, "" );
+				}
+				/* Util.deleteDir( tempOutFile );
+				 * 
+				 * wird nicht verwendet, da es jetzt gelöscht werden muss und nicht spätestens bei exit.
+				 * wenn es nicht gelöchscht werden kann wird es geleert. */
 			}
 
 			/* Nicht vergessen in "src/main/resources/config/applicationContext-services.xml" beim
@@ -146,9 +153,9 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			}
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fMaintable );
 			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fMaintable );
-			
+
 			// Trennt ><row>. Nur eine row auf eine neue Zeile
-			Util.oldnewstring( "><row", ">"+System.getProperty( "line.separator" ) + "<row", fMaintable );
+			Util.oldnewstring( "><row", ">" + System.getProperty( "line.separator" ) + "<row", fMaintable );
 
 			try {
 				/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
@@ -158,8 +165,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				excerptStringM = excerptStringM.replaceAll( "\\.", "\\.*" );
 				excerptStringM = "<" + cell + ">" + excerptStringM + "</" + cell + ">";
 				// grep "<c11>7561234567890</c11>" table13.xml >> output.txt
-				String command = "cmd /c \"" + pathToGrepExe + " -E \"" + excerptStringM + "\" "
-						+ fMaintable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath() + "\"";
+				String command = "cmd /c \"\"" + pathToGrepExe + "\" -E \"" + excerptStringM + "\" \""
+						+ fMaintable.getAbsolutePath() + "\" >> \"" + tempOutFile.getAbsolutePath() + "\"\"";
 				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 				 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
@@ -304,7 +311,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 						getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, folder ) );
 
 				if ( tempOutFile.exists() ) {
-					Util.deleteDir( tempOutFile );
+					tempOutFile.delete();
+					if ( tempOutFile.exists() ) {
+						Util.replaceAllChar( tempOutFile, "" );
+					}
+					/* Util.deleteDir( tempOutFile );
+					 * 
+					 * wird nicht verwendet, da es jetzt gelöscht werden muss und nicht spätestens bei exit.
+					 * wenn es nicht gelöchscht werden kann wird es geleert. */
 				}
 				content = "";
 
@@ -367,7 +381,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSubtable );
 
 				// Trennt ><row>. Nur eine row auf eine neue Zeile
-				Util.oldnewstring( "><row", ">"+System.getProperty( "line.separator" ) + "<row", fSubtable );
+				Util.oldnewstring( "><row", ">" + System.getProperty( "line.separator" ) + "<row",
+						fSubtable );
 
 				try {
 					/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
@@ -376,8 +391,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					excerptStringM = excerptStringM.replaceAll( "\\.", "\\.*" );
 					excerptStringM = "<" + cell + ">" + excerptStringM + "</" + cell + ">";
 					// grep "<c11>7561234567890</c11>" table13.xml >> output.txt
-					String command = "cmd /c \"" + pathToGrepExe + " -E \"" + excerptStringM + "\" "
-							+ fSubtable.getAbsolutePath() + " >> " + tempOutFile.getAbsolutePath() + "\"";
+					String command = "cmd /c \"\"" + pathToGrepExe + "\" -E \"" + excerptStringM + "\" \""
+							+ fSubtable.getAbsolutePath() + "\" >> \"" + tempOutFile.getAbsolutePath() + "\"\"";
 					/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 					 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
@@ -527,7 +542,14 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 							getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, folder ) );
 
 					if ( tempOutFile.exists() ) {
-						Util.deleteDir( tempOutFile );
+						tempOutFile.delete();
+						if ( tempOutFile.exists() ) {
+							Util.replaceAllChar( tempOutFile, "" );
+						}
+						/* Util.deleteDir( tempOutFile );
+						 * 
+						 * wird nicht verwendet, da es jetzt gelöscht werden muss und nicht spätestens bei exit.
+						 * wenn es nicht gelöchscht werden kann wird es geleert. */
 					}
 					content = "";
 

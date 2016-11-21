@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.0.8 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.0.9 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016 Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -24,6 +24,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 // import java.io.OutputStreamWriter;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -161,7 +164,7 @@ public class SIARDexcerpt implements MessageConstants
 			 * 
 			 * e) Struktur-Check SIARD-Verzeichnis
 			 * 
-			 * f) TODO: Config bei Bedarf (..) gemäss metadata.xml ausfüllen
+			 * f) Config bei Bedarf (..) gemäss metadata.xml ausfüllen
 			 * 
 			 * TODO: Erledigt */
 
@@ -267,6 +270,79 @@ public class SIARDexcerpt implements MessageConstants
 					Util.deleteDir( configFileHard );
 				}
 				System.exit( 1 );
+			}
+
+			try {
+				// Im Pfad keine Sonderzeichen kann abstürzen 
+
+				String patternStr = "[^!#\\$%\\(\\)\\+,\\-_\\.=@\\[\\]\\{\\}\\~:\\\\a-zA-Z0-9]";
+				Pattern pattern = Pattern.compile( patternStr );
+
+				String name = tmpDir.getAbsolutePath();
+				String[] pathElements = name.split( "/" );
+				for ( int i = 0; i < pathElements.length; i++ ) {
+					String element = pathElements[i];
+
+					Matcher matcher = pattern.matcher( element );
+
+					boolean matchFound = matcher.find();
+					if ( matchFound ) {
+						if ( matcher.group( i ).equals( " " ) ) {
+							// Leerschlag ab v0.0.9 OK
+						} else {
+							System.console().printf(
+									siardexcerpt.getTextResourceService().getText( ERROR_SPECIAL_CHARACTER, name,
+											matcher.group( i ) ) );
+							Thread.sleep( 5000 );
+							System.exit( 1 );			
+						}
+					}
+				}
+
+				name = directoryOfOutput.getAbsolutePath();
+				pathElements = name.split( "/" );
+				for ( int i = 0; i < pathElements.length; i++ ) {
+					String element = pathElements[i];
+
+					Matcher matcher = pattern.matcher( element );
+
+					boolean matchFound = matcher.find();
+					if ( matchFound ) {
+						if ( matcher.group( i ).equals( " " ) ) {
+							// Leerschlag ab v0.0.9 OK
+						} else {
+							System.console().printf(
+									siardexcerpt.getTextResourceService().getText( ERROR_SPECIAL_CHARACTER, name,
+											matcher.group( i ) ) );
+							Thread.sleep( 5000 );
+							System.exit( 1 );			
+						}
+					} 
+				}
+
+				name = siardDatei.getAbsolutePath();
+				pathElements = name.split( "/" );
+				for ( int i = 0; i < pathElements.length; i++ ) {
+					String element = pathElements[i];
+
+					Matcher matcher = pattern.matcher( element );
+
+					boolean matchFound = matcher.find();
+					if ( matchFound ) {
+						if ( matcher.group( i ).equals( " " ) ) {
+							// Leerschlag ab v0.0.9 OK
+						} else {
+							System.console().printf(
+									siardexcerpt.getTextResourceService().getText( ERROR_SPECIAL_CHARACTER, name,
+											matcher.group( i ) ) );
+							Thread.sleep( 5000 );
+							System.exit( 1 );			
+						}
+					}
+				}
+
+			} catch ( Exception e ) {
+				System.out.println( "Exception: " + e.getMessage() );
 			}
 
 			/** d) SIARD-Datei entpacken */
@@ -400,6 +476,14 @@ public class SIARDexcerpt implements MessageConstants
 			 * TODO: Noch offen */
 
 			System.out.println( "SIARDexcerpt: search" );
+
+			String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
+			if ( pathToWorkDir.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( pathToWorkDir );
+				System.exit( 1 );
+			}
+
+			tmpDir = new File( pathToWorkDir );
 
 			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
 
@@ -589,6 +673,14 @@ public class SIARDexcerpt implements MessageConstants
 
 			System.out.println( "SIARDexcerpt: extract" );
 
+			String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
+			if ( pathToWorkDir.startsWith( "Configuration-Error:" ) ) {
+				System.out.println( pathToWorkDir );
+				System.exit( 1 );
+			}
+
+			tmpDir = new File( pathToWorkDir );
+
 			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
 
 			directoryOfOutput = new File( pathToOutput );
@@ -621,7 +713,6 @@ public class SIARDexcerpt implements MessageConstants
 			String ausgabeStart = sdfStart.format( nowStart );
 
 			String excerptString = new String( args[3] );
-
 			/* Der excerptString kann zeichen enthalten, welche nicht im Dateinamen vorkommen dürfen.
 			 * Entsprechend werden diese normalisiert */
 			String excerptStringFilename = excerptString.replaceAll( "/", "_" );
@@ -631,6 +722,8 @@ public class SIARDexcerpt implements MessageConstants
 			excerptStringFilename = excerptStringFilename.replace( ".*", "_" );
 			excerptStringFilename = excerptStringFilename.replaceAll( "___", "_" );
 			excerptStringFilename = excerptStringFilename.replaceAll( "__", "_" );
+
+			excerptString = excerptString.replaceAll( "\\*", "\\." );
 
 			String outDateiName = siardDatei.getName() + "_" + excerptStringFilename
 					+ "_SIARDexcerpt.xml";
