@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
  * Claire Röthlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
