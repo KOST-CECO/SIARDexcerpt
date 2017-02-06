@@ -2,7 +2,7 @@
 <project default="create_run_jar_de_fr_en" name="Create Runnable Jar for Project SIARDexcerpt DE, FR, EN">
 	<!--ANT 1.7 is required                                        -->
 	<target name="create_run_jar_de_fr_en">
-        <mkdir dir="../SIARDexcerpt_TEST"/>
+        <mkdir dir="../../SIARDexcerpt"/>
 		<!--Erstelle target, damit die Jars auf dem aktuellen Code erstellt werden-->
 		<mkdir dir="SIARDexcerpt/target/classes" />
 		<copy includeemptydirs="false" overwrite="true" todir="SIARDexcerpt/target/classes">
@@ -20,7 +20,7 @@
 		<copy file="README.md" todir="SIARDexcerpt/target/classes" />
 		<!--Kopiere de_messages.properties in target und erstelle siardexcerpt_de.jar -->
 		<copy file="SIARDexcerpt/src/main/resources/de_messages.properties" overwrite="true" tofile="SIARDexcerpt/target/classes/messages.properties"/>
-		<jar destfile="../SIARDexcerpt_TEST/siardexcerpt_de.jar">
+		<jar destfile="../../SIARDexcerpt/siardexcerpt_de.jar">
 			<manifest>
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
 				<attribute name="Rsrc-Main-Class" value="ch.kostceco.tools.siardexcerpt.SIARDexcerpt"/>
@@ -57,7 +57,7 @@
 		</jar>
 		<!--Kopiere fr_messages.properties in target und erstelle siardexcerpt_fr.jar -->
 		<copy file="SIARDexcerpt/src/main/resources/fr_messages.properties" overwrite="true" tofile="SIARDexcerpt/target/classes/messages.properties"/>
-		<jar destfile="../SIARDexcerpt_TEST/siardexcerpt_fr.jar">
+		<jar destfile="../../SIARDexcerpt/siardexcerpt_fr.jar">
 			<manifest>
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
 				<attribute name="Rsrc-Main-Class" value="ch.kostceco.tools.siardexcerpt.SIARDexcerpt"/>
@@ -94,7 +94,7 @@
 		</jar>
 		<!--Kopiere en_messages.properties in target und erstelle siardexcerpt_en.jar -->
 		<copy file="SIARDexcerpt/src/main/resources/en_messages.properties" overwrite="true" tofile="SIARDexcerpt/target/classes/messages.properties"/>
-		<jar destfile="../SIARDexcerpt_TEST/siardexcerpt_en.jar">
+		<jar destfile="../../SIARDexcerpt/siardexcerpt_en.jar">
 			<manifest>
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
 				<attribute name="Rsrc-Main-Class" value="ch.kostceco.tools.siardexcerpt.SIARDexcerpt"/>
@@ -129,22 +129,22 @@
 			<zipfileset dir="SIARDexcerpt/lib" includes="jdom-2.0.0.jar"/>
 			<zipfileset dir="SIARDexcerpt/lib" includes="zip64-1.0.jar"/>
 		</jar>
-		<!--Kopiere alle benötigten Ordner und Dokumente in SIARDexcerpt_TEST-->
-		<copy overwrite="true" todir="../SIARDexcerpt_TEST/configuration">
+		<!--Kopiere alle benötigten Ordner und Dokumente in ../../SIARDexcerpt-->
+		<copy overwrite="true" todir="../../SIARDexcerpt/configuration">
 			<fileset dir="SIARDexcerpt/src/main/resources_notJar/configuration"/>
 		</copy>
-		<copy overwrite="true" todir="../SIARDexcerpt_TEST/doc">
+		<copy overwrite="true" todir="../../SIARDexcerpt/doc">
 			<fileset dir="SIARDexcerpt/src/main/resources_notJar/doc"/>
 		</copy>
-		<copy overwrite="true" todir="../SIARDexcerpt_TEST/license">
+		<copy overwrite="true" todir="../../SIARDexcerpt/license">
 			<fileset dir="SIARDexcerpt/src/main/resources_notJar/license"/>
 		</copy>
-		<copy overwrite="true" todir="../SIARDexcerpt_TEST/resources">
+		<copy overwrite="true" todir="../../SIARDexcerpt/resources">
 			<fileset dir="SIARDexcerpt/src/main/resources_notJar/resources"/>
 		</copy>
-		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_de.exe" todir="../SIARDexcerpt_TEST"/>
-		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_fr.exe" todir="../SIARDexcerpt_TEST"/>
-		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_en.exe" todir="../SIARDexcerpt_TEST"/>
+		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_de.exe" todir="../../SIARDexcerpt"/>
+		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_fr.exe" todir="../../SIARDexcerpt"/>
+		<copy file="SIARDexcerpt/src/main/resources_notJar/SIARDexcerpt_en.exe" todir="../../SIARDexcerpt"/>
 		<copy file="SIARDexcerpt/src/main/resources/de_messages.properties" overwrite="true" tofile="SIARDexcerpt/target/classes/messages.properties"/>
 	</target>
 </project>
