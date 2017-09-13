@@ -100,6 +100,57 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			}
 		}
 
+		File fSedExe = new File( "resources" + File.separator + "sed" + File.separator + "sed.exe" );
+		File msys20dll = new File( "resources" + File.separator + "sed" + File.separator
+				+ "msys-2.0.dll" );
+		File msysgccs1dll = new File( "resources" + File.separator + "sed" + File.separator
+				+ "msys-gcc_s-1.dll" );
+		File msysiconv2dll = new File( "resources" + File.separator + "sed" + File.separator
+				+ "msys-iconv-2.dll" );
+		File msysintl8dll = new File( "resources" + File.separator + "sed" + File.separator
+				+ "msys-intl-8.dll" );
+		String pathToSedExe = fSedExe.getAbsolutePath();
+		if ( !fSedExe.exists() ) {
+			// sed.exe existiert nicht --> Abbruch
+			getMessageService().logError(
+					getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+							+ getTextResourceService().getText( ERROR_XML_C_MISSINGFILE,
+									fSedExe.getAbsolutePath() ) );
+			return false;
+		}
+		if ( !msys20dll.exists() ) {
+			// existiert nicht --> Abbruch
+			getMessageService().logError(
+					getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+							+ getTextResourceService().getText( ERROR_XML_C_MISSINGFILE,
+									msys20dll.getAbsolutePath() ) );
+			return false;
+		}
+		if ( !msysgccs1dll.exists() ) {
+			// existiert nicht --> Abbruch
+			getMessageService().logError(
+					getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+							+ getTextResourceService().getText( ERROR_XML_C_MISSINGFILE,
+									msysgccs1dll.getAbsolutePath() ) );
+			return false;
+		}
+		if ( !msysiconv2dll.exists() ) {
+			// existiert nicht --> Abbruch
+			getMessageService().logError(
+					getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+							+ getTextResourceService().getText( ERROR_XML_C_MISSINGFILE,
+									msysiconv2dll.getAbsolutePath() ) );
+			return false;
+		}
+		if ( !msysintl8dll.exists() ) {
+			// existiert nicht --> Abbruch
+			getMessageService().logError(
+					getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+							+ getTextResourceService().getText( ERROR_XML_C_MISSINGFILE,
+									msysintl8dll.getAbsolutePath() ) );
+			return false;
+		}
+
 		File tempOutFile = new File( outFile.getAbsolutePath() + ".tmp" );
 		File xmlExtracted = new File( siardDatei.getAbsolutePath() + File.separator + "header"
 				+ File.separator + "metadata.xml" );
@@ -144,18 +195,151 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 
 			File fMaintable = new File( fSchema.getAbsolutePath() + File.separator + folder
 					+ File.separator + folder + ".xml" );
-			/* Bringt die ganze <row>...</row> auf eine Zeile
+			File fMaintableTemp = new File( fSchema.getAbsolutePath() + File.separator + folder
+					+ File.separator + folder + "_Temp.xml" );
+			String pathTofMaintable = fMaintable.getAbsolutePath();
+			String pathTofMaintableTemp = fMaintableTemp.getAbsolutePath();
+			/* mit Util.oldnewstring respektive replace können sehr grosse files nicht bearbeitet werden!
 			 * 
-			 * Zuerst alle Leerstellen zwischen den Elementen löschen und dann der Zeilenumbruch vor <c
-			 * und </row löschen */
-			for ( int r = 0; r < 20; r++ ) {
-				Util.oldnewstring( " <", "<", fMaintable );
-			}
-			Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fMaintable );
-			Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fMaintable );
+			 * Entsprechend wurde sed verwendet. */
 
-			// Trennt ><row>. Nur eine row auf eine neue Zeile
-			Util.oldnewstring( "><row", ">" + System.getProperty( "line.separator" ) + "<row", fMaintable );
+			// Bringt alles auf eine Zeile
+			String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofMaintable
+					+ " > " + pathTofMaintableTemp + "\"";
+			String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' " + pathTofMaintableTemp
+					+ " > " + pathTofMaintable + "\"";
+			// Trennt ><row. Nur eine row auf einer Zeile
+			String commandSed3 = "cmd /c \"" + pathToSedExe + " 's/\\d060row/\\n\\d060row/g' "
+					+ pathTofMaintable + " > " + pathTofMaintableTemp + "\"";
+			// Trennt ><table. <table auf eine neue Zeile
+			String commandSed4 = "cmd /c \"" + pathToSedExe
+					+ " 's/\\d060\\d047table/\\n\\d060\\d047table/g' " + pathTofMaintableTemp + " > "
+					+ pathTofMaintable + "\"";
+
+			// String commandSed = "cmd /c \"\"pathToSedExe\"  's/row/R0W/g\' 'hallo row.'\"";
+			/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
+			 * gehts: cmd /c\"urspruenlicher Befehl\" */
+
+			Process procSed = null;
+			Runtime rtSed = null;
+			Process procSed2 = null;
+			Runtime rtSed2 = null;
+			Process procSed3 = null;
+			Runtime rtSed3 = null;
+			Process procSed4 = null;
+			Runtime rtSed4 = null;
+
+			try {
+				Util.switchOffConsole();
+				rtSed = Runtime.getRuntime();
+				procSed = rtSed.exec( commandSed.toString().split( " " ) );
+				// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+				// Fehleroutput holen
+				StreamGobbler errorGobblerSed = new StreamGobbler( procSed.getErrorStream(), "ERROR" );
+
+				// Output holen
+				StreamGobbler outputGobblerSed = new StreamGobbler( procSed.getInputStream(), "OUTPUT" );
+
+				// Threads starten
+				errorGobblerSed.start();
+				outputGobblerSed.start();
+
+				// Warte, bis wget fertig ist
+				procSed.waitFor();
+
+				// ---------------------------
+
+				rtSed2 = Runtime.getRuntime();
+				procSed2 = rtSed2.exec( commandSed2.toString().split( " " ) );
+				// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+				// Fehleroutput holen
+				StreamGobbler errorGobblerSed2 = new StreamGobbler( procSed2.getErrorStream(), "ERROR" );
+
+				// Output holen
+				StreamGobbler outputGobblerSed2 = new StreamGobbler( procSed2.getInputStream(), "OUTPUT" );
+
+				// Threads starten
+				errorGobblerSed2.start();
+				outputGobblerSed2.start();
+
+				// Warte, bis wget fertig ist
+				procSed2.waitFor();
+
+				// ---------------------------
+
+				rtSed3 = Runtime.getRuntime();
+				procSed3 = rtSed3.exec( commandSed3.toString().split( " " ) );
+				// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+				// Fehleroutput holen
+				StreamGobbler errorGobblerSed3 = new StreamGobbler( procSed3.getErrorStream(), "ERROR" );
+
+				// Output holen
+				StreamGobbler outputGobblerSed3 = new StreamGobbler( procSed3.getInputStream(), "OUTPUT" );
+
+				// Threads starten
+				errorGobblerSed3.start();
+				outputGobblerSed3.start();
+
+				// Warte, bis wget fertig ist
+				procSed3.waitFor();
+
+				// ---------------------------
+
+				rtSed4 = Runtime.getRuntime();
+				procSed4 = rtSed4.exec( commandSed4.toString().split( " " ) );
+				// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+				// Fehleroutput holen
+				StreamGobbler errorGobblerSed4 = new StreamGobbler( procSed4.getErrorStream(), "ERROR" );
+
+				// Output holen
+				StreamGobbler outputGobblerSed4 = new StreamGobbler( procSed4.getInputStream(), "OUTPUT" );
+
+				// Threads starten
+				errorGobblerSed4.start();
+				outputGobblerSed4.start();
+
+				// Warte, bis wget fertig ist
+				procSed4.waitFor();
+
+				// ---------------------------
+
+				Util.switchOnConsole();
+
+			} catch ( Exception e ) {
+				getMessageService().logError(
+						getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+								+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+				return false;
+			} finally {
+				if ( procSed != null ) {
+					closeQuietly( procSed.getOutputStream() );
+					closeQuietly( procSed.getInputStream() );
+					closeQuietly( procSed.getErrorStream() );
+				}
+				if ( procSed2 != null ) {
+					closeQuietly( procSed2.getOutputStream() );
+					closeQuietly( procSed2.getInputStream() );
+					closeQuietly( procSed2.getErrorStream() );
+				}
+				if ( procSed3 != null ) {
+					closeQuietly( procSed3.getOutputStream() );
+					closeQuietly( procSed3.getInputStream() );
+					closeQuietly( procSed3.getErrorStream() );
+				}
+				if ( procSed4 != null ) {
+					closeQuietly( procSed4.getOutputStream() );
+					closeQuietly( procSed4.getInputStream() );
+					closeQuietly( procSed4.getErrorStream() );
+				}
+			}
+
+			if ( fMaintableTemp.exists() ) {
+				Util.deleteDir( fMaintableTemp );
+			}
 
 			try {
 				/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
@@ -373,16 +557,151 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				// System.out.println( name + " - " + folder + " - " + cell );
 				File fSubtable = new File( fSchema.getAbsolutePath() + File.separator + folder
 						+ File.separator + folder + ".xml" );
-				// Bringt die ganze <row>...</row> auf eine Zeile
-				for ( int r = 0; r < 20; r++ ) {
-					Util.oldnewstring( " <", "<", fSubtable );
-				}
-				Util.oldnewstring( System.getProperty( "line.separator" ) + "<c", "<c", fSubtable );
-				Util.oldnewstring( System.getProperty( "line.separator" ) + "</row", "</row", fSubtable );
+				File fSubtableTemp = new File( fSchema.getAbsolutePath() + File.separator + folder
+						+ File.separator + folder + "_Temp.xml" );
+				String pathTofSubtable = fSubtable.getAbsolutePath();
+				String pathTofSubtableTemp = fSubtableTemp.getAbsolutePath();
+				/* mit Util.oldnewstring respektive replace können sehr grosse files nicht bearbeitet werden!
+				 * 
+				 * Entsprechend wurde sed verwendet. */
 
-				// Trennt ><row>. Nur eine row auf eine neue Zeile
-				Util.oldnewstring( "><row", ">" + System.getProperty( "line.separator" ) + "<row",
-						fSubtable );
+				// Bringt alles auf eine Zeile
+				String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofSubtable
+						+ " > " + pathTofSubtableTemp + "\"";
+				String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' " + pathTofSubtableTemp
+						+ " > " + pathTofSubtable + "\"";
+				// Trennt ><row. Nur eine row auf einer Zeile
+				String commandSed3 = "cmd /c \"" + pathToSedExe + " 's/\\d060row/\\n\\d060row/g' "
+						+ pathTofSubtable + " > " + pathTofSubtableTemp + "\"";
+				// Trennt ><table. <table auf eine neue Zeile
+				String commandSed4 = "cmd /c \"" + pathToSedExe
+						+ " 's/\\d060\\d047table/\\n\\d060\\d047table/g' " + pathTofSubtableTemp + " > "
+						+ pathTofSubtable + "\"";
+
+				// String commandSed = "cmd /c \"\"pathToSedExe\"  's/row/R0W/g\' 'hallo row.'\"";
+				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
+				 * gehts: cmd /c\"urspruenlicher Befehl\" */
+
+				Process procSed = null;
+				Runtime rtSed = null;
+				Process procSed2 = null;
+				Runtime rtSed2 = null;
+				Process procSed3 = null;
+				Runtime rtSed3 = null;
+				Process procSed4 = null;
+				Runtime rtSed4 = null;
+
+				try {
+					Util.switchOffConsole();
+					rtSed = Runtime.getRuntime();
+					procSed = rtSed.exec( commandSed.toString().split( " " ) );
+					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+					// Fehleroutput holen
+					StreamGobbler errorGobblerSed = new StreamGobbler( procSed.getErrorStream(), "ERROR" );
+
+					// Output holen
+					StreamGobbler outputGobblerSed = new StreamGobbler( procSed.getInputStream(), "OUTPUT" );
+
+					// Threads starten
+					errorGobblerSed.start();
+					outputGobblerSed.start();
+
+					// Warte, bis wget fertig ist
+					procSed.waitFor();
+
+					// ---------------------------
+
+					rtSed2 = Runtime.getRuntime();
+					procSed2 = rtSed2.exec( commandSed2.toString().split( " " ) );
+					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+					// Fehleroutput holen
+					StreamGobbler errorGobblerSed2 = new StreamGobbler( procSed2.getErrorStream(), "ERROR" );
+
+					// Output holen
+					StreamGobbler outputGobblerSed2 = new StreamGobbler( procSed2.getInputStream(), "OUTPUT" );
+
+					// Threads starten
+					errorGobblerSed2.start();
+					outputGobblerSed2.start();
+
+					// Warte, bis wget fertig ist
+					procSed2.waitFor();
+
+					// ---------------------------
+
+					rtSed3 = Runtime.getRuntime();
+					procSed3 = rtSed3.exec( commandSed3.toString().split( " " ) );
+					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+					// Fehleroutput holen
+					StreamGobbler errorGobblerSed3 = new StreamGobbler( procSed3.getErrorStream(), "ERROR" );
+
+					// Output holen
+					StreamGobbler outputGobblerSed3 = new StreamGobbler( procSed3.getInputStream(), "OUTPUT" );
+
+					// Threads starten
+					errorGobblerSed3.start();
+					outputGobblerSed3.start();
+
+					// Warte, bis wget fertig ist
+					procSed3.waitFor();
+
+					// ---------------------------
+
+					rtSed4 = Runtime.getRuntime();
+					procSed4 = rtSed4.exec( commandSed4.toString().split( " " ) );
+					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+					// Fehleroutput holen
+					StreamGobbler errorGobblerSed4 = new StreamGobbler( procSed4.getErrorStream(), "ERROR" );
+
+					// Output holen
+					StreamGobbler outputGobblerSed4 = new StreamGobbler( procSed4.getInputStream(), "OUTPUT" );
+
+					// Threads starten
+					errorGobblerSed4.start();
+					outputGobblerSed4.start();
+
+					// Warte, bis wget fertig ist
+					procSed4.waitFor();
+
+					// ---------------------------
+
+					Util.switchOnConsole();
+
+				} catch ( Exception e ) {
+					getMessageService().logError(
+							getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+									+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+					return false;
+				} finally {
+					if ( procSed != null ) {
+						closeQuietly( procSed.getOutputStream() );
+						closeQuietly( procSed.getInputStream() );
+						closeQuietly( procSed.getErrorStream() );
+					}
+					if ( procSed2 != null ) {
+						closeQuietly( procSed2.getOutputStream() );
+						closeQuietly( procSed2.getInputStream() );
+						closeQuietly( procSed2.getErrorStream() );
+					}
+					if ( procSed3 != null ) {
+						closeQuietly( procSed3.getOutputStream() );
+						closeQuietly( procSed3.getInputStream() );
+						closeQuietly( procSed3.getErrorStream() );
+					}
+					if ( procSed4 != null ) {
+						closeQuietly( procSed4.getOutputStream() );
+						closeQuietly( procSed4.getInputStream() );
+						closeQuietly( procSed4.getErrorStream() );
+					}
+				}
+
+				if ( fSubtableTemp.exists() ) {
+					Util.deleteDir( fSubtableTemp );
+				}
 
 				try {
 					/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
