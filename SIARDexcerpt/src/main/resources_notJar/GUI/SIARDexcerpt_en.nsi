@@ -1,5 +1,5 @@
 ; The name of the installer
-Name "SIARDexcerpt v0.0.9"
+Name "SIARDexcerpt v0.1.0"
 ; Sets the icon of the installer
 Icon "excerpt.ico"
 ; remove the text 'Nullsoft Install System vX.XX' from the installer window 
