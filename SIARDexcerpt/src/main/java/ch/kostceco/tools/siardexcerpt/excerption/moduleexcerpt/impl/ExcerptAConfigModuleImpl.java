@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * 2016-2019 Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 // import java.util.Arrays;
 
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -30,30 +32,17 @@ import org.w3c.dom.NodeList;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAConfigException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptAConfigModule;
-import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
 /** Config Datei ausfüllen */
 public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements ExcerptAConfigModule
 {
 
-	private ConfigurationService	configurationService;
-
-	public static String					NEWLINE	= System.getProperty( "line.separator" );
-
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService( ConfigurationService configurationService )
-	{
-		this.configurationService = configurationService;
-	}
+	public static String	NEWLINE	= System.getProperty( "line.separator" );
 
 	@Override
-	public boolean validate( File siardDatei, File configFileHard, String inputMainname )
-			throws ExcerptAConfigException
+	public boolean validate( File siardDatei, File configFileHard, String inputMainname,
+			Map<String, String> configMap ) throws ExcerptAConfigException
 	{
 
 		boolean result = true;
@@ -473,28 +462,28 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 								}
 							}
 
-							array12name[0] = "<cellname1>" + array84name[0] + "</cellname1>";
-							array12number[0] = "<cellnumber1>" + array84number[0] + "</cellnumber1>";
-							array12name[1] = "<cellname2>" + array84name[1] + "</cellname2>";
-							array12number[1] = "<cellnumber2>" + array84number[1] + "</cellnumber2>";
-							array12name[2] = "<cellname3>" + array84name[2] + "</cellname3>";
-							array12number[2] = "<cellnumber3>" + array84number[2] + "</cellnumber3>";
-							array12name[3] = "<cellname4>" + array84name[3] + "</cellname4>";
-							array12number[3] = "<cellnumber4>" + array84number[3] + "</cellnumber4>";
-							array12name[4] = "<cellname5>" + array84name[4] + "</cellname5>";
-							array12number[4] = "<cellnumber5>" + array84number[4] + "</cellnumber5>";
-							array12name[5] = "<cellname6>" + array84name[5] + "</cellname6>";
-							array12number[5] = "<cellnumber6>" + array84number[5] + "</cellnumber6>";
-							array12name[6] = "<cellname7>" + array84name[6] + "</cellname7>";
-							array12number[6] = "<cellnumber7>" + array84number[6] + "</cellnumber7>";
-							array12name[7] = "<cellname8>" + array84name[7] + "</cellname8>";
-							array12number[7] = "<cellnumber8>" + array84number[7] + "</cellnumber8>";
-							array12name[8] = "<cellname9>" + array84name[8] + "</cellname9>";
-							array12number[8] = "<cellnumber9>" + array84number[8] + "</cellnumber9>";
-							array12name[9] = "<cellname10>" + array84name[9] + "</cellname10>";
-							array12number[9] = "<cellnumber10>" + array84number[9] + "</cellnumber10>";
-							array12name[10] = "<cellname11>" + array84name[10] + "</cellname11>";
-							array12number[10] = "<cellnumber11>" + array84number[10] + "</cellnumber11>";
+							array12name[0] = "<mc1name>" + array84name[0] + "</mc1name>";
+							array12number[0] = "<mc1number>" + array84number[0] + "</mc1number>";
+							array12name[1] = "<mc2name>" + array84name[1] + "</mc2name>";
+							array12number[1] = "<mc2number>" + array84number[1] + "</mc2number>";
+							array12name[2] = "<mc3name>" + array84name[2] + "</mc3name>";
+							array12number[2] = "<mc3number>" + array84number[2] + "</mc3number>";
+							array12name[3] = "<mc4name>" + array84name[3] + "</mc4name>";
+							array12number[3] = "<mc4number>" + array84number[3] + "</mc4number>";
+							array12name[4] = "<mc5name>" + array84name[4] + "</mc5name>";
+							array12number[4] = "<mc5number>" + array84number[4] + "</mc5number>";
+							array12name[5] = "<mc6name>" + array84name[5] + "</mc6name>";
+							array12number[5] = "<mc6number>" + array84number[5] + "</mc6number>";
+							array12name[6] = "<mc7name>" + array84name[6] + "</mc7name>";
+							array12number[6] = "<mc7number>" + array84number[6] + "</mc7number>";
+							array12name[7] = "<mc8name>" + array84name[7] + "</mc8name>";
+							array12number[7] = "<mc8number>" + array84number[7] + "</mc8number>";
+							array12name[8] = "<mc9name>" + array84name[8] + "</mc9name>";
+							array12number[8] = "<mc9number>" + array84number[8] + "</mc9number>";
+							array12name[9] = "<mc10name>" + array84name[9] + "</mc10name>";
+							array12number[9] = "<mc10number>" + array84number[9] + "</mc10number>";
+							array12name[10] = "<mc11name>" + array84name[10] + "</mc11name>";
+							array12number[10] = "<mc11number>" + array84number[10] + "</mc11number>";
 						}
 					}
 				}
@@ -763,28 +752,28 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 							}
 						}
 
-						array12name[0] = "<cellname1>" + array84name[0] + "</cellname1>";
-						array12number[0] = "<cellnumber1>" + array84number[0] + "</cellnumber1>";
-						array12name[1] = "<cellname2>" + array84name[1] + "</cellname2>";
-						array12number[1] = "<cellnumber2>" + array84number[1] + "</cellnumber2>";
-						array12name[2] = "<cellname3>" + array84name[2] + "</cellname3>";
-						array12number[2] = "<cellnumber3>" + array84number[2] + "</cellnumber3>";
-						array12name[3] = "<cellname4>" + array84name[3] + "</cellname4>";
-						array12number[3] = "<cellnumber4>" + array84number[3] + "</cellnumber4>";
-						array12name[4] = "<cellname5>" + array84name[4] + "</cellname5>";
-						array12number[4] = "<cellnumber5>" + array84number[4] + "</cellnumber5>";
-						array12name[5] = "<cellname6>" + array84name[5] + "</cellname6>";
-						array12number[5] = "<cellnumber6>" + array84number[5] + "</cellnumber6>";
-						array12name[6] = "<cellname7>" + array84name[6] + "</cellname7>";
-						array12number[6] = "<cellnumber7>" + array84number[6] + "</cellnumber7>";
-						array12name[7] = "<cellname8>" + array84name[7] + "</cellname8>";
-						array12number[7] = "<cellnumber8>" + array84number[7] + "</cellnumber8>";
-						array12name[8] = "<cellname9>" + array84name[8] + "</cellname9>";
-						array12number[8] = "<cellnumber9>" + array84number[8] + "</cellnumber9>";
-						array12name[9] = "<cellname10>" + array84name[9] + "</cellname10>";
-						array12number[9] = "<cellnumber10>" + array84number[9] + "</cellnumber10>";
-						array12name[10] = "<cellname11>" + array84name[10] + "</cellname11>";
-						array12number[10] = "<cellnumber11>" + array84number[10] + "</cellnumber11>";
+						array12name[0] = "<mc1name>" + array84name[0] + "</mc1name>";
+						array12number[0] = "<mc1number>" + array84number[0] + "</mc1number>";
+						array12name[1] = "<mc2name>" + array84name[1] + "</mc2name>";
+						array12number[1] = "<mc2number>" + array84number[1] + "</mc2number>";
+						array12name[2] = "<mc3name>" + array84name[2] + "</mc3name>";
+						array12number[2] = "<mc3number>" + array84number[2] + "</mc3number>";
+						array12name[3] = "<mc4name>" + array84name[3] + "</mc4name>";
+						array12number[3] = "<mc4number>" + array84number[3] + "</mc4number>";
+						array12name[4] = "<mc5name>" + array84name[4] + "</mc5name>";
+						array12number[4] = "<mc5number>" + array84number[4] + "</mc5number>";
+						array12name[5] = "<mc6name>" + array84name[5] + "</mc6name>";
+						array12number[5] = "<mc6number>" + array84number[5] + "</mc6number>";
+						array12name[6] = "<mc7name>" + array84name[6] + "</mc7name>";
+						array12number[6] = "<mc7number>" + array84number[6] + "</mc7number>";
+						array12name[7] = "<mc8name>" + array84name[7] + "</mc8name>";
+						array12number[7] = "<mc8number>" + array84number[7] + "</mc8number>";
+						array12name[8] = "<mc9name>" + array84name[8] + "</mc9name>";
+						array12number[8] = "<mc9number>" + array84number[8] + "</mc9number>";
+						array12name[9] = "<mc10name>" + array84name[9] + "</mc10name>";
+						array12number[9] = "<mc10number>" + array84number[9] + "</mc10number>";
+						array12name[10] = "<mc11name>" + array84name[10] + "</mc11name>";
+						array12number[10] = "<mc11number>" + array84number[10] + "</mc11number>";
 
 					} else {
 
@@ -1293,28 +1282,28 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 										}
 									}
 
-									array12name[0] = "<cellname1>" + array84name[0] + "</cellname1>";
-									array12number[0] = "<cellnumber1>" + array84number[0] + "</cellnumber1>";
-									array12name[1] = "<cellname2>" + array84name[1] + "</cellname2>";
-									array12number[1] = "<cellnumber2>" + array84number[1] + "</cellnumber2>";
-									array12name[2] = "<cellname3>" + array84name[2] + "</cellname3>";
-									array12number[2] = "<cellnumber3>" + array84number[2] + "</cellnumber3>";
-									array12name[3] = "<cellname4>" + array84name[3] + "</cellname4>";
-									array12number[3] = "<cellnumber4>" + array84number[3] + "</cellnumber4>";
-									array12name[4] = "<cellname5>" + array84name[4] + "</cellname5>";
-									array12number[4] = "<cellnumber5>" + array84number[4] + "</cellnumber5>";
-									array12name[5] = "<cellname6>" + array84name[5] + "</cellname6>";
-									array12number[5] = "<cellnumber6>" + array84number[5] + "</cellnumber6>";
-									array12name[6] = "<cellname7>" + array84name[6] + "</cellname7>";
-									array12number[6] = "<cellnumber7>" + array84number[6] + "</cellnumber7>";
-									array12name[7] = "<cellname8>" + array84name[7] + "</cellname8>";
-									array12number[7] = "<cellnumber8>" + array84number[7] + "</cellnumber8>";
-									array12name[8] = "<cellname9>" + array84name[8] + "</cellname9>";
-									array12number[8] = "<cellnumber9>" + array84number[8] + "</cellnumber9>";
-									array12name[9] = "<cellname10>" + array84name[9] + "</cellname10>";
-									array12number[9] = "<cellnumber10>" + array84number[9] + "</cellnumber10>";
-									array12name[10] = "<cellname11>" + array84name[10] + "</cellname11>";
-									array12number[10] = "<cellnumber11>" + array84number[10] + "</cellnumber11>";
+									array12name[0] = "<mc1name>" + array84name[0] + "</mc1name>";
+									array12number[0] = "<mc1number>" + array84number[0] + "</mc1number>";
+									array12name[1] = "<mc2name>" + array84name[1] + "</mc2name>";
+									array12number[1] = "<mc2number>" + array84number[1] + "</mc2number>";
+									array12name[2] = "<mc3name>" + array84name[2] + "</mc3name>";
+									array12number[2] = "<mc3number>" + array84number[2] + "</mc3number>";
+									array12name[3] = "<mc4name>" + array84name[3] + "</mc4name>";
+									array12number[3] = "<mc4number>" + array84number[3] + "</mc4number>";
+									array12name[4] = "<mc5name>" + array84name[4] + "</mc5name>";
+									array12number[4] = "<mc5number>" + array84number[4] + "</mc5number>";
+									array12name[5] = "<mc6name>" + array84name[5] + "</mc6name>";
+									array12number[5] = "<mc6number>" + array84number[5] + "</mc6number>";
+									array12name[6] = "<mc7name>" + array84name[6] + "</mc7name>";
+									array12number[6] = "<mc7number>" + array84number[6] + "</mc7number>";
+									array12name[7] = "<mc8name>" + array84name[7] + "</mc8name>";
+									array12number[7] = "<mc8number>" + array84number[7] + "</mc8number>";
+									array12name[8] = "<mc9name>" + array84name[8] + "</mc9name>";
+									array12number[8] = "<mc9number>" + array84number[8] + "</mc9number>";
+									array12name[9] = "<mc10name>" + array84name[9] + "</mc10name>";
+									array12number[9] = "<mc10number>" + array84number[9] + "</mc10number>";
+									array12name[10] = "<mc11name>" + array84name[10] + "</mc11name>";
+									array12number[10] = "<mc11number>" + array84number[10] + "</mc11number>";
 								}
 							}
 
@@ -1535,28 +1524,28 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 										}
 									}
 
-									array12name[0] = "<cellname1>" + array84name[0] + "</cellname1>";
-									array12number[0] = "<cellnumber1>" + array84number[0] + "</cellnumber1>";
-									array12name[1] = "<cellname2>" + array84name[1] + "</cellname2>";
-									array12number[1] = "<cellnumber2>" + array84number[1] + "</cellnumber2>";
-									array12name[2] = "<cellname3>" + array84name[2] + "</cellname3>";
-									array12number[2] = "<cellnumber3>" + array84number[2] + "</cellnumber3>";
-									array12name[3] = "<cellname4>" + array84name[3] + "</cellname4>";
-									array12number[3] = "<cellnumber4>" + array84number[3] + "</cellnumber4>";
-									array12name[4] = "<cellname5>" + array84name[4] + "</cellname5>";
-									array12number[4] = "<cellnumber5>" + array84number[4] + "</cellnumber5>";
-									array12name[5] = "<cellname6>" + array84name[5] + "</cellname6>";
-									array12number[5] = "<cellnumber6>" + array84number[5] + "</cellnumber6>";
-									array12name[6] = "<cellname7>" + array84name[6] + "</cellname7>";
-									array12number[6] = "<cellnumber7>" + array84number[6] + "</cellnumber7>";
-									array12name[7] = "<cellname8>" + array84name[7] + "</cellname8>";
-									array12number[7] = "<cellnumber8>" + array84number[7] + "</cellnumber8>";
-									array12name[8] = "<cellname9>" + array84name[8] + "</cellname9>";
-									array12number[8] = "<cellnumber9>" + array84number[8] + "</cellnumber9>";
-									array12name[9] = "<cellname10>" + array84name[9] + "</cellname10>";
-									array12number[9] = "<cellnumber10>" + array84number[9] + "</cellnumber10>";
-									array12name[10] = "<cellname11>" + array84name[10] + "</cellname11>";
-									array12number[10] = "<cellnumber11>" + array84number[10] + "</cellnumber11>";
+									array12name[0] = "<mc1name>" + array84name[0] + "</mc1name>";
+									array12number[0] = "<mc1number>" + array84number[0] + "</mc1number>";
+									array12name[1] = "<mc2name>" + array84name[1] + "</mc2name>";
+									array12number[1] = "<mc2number>" + array84number[1] + "</mc2number>";
+									array12name[2] = "<mc3name>" + array84name[2] + "</mc3name>";
+									array12number[2] = "<mc3number>" + array84number[2] + "</mc3number>";
+									array12name[3] = "<mc4name>" + array84name[3] + "</mc4name>";
+									array12number[3] = "<mc4number>" + array84number[3] + "</mc4number>";
+									array12name[4] = "<mc5name>" + array84name[4] + "</mc5name>";
+									array12number[4] = "<mc5number>" + array84number[4] + "</mc5number>";
+									array12name[5] = "<mc6name>" + array84name[5] + "</mc6name>";
+									array12number[5] = "<mc6number>" + array84number[5] + "</mc6number>";
+									array12name[6] = "<mc7name>" + array84name[6] + "</mc7name>";
+									array12number[6] = "<mc7number>" + array84number[6] + "</mc7number>";
+									array12name[7] = "<mc8name>" + array84name[7] + "</mc8name>";
+									array12number[7] = "<mc8number>" + array84number[7] + "</mc8number>";
+									array12name[8] = "<mc9name>" + array84name[8] + "</mc9name>";
+									array12number[8] = "<mc9number>" + array84number[8] + "</mc9number>";
+									array12name[9] = "<mc10name>" + array84name[9] + "</mc10name>";
+									array12number[9] = "<mc10number>" + array84number[9] + "</mc10number>";
+									array12name[10] = "<mc11name>" + array84name[10] + "</mc11name>";
+									array12number[10] = "<mc11number>" + array84number[10] + "</mc11number>";
 								}
 							}
 						}
@@ -1566,72 +1555,75 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 
 				// TODO Config maintable erstellen
 				title = getTextResourceService().getText( MESSAGE_XML_TITLE, mainname );
-				title = "<title>" + title + "</title>";
+				title = "<mtitle>" + title + "</mtitle>";
 				String valueMainname = mainname;
-				mainname = "<mainname>" + mainname + "</mainname>";
-				mainfolder = "<mainfolder>" + mainfolder + "</mainfolder>";
+				mainname = "<mname>" + mainname + "</mname>";
+				mainfolder = "<mfolder>" + mainfolder + "</mfolder>";
 				String valuePKname = primarykeyname;
-				primarykeyname = "<primarykeyname>" + primarykeyname + "</primarykeyname>";
-				primarykeycell = "<primarykeycell>" + primarykeycell + "</primarykeycell>";
+				primarykeyname = "<mpkname>" + primarykeyname + "</mpkname>";
+				primarykeycell = "<mpkcell>" + primarykeycell + "</mpkcell>";
 
 				// replace (..) mit wert
-				String titleNo = "<title>(..)</title>";
+				String titleNo = "<mtitle>(..)</mtitle>";
 				Util.oldnewstring( titleNo, title, configFileHard );
-				String mainnameNo = "<mainname>(..)</mainname>";
+				String mainnameNo = "<mname>(..)</mname>";
 				Util.oldnewstring( mainnameNo, mainname, configFileHard );
-				String mainfolderNo = "<mainfolder>(..)</mainfolder>";
+				String mainfolderNo = "<mfolder>(..)</mfolder>";
 				Util.oldnewstring( mainfolderNo, mainfolder, configFileHard );
-				String primarykeynameNo = "<primarykeyname>(..)</primarykeyname>";
+				String primarykeynameNo = "<mpkname>(..)</mpkname>";
 				Util.oldnewstring( primarykeynameNo, primarykeyname, configFileHard );
-				String primarykeycellNo = "<primarykeycell>(..)</primarykeycell>";
+				String primarykeycellNo = "<mpkcell>(..)</mpkcell>";
 				Util.oldnewstring( primarykeycellNo, primarykeycell, configFileHard );
-				String name1No = "<cellname1>(..)</cellname1>";
+				String name1No = "<mc1name>(..)</mc1name>";
 				Util.oldnewstring( name1No, array12name[0], configFileHard );
-				String number1No = "<cellnumber1>(..)</cellnumber1>";
+				String number1No = "<mc1number>(..)</mc1number>";
 				Util.oldnewstring( number1No, array12number[0], configFileHard );
-				String name2No = "<cellname2>(..)</cellname2>";
+				String name2No = "<mc2name>(..)</mc2name>";
 				Util.oldnewstring( name2No, array12name[1], configFileHard );
-				String number2No = "<cellnumber2>(..)</cellnumber2>";
+				String number2No = "<mc2number>(..)</mc2number>";
 				Util.oldnewstring( number2No, array12number[1], configFileHard );
-				String name3No = "<cellname3>(..)</cellname3>";
+				String name3No = "<mc3name>(..)</mc3name>";
 				Util.oldnewstring( name3No, array12name[2], configFileHard );
-				String number3No = "<cellnumber3>(..)</cellnumber3>";
+				String number3No = "<mc3number>(..)</mc3number>";
 				Util.oldnewstring( number3No, array12number[2], configFileHard );
-				String name4No = "<cellname4>(..)</cellname4>";
+				String name4No = "<mc4name>(..)</mc4name>";
 				Util.oldnewstring( name4No, array12name[3], configFileHard );
-				String number4No = "<cellnumber4>(..)</cellnumber4>";
+				String number4No = "<mc4number>(..)</mc4number>";
 				Util.oldnewstring( number4No, array12number[3], configFileHard );
-				String name5No = "<cellname5>(..)</cellname5>";
+				String name5No = "<mc5name>(..)</mc5name>";
 				Util.oldnewstring( name5No, array12name[4], configFileHard );
-				String number5No = "<cellnumber5>(..)</cellnumber5>";
+				String number5No = "<mc5number>(..)</mc5number>";
 				Util.oldnewstring( number5No, array12number[4], configFileHard );
-				String name6No = "<cellname6>(..)</cellname6>";
+				String name6No = "<mc6name>(..)</mc6name>";
 				Util.oldnewstring( name6No, array12name[5], configFileHard );
-				String number6No = "<cellnumber6>(..)</cellnumber6>";
+				String number6No = "<mc6number>(..)</mc6number>";
 				Util.oldnewstring( number6No, array12number[5], configFileHard );
-				String name7No = "<cellname7>(..)</cellname7>";
+				String name7No = "<mc7name>(..)</mc7name>";
 				Util.oldnewstring( name7No, array12name[6], configFileHard );
-				String number7No = "<cellnumber7>(..)</cellnumber7>";
+				String number7No = "<mc7number>(..)</mc7number>";
 				Util.oldnewstring( number7No, array12number[6], configFileHard );
-				String name8No = "<cellname8>(..)</cellname8>";
+				String name8No = "<mc8name>(..)</mc8name>";
 				Util.oldnewstring( name8No, array12name[7], configFileHard );
-				String number8No = "<cellnumber8>(..)</cellnumber8>";
+				String number8No = "<mc8number>(..)</mc8number>";
 				Util.oldnewstring( number8No, array12number[7], configFileHard );
-				String name9No = "<cellname9>(..)</cellname9>";
+				String name9No = "<mc9name>(..)</mc9name>";
 				Util.oldnewstring( name9No, array12name[8], configFileHard );
-				String number9No = "<cellnumber9>(..)</cellnumber9>";
+				String number9No = "<mc9number>(..)</mc9number>";
 				Util.oldnewstring( number9No, array12number[8], configFileHard );
-				String name10No = "<cellname10>(..)</cellname10>";
+				String name10No = "<mc10name>(..)</mc10name>";
 				Util.oldnewstring( name10No, array12name[9], configFileHard );
-				String number10No = "<cellnumber10>(..)</cellnumber10>";
+				String number10No = "<mc10number>(..)</mc10number>";
 				Util.oldnewstring( number10No, array12number[9], configFileHard );
-				String name11No = "<cellname11>(..)</cellname11>";
+				String name11No = "<mc11name>(..)</mc11name>";
 				Util.oldnewstring( name11No, array12name[10], configFileHard );
-				String number11No = "<cellnumber11>(..)</cellnumber11>";
+				String number11No = "<mc11number>(..)</mc11number>";
 				Util.oldnewstring( number11No, array12number[10], configFileHard );
 
 				/* TODO: config subtables erstellen.
 				 * 
+		<subtable1>
+			<st1keyname>(..)</st1keyname><st1name>(..)</st1name><st1folder>(..)</st1folder><st1fkcell>(..)</st1fkcell>
+		</subtable1>
 				 * <subtables>(..)</subtables> mit Werte ersetzten.
 				 * 
 				 * Wenn mainname = referencedTable und referenced = primarykeyname, dann ermitteln, welcher
@@ -1650,6 +1642,7 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 				String subFolder = "";
 				String subKeyCell = "";
 				String subKeyCellProv = "";
+				Integer stcounter = 0;
 				boolean column = false;
 
 				try {
@@ -1723,20 +1716,28 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 												subKeyCellProv = columnTable.getTextContent();
 											}
 											if ( column && subKeyCellProv != "" ) {
+												stcounter = stcounter + 1;
 												subKeyCell = subKeyCellProv;
-												subName = " <subtable><keyname>" + subKeyName + "</keyname><name>"
+												subName = " <st"+stcounter+"keyname>" + subKeyName + "</st"+stcounter+"keyname><st"+stcounter+"name>"
+														+ subName + "</st"+stcounter+"name>";
+												subFolder = "<st"+stcounter+"folder>" + subFolder + "</st"+stcounter+"folder>";
+												subKeyCell = "<st"+stcounter+"fkcell>" + subKeyCell
+														+ "</st"+stcounter+"fkcell>";
+/*  										subName = " <subtable><keyname>" + subKeyName + "</keyname><name>"
 														+ subName + "</name>";
 												subFolder = "<folder>" + subFolder + "</folder>";
 												subKeyCell = "<foreignkeycell>" + subKeyCell
-														+ "</foreignkeycell></subtable></subtables>";
+														+ "</foreignkeycell></subtable></subtables>";*/
 
 												// replace (..) mit wert
-												String subtablesNo = "<subtables>(..)</subtables>";
-												String subtables = "<subtables></subtables>";
-												Util.oldnewstring( subtablesNo, subtables, configFileHard );
+												// String subtablesNo = "<subtables>(..)</subtables>";
+												// String subtables = "<subtables></subtables>";
+												// Util.oldnewstring( subtablesNo, subtables, configFileHard );
+												String subtablesNo ="<st"+stcounter+"keyname>(..)</st"+stcounter+"keyname><st"+stcounter+"name>(..)</st"+stcounter+"name><st"+stcounter+"folder>(..)</st"+stcounter+"folder><st"+stcounter+"fkcell>(..)</st"+stcounter+"fkcell>";
+
 												String subtable = subName + subFolder + subKeyCell;
 												// System.out.println( "933: " + subtable );
-												Util.oldnewstring( "</subtables>", subtable, configFileHard );
+												Util.oldnewstring( subtablesNo,  subtable, configFileHard );
 												subName = "";
 												subFolder = "";
 												subKeyCell = "";

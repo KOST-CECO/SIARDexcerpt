@@ -1,40 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<pathtooutput>Output</pathtooutput>
-	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
 	<pathtoxsl>resources\SIARDexcerpt_gebaeudeversicherung.xsl</pathtoxsl>
 	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
 	<archive>Archiv</archive>
 	<insensitive>yes</insensitive>
 
 	<maintable>
-		<mainfolder>table0</mainfolder>
-		<mainname>gv_gebaeude</mainname>
-		<title>Suchergebnis aus der Tabelle gv_gebaeude:</title>
-		<primarykeyname>id</primarykeyname>
-		<primarykeycell>c1</primarykeycell>
-		<cellname1>grundstueck_id</cellname1>
-		<cellnumber1>c2</cellnumber1>
-		<cellname2>police_nr</cellname2>
-		<cellnumber2>c3</cellnumber2>
-		<cellname3>status_text</cellname3>
-		<cellnumber3>c6</cellnumber3>
-		<cellname4>zweck_text</cellname4>
-		<cellnumber4>c8</cellnumber4>
-		<cellname5>bauart_text</cellname5>
-		<cellnumber5>c11</cellnumber5>
-		<cellname6>lage_text</cellname6>
-		<cellnumber6>c13</cellnumber6>
-		<cellname7>gemeinde</cellname7>
-		<cellnumber7>c17</cellnumber7>
-		<cellname8>strasse</cellname8>
-		<cellnumber8>c18</cellnumber8>
-		<cellname9>strasse_nr</cellname9>
-		<cellnumber9>c19</cellnumber9>
-		<cellname10>plz</cellname10>
-		<cellnumber10>c21</cellnumber10>
-		<cellname11>ort</cellname11>
-		<cellnumber11>c23</cellnumber11>
+		<mfolder>table0</mfolder>
+		<mname>gv_gebaeude</mname>
+		<mtitle>Suchergebnis aus der Tabelle gv_gebaeude:</mtitle>
+		<mpkname>id</mpkname>
+		<mpkcell>c1</mpkcell>
+		<mc1name>grundstueck_id</mc1name>
+		<mc1number>c2</mc1number>
+		<mc2name>police_nr</mc2name>
+		<mc2number>c3</mc2number>
+		<mc3name>status_text</mc3name>
+		<mc3number>c6</mc3number>
+		<mc4name>zweck_text</mc4name>
+		<mc4number>c8</mc4number>
+		<mc5name>bauart_text</mc5name>
+		<mc5number>c11</mc5number>
+		<mc6name>lage_text</mc6name>
+		<mc6number>c13</mc6number>
+		<mc7name>gemeinde</mc7name>
+		<mc7number>c17</mc7number>
+		<mc8name>strasse</mc8name>
+		<mc8number>c18</mc8number>
+		<mc9name>strasse_nr</mc9name>
+		<mc9number>c19</mc9number>
+		<mc10name>plz</mc10name>
+		<mc10number>c21</mc10number>
+		<mc11name>ort</mc11name>
+		<mc11number>c23</mc11number>
 	</maintable>
-	<subtables> <subtable><keyname>fk_person_gebaeude</keyname><name>gv_person</name><folder>table1</folder><foreignkeycell>c3</foreignkeycell></subtable> <subtable><keyname>fk_anlage_gebaeude</keyname><name>gv_anlage</name><folder>table2</folder><foreignkeycell>c2</foreignkeycell></subtable> <subtable><keyname>fk_schaden_gebaeude</keyname><name>gv_schaden</name><folder>table3</folder><foreignkeycell>c2</foreignkeycell></subtable> <subtable><keyname>fk_schaetzung_gebaeude</keyname><name>gv_schaetzung</name><folder>table4</folder><foreignkeycell>c2</foreignkeycell></subtable></subtables>
+	<subtables> 
+		<subtable1>
+			<st1keyname>fk_person_gebaeude</st1keyname>
+			<st1name>gv_person</st1name>
+			<st1folder>table1</st1folder>
+			<st1fkcell>c3</st1fkcell>
+		</subtable1>
+		<subtable2>
+			<st2keyname>fk_anlage_gebaeude</st2keyname>
+			<st2name>gv_anlage</st2name>
+			<st2folder>table2</st2folder>
+			<st2fkcell>c2</st2fkcell>
+		</subtable2>
+		<subtable3>
+			<st3keyname>fk_schaden_gebaeude</st3keyname>
+			<st3name>gv_schaden</st3name>
+			<st3folder>table3</st3folder>
+			<st3fkcell>c2</st3fkcell>
+		</subtable3>
+		<subtable4>
+			<st4keyname>fk_schaetzung_gebaeude</st4keyname>
+			<st4name>gv_schaetzung</st4name>
+			<st4folder>table4</st4folder>
+			<st4fkcell>c2</st4fkcell>
+		</subtable4>
+	</subtables>
 </configuration>

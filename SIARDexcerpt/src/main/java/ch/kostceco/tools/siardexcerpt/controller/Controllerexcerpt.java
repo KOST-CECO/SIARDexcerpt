@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2019
+ * Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -16,6 +16,7 @@
 package ch.kostceco.tools.siardexcerpt.controller;
 
 import java.io.File;
+import java.util.Map;
 
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAZipException;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAConfigException;
@@ -97,14 +98,15 @@ public class Controllerexcerpt implements MessageConstants
 		this.textResourceService = textResourceService;
 	}
 
-	public boolean executeA( File siardDatei, File siardDateiNew, String noString )
+	public boolean executeA( File siardDatei, File siardDateiNew, String noString,
+			Map<String, String> configMap )
 	{
 		boolean valid = true;
 
 		// Excerpt Step A (SIARD-Datei ins Workverzeichnis extrahieren)
 
 		try {
-			if ( this.getExcerptAZipModule().validate( siardDatei, siardDateiNew, noString ) ) {
+			if ( this.getExcerptAZipModule().validate( siardDatei, siardDateiNew, noString, configMap ) ) {
 				this.getExcerptAZipModule().getMessageService().print();
 			} else {
 				this.getExcerptAZipModule().getMessageService().print();
@@ -125,14 +127,15 @@ public class Controllerexcerpt implements MessageConstants
 
 	}
 
-	public boolean executeAConfig( File siardDatei, File configFileHard, String noString )
+	public boolean executeAConfig( File siardDatei, File configFileHard, String noString,
+			Map<String, String> configMap  )
 	{
 		boolean valid = true;
 
 		// Excerpt Step A Config (Config Datei ausfüllen)
 
 		try {
-			if ( this.getExcerptAConfigModule().validate( siardDatei, configFileHard, noString ) ) {
+			if ( this.getExcerptAConfigModule().validate( siardDatei, configFileHard, noString, configMap ) ) {
 				this.getExcerptAConfigModule().getMessageService().print();
 			} else {
 				this.getExcerptAConfigModule().getMessageService().print();
@@ -153,12 +156,13 @@ public class Controllerexcerpt implements MessageConstants
 
 	}
 
-	public boolean executeB( File siardDatei, File outFileSearch, String searchString )
+	public boolean executeB( File siardDatei, File outFileSearch, String searchString,
+			Map<String, String> configMap  )
 	{
 		boolean valid = true;
 		// Excerpt Step B (Suche)
 		try {
-			if ( this.getExcerptBSearchModule().validate( siardDatei, outFileSearch, searchString ) ) {
+			if ( this.getExcerptBSearchModule().validate( siardDatei, outFileSearch, searchString, configMap ) ) {
 				this.getExcerptBSearchModule().getMessageService().print();
 			} else {
 				this.getExcerptBSearchModule().getMessageService().print();
@@ -179,12 +183,13 @@ public class Controllerexcerpt implements MessageConstants
 
 	}
 
-	public boolean executeC( File siardDatei, File outFile, String excerptString )
+	public boolean executeC( File siardDatei, File outFile, String excerptString,
+			Map<String, String> configMap  )
 	{
 		boolean valid = true;
 		// Excerpt Step C (Extraktion)
 		try {
-			if ( this.getExcerptCGrepModule().validate( siardDatei, outFile, excerptString ) ) {
+			if ( this.getExcerptCGrepModule().validate( siardDatei, outFile, excerptString, configMap ) ) {
 				this.getExcerptCGrepModule().getMessageService().print();
 			} else {
 				this.getExcerptCGrepModule().getMessageService().print();

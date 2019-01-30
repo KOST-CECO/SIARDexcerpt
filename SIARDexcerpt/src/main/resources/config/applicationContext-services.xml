@@ -30,25 +30,21 @@
 	<bean id="excerptAZipModule"
 		class="ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl.ExcerptAZipModuleImpl">
 		<property name="textResourceService" ref="textResourceService" />
-		<property name="configurationService" ref="configurationService" />
 		<property name="messageService" ref="messageService" />
 	</bean>
 	<bean id="excerptAConfigModule"
 		class="ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl.ExcerptAConfigModuleImpl">
 		<property name="textResourceService" ref="textResourceService" />
-		<property name="configurationService" ref="configurationService" />
 		<property name="messageService" ref="messageService" />
 	</bean>
 	<bean id="excerptBSearchModule"
 		class="ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl.ExcerptBSearchModuleImpl">
 		<property name="textResourceService" ref="textResourceService" />
-		<property name="configurationService" ref="configurationService" />
 		<property name="messageService" ref="messageService" />
 	</bean>
 	<bean id="excerptCGrepModule"
 		class="ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl.ExcerptCGrepModuleImpl">
 		<property name="textResourceService" ref="textResourceService" />
-		<property name="configurationService" ref="configurationService" />
 		<property name="messageService" ref="messageService" />
 	</bean>
 

@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C)
- * 2016-2017 Claire Röthlisberger (KOST-CECO)
+ * 2016-2019 Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -15,10 +15,9 @@
 
 package ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl;
 
-import static org.apache.commons.io.IOUtils.closeQuietly;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -30,7 +29,6 @@ import org.w3c.dom.NodeList;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptBSearchException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptBSearchModule;
-import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.StreamGobbler;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
@@ -38,23 +36,11 @@ import ch.kostceco.tools.siardexcerpt.util.Util;
 public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements ExcerptBSearchModule
 {
 
-	private ConfigurationService	configurationService;
-
-	public static String					NEWLINE	= System.getProperty( "line.separator" );
-
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService( ConfigurationService configurationService )
-	{
-		this.configurationService = configurationService;
-	}
+	public static String	NEWLINE	= System.getProperty( "line.separator" );
 
 	@Override
-	public boolean validate( File siardDatei, File outFileSearch, String searchString )
-			throws ExcerptBSearchException
+	public boolean validate( File siardDatei, File outFileSearch, String searchString,
+			Map<String, String> configMap ) throws ExcerptBSearchException
 	{
 		boolean isValid = true;
 		boolean time = false;
@@ -168,14 +154,14 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 
 			// String name = getConfigurationService().getSearchtableName();
 			String name = "siardexcerptsearch";
-			String folder = getConfigurationService().getMaintableFolder();
+			String folder = configMap.get( "MaintableFolder" );
 			if ( folder.startsWith( "Configuration-Error:" ) ) {
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + folder );
 				return false;
 			}
 			String insensitiveOption = "";
-			String insensitive = getConfigurationService().getInsensitive();
+			String insensitive = configMap.get( "Insensitive" );
 			if ( insensitive.startsWith( "Configuration-Error:" ) ) {
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + insensitive );
@@ -195,10 +181,10 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			 * Entsprechend wurde sed verwendet. */
 
 			// Bringt alles auf eine Zeile
-			String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofSearchtable
-					+ " > " + pathTofSearchtableTemp + "\"";
-			String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' " + pathTofSearchtableTemp
-					+ " > " + pathTofSearchtable + "\"";
+			String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofSearchtable + " > "
+					+ pathTofSearchtableTemp + "\"";
+			String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' "
+					+ pathTofSearchtableTemp + " > " + pathTofSearchtable + "\"";
 			// Trennt ><row. Nur eine row auf einer Zeile
 			String commandSed3 = "cmd /c \"" + pathToSedExe + " 's/\\d060row/\\n\\d060row/g' "
 					+ pathTofSearchtable + " > " + pathTofSearchtableTemp + "\"";
@@ -307,24 +293,24 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 				return false;
 			} finally {
 				if ( procSed != null ) {
-					closeQuietly( procSed.getOutputStream() );
-					closeQuietly( procSed.getInputStream() );
-					closeQuietly( procSed.getErrorStream() );
+					procSed.getOutputStream().close();
+					procSed.getInputStream().close();
+					procSed.getErrorStream().close();
 				}
 				if ( procSed2 != null ) {
-					closeQuietly( procSed2.getOutputStream() );
-					closeQuietly( procSed2.getInputStream() );
-					closeQuietly( procSed2.getErrorStream() );
+					procSed2.getOutputStream().close();
+					procSed2.getInputStream().close();
+					procSed2.getErrorStream().close();
 				}
 				if ( procSed3 != null ) {
-					closeQuietly( procSed3.getOutputStream() );
-					closeQuietly( procSed3.getInputStream() );
-					closeQuietly( procSed3.getErrorStream() );
+					procSed3.getOutputStream().close();
+					procSed3.getInputStream().close();
+					procSed3.getErrorStream().close();
 				}
 				if ( procSed4 != null ) {
-					closeQuietly( procSed4.getOutputStream() );
-					closeQuietly( procSed4.getInputStream() );
-					closeQuietly( procSed4.getErrorStream() );
+					procSed4.getOutputStream().close();
+					procSed4.getInputStream().close();
+					procSed4.getErrorStream().close();
 				}
 			}
 
@@ -397,9 +383,9 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 					isValid = false;
 				} finally {
 					if ( proc != null ) {
-						closeQuietly( proc.getOutputStream() );
-						closeQuietly( proc.getInputStream() );
-						closeQuietly( proc.getErrorStream() );
+						proc.getOutputStream().close();
+						proc.getInputStream().close();
+						proc.getErrorStream().close();
 					}
 				}
 
@@ -417,18 +403,18 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 				content = contentAll;
 				/* im contentAll ist jetzt der Gesamtstring, dieser soll anschliessend nur noch aus den 12
 				 * ResultateZellen bestehen -> content */
-				String nr0 = getConfigurationService().getMaintablePrimarykeyCell();
-				String nr1 = getConfigurationService().getcellNumber1();
-				String nr2 = getConfigurationService().getcellNumber2();
-				String nr3 = getConfigurationService().getcellNumber3();
-				String nr4 = getConfigurationService().getcellNumber4();
-				String nr5 = getConfigurationService().getcellNumber5();
-				String nr6 = getConfigurationService().getcellNumber6();
-				String nr7 = getConfigurationService().getcellNumber7();
-				String nr8 = getConfigurationService().getcellNumber8();
-				String nr9 = getConfigurationService().getcellNumber9();
-				String nr10 = getConfigurationService().getcellNumber10();
-				String nr11 = getConfigurationService().getcellNumber11();
+				String nr0 = configMap.get( "MaintablePrimarykeyCell" );
+				String nr1 = configMap.get( "CellNumber1" );
+				String nr2 = configMap.get( "CellNumber2" );
+				String nr3 = configMap.get( "CellNumber3" );
+				String nr4 = configMap.get( "CellNumber4" );
+				String nr5 = configMap.get( "CellNumber5" );
+				String nr6 = configMap.get( "CellNumber6" );
+				String nr7 = configMap.get( "CellNumber7" );
+				String nr8 = configMap.get( "CellNumber8" );
+				String nr9 = configMap.get( "CellNumber9" );
+				String nr10 = configMap.get( "CellNumber10" );
+				String nr11 = configMap.get( "CellNumber11" );
 				if ( nr0.startsWith( "Configuration-Error:" ) ) {
 					getMessageService().logError(
 							getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + nr0 );

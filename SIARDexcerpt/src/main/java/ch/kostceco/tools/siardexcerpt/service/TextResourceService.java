@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2019
+ * Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -19,7 +19,7 @@ import java.util.Locale;
 
 /** Service Interface für Text Ressourcen.
  * 
- * @author Rc Claire Röthlisberger, KOST-CECO */
+ * @author Rc Claire Roethlisberger, KOST-CECO */
 public interface TextResourceService extends Service
 {
 	/** Ermitteln eines ResourceValues anhand eines Keys. Es wird die Locale aus dem UserContext

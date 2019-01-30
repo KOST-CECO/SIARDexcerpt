@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2019
+ * Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -16,20 +16,21 @@
 package ch.kostceco.tools.siardexcerpt.excerption;
 
 import java.io.File;
+import java.util.Map;
 
 import ch.kostceco.tools.siardexcerpt.exception.SIARDexcerptException;
 import ch.kostceco.tools.siardexcerpt.service.MessageService;
 import ch.kostceco.tools.siardexcerpt.service.Service;
 
-/** Dies ist das Interface für alle Validierungs-Module und vereinigt alle Funktionalitäten, die den
+/** Dies ist das Interface fï¿½r alle Validierungs-Module und vereinigt alle Funktionalitï¿½ten, die den
  * jeweiligen Modulen gemeinsam sind.
  * 
- * @author Rc Claire Röthlisberger, KOST-CECO */
+ * @author Rc Claire Roethlisberger, KOST-CECO */
 
 public interface ValidationModule extends Service
 {
 
-	public boolean validate( File siardDatei, File outFile, String excerptString ) throws SIARDexcerptException;
+	public boolean validate( File siardDatei, File outFile, String excerptString, Map<String, String> configMap ) throws SIARDexcerptException;
 
 	public MessageService getMessageService();
 

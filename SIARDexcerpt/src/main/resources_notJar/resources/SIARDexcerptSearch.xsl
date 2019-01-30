@@ -41,18 +41,18 @@
 		<div>
 			<table width="100%">
 				<tr class="caption">
-					<td class="captionb"><xsl:value-of select="table/configuration/maintable/primarykeyname"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname1"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname2"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname3"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname4"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname5"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname6"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname7"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname8"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname9"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname10"/></td>
-					<td><xsl:value-of select="table/configuration/maintable/cellname11"/></td>
+					<td class="captionb"><xsl:value-of select="table/configuration/maintable/mpkname"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc1name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc2name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc3name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc4name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc5name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc6name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc7name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc8name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc9name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc10name"/></td>
+					<td><xsl:value-of select="table/configuration/maintable/mc11name"/></td>
 				</tr>
 				<xsl:for-each select="table/siardexcerptsearch/row">
 					<tr>

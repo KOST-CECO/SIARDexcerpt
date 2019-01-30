@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2019
+ * Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -20,7 +20,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /** Erzeugt ein vollkommen "nacktes" Layout, welches nichts als die eigentliche Message enthält.
  * 
- * @author Rc Claire Röthlisberger, KOST-CECO */
+ * @author Rc Claire Roethlisberger, KOST-CECO */
 public class MessageOnlyLayout extends SimpleLayout
 {
 

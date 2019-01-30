@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
  * The SIARDexcerpt v0.1.0 application is used for excerpt a record from a SIARD-File. Copyright (C)
- * 2016-2017 Claire Röthlisberger (KOST-CECO)
+ * 2016-2019 Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 // import java.io.OutputStreamWriter;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +54,7 @@ import ch.kostceco.tools.siardexcerpt.util.Util;
 /** Dies ist die Starter-Klasse, verantwortlich für das Initialisieren des Controllers, des Loggings
  * und das Parsen der Start-Parameter.
  * 
- * @author Rc Claire Röthlisberger, KOST-CECO */
+ * @author Rc Claire Roethlisberger, KOST-CECO */
 
 public class SIARDexcerpt implements MessageConstants
 {
@@ -95,6 +96,7 @@ public class SIARDexcerpt implements MessageConstants
 
 	public static void main( String[] args ) throws IOException
 	{
+		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext(
 				"classpath:config/applicationContext.xml" );
 
@@ -112,7 +114,6 @@ public class SIARDexcerpt implements MessageConstants
 		/* TODO: siehe Bemerkung im applicationContext-services.xml bezüglich Injection in der
 		 * Superklasse aller Impl-Klassen ValidationModuleImpl validationModuleImpl =
 		 * (ValidationModuleImpl) context.getBean("validationmoduleimpl"); */
-
 		SIARDexcerpt siardexcerpt = (SIARDexcerpt) context.getBean( "siardexcerpt" );
 
 		// Ist die Anzahl Parameter (mind 3) korrekt?
@@ -124,26 +125,40 @@ public class SIARDexcerpt implements MessageConstants
 		String module = new String( args[2] );
 		File siardDatei = new File( args[0] );
 		String configString = new String( args[1] );
+		// Map<String, String> configMap = siardexcerpt.getConfigurationService().configMap();
 
 		/* arg 1 gibt den Pfad zur configdatei an. Da dieser in ConfigurationServiceImpl hartcodiert
-		 * ist, wird diese nach "configuration/SIARDexcerpt.conf.xml" kopiert. */
-		File configFileHard = new File( "configuration" + File.separator + "SIARDexcerpt.conf.xml" );
+		 * ist, wird diese nach ".siardexcerpt/configuration/SIARDexcerpt.conf.xml" kopiert. */
+		String userSIARDexcerpt = System.getenv( "USERPROFILE" ) + File.separator + ".siardexcerpt";
+		File userSIARDexcerptFile = new File( userSIARDexcerpt );
+		if ( !userSIARDexcerptFile.exists() ) {
+			userSIARDexcerptFile.mkdirs();
+		}
+		String config = userSIARDexcerpt + File.separator + "configuration";
+		File config1 = new File( config );
+		if ( !config1.exists() ) {
+			config1.mkdirs();
+		}
+
+		File configFileHard = new File( config + File.separator + "SIARDexcerpt.conf.xml" );
 		File configFileNo = new File( "configuration" + File.separator + "NoConfig.conf.xml" );
 
-		// excerpt ist der Standardwert wird aber anhand der config dann gesetzt
-		File directoryOfOutput = new File( "excerpt" );
+		String pathToOutput = System.getenv( "USERPROFILE" ) + File.separator + ".siardexcerpt"
+				+ File.separator + "Output";
+		File directoryOfOutput = new File( pathToOutput );
 
-		// temp_SIARDexcerpt ist der Standardwert wird aber anhand der config dann gesetzt
-		File tmpDir = new File( "temp_SIARDexcerpt" );
+		String pathToWorkDir = System.getenv( "USERPROFILE" ) + File.separator + ".siardexcerpt"
+				+ File.separator + "temp_SIARDexcerpt";
+		File tmpDir = new File( pathToWorkDir );
 
 		boolean okA = false;
 		boolean okAConfig = false;
 		boolean okB = false;
 		boolean okC = false;
 
-		// die Anwendung muss mindestens unter Java 6 laufen
+		// die Anwendung muss mindestens unter Java 8 laufen
 		String javaRuntimeVersion = System.getProperty( "java.vm.version" );
-		if ( javaRuntimeVersion.compareTo( "1.6.0" ) < 0 ) {
+		if ( javaRuntimeVersion.compareTo( "1.8.0" ) < 0 ) {
 			System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_WRONG_JRE ) );
 			System.exit( 1 );
 		}
@@ -184,6 +199,7 @@ public class SIARDexcerpt implements MessageConstants
 				System.exit( 1 );
 			}
 
+			configFileHard = new File( config + File.separator + "SIARDexcerpt.conf.xml" );
 			if ( configFileHard.exists() ) {
 				// es wird versucht das configFileHard zu löschen
 				// Util.deleteFile( configFileHard );
@@ -194,17 +210,13 @@ public class SIARDexcerpt implements MessageConstants
 						ERROR_CONFIGFILEHARD_FILEEXISTING ) );
 				System.exit( 1 );
 			}
-			configFileHard = new File( "configuration" + File.separator + "SIARDexcerpt.conf.xml" );
 			Util.copyFile( configFile, configFileHard );
 
-			/** b) Excerptverzeichnis mit schreibrechte und ggf anlegen */
-			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
-			if ( pathToOutput.startsWith( "Configuration-Error:" ) ) {
-				System.out.println( pathToOutput );
-				System.exit( 1 );
-			}
+			Map<String, String> configMap = siardexcerpt.getConfigurationService().configMap();
 
-			directoryOfOutput = new File( pathToOutput );
+			/** b) Excerptverzeichnis mit schreibrechte und ggf anlegen */
+			// System.out.println( " b) Excerptverzeichnis mit schreibrechte und ggf anlegen " );
+			directoryOfOutput = new File( configMap.get( "PathToOutput" ) );
 
 			if ( !directoryOfOutput.exists() ) {
 				directoryOfOutput.mkdir();
@@ -232,13 +244,8 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			/** c) Workverzeichnis muss leer sein und mit schreibrechte */
-			String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
-			if ( pathToWorkDir.startsWith( "Configuration-Error:" ) ) {
-				System.out.println( pathToWorkDir );
-				System.exit( 1 );
-			}
-
-			tmpDir = new File( pathToWorkDir );
+			// System.out.println( " c) Workverzeichnis muss leer sein und mit schreibrechte " );
+			tmpDir = new File( configMap.get( "PathToWorkDir" ) );
 
 			/* bestehendes Workverzeichnis zuerst versuchen zu löschen. Wenn nicht möglich Abbruch */
 			if ( tmpDir.exists() ) {
@@ -273,7 +280,7 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			try {
-				// Im Pfad keine Sonderzeichen kann abstürzen 
+				// Im Pfad keine Sonderzeichen kann abstürzen
 
 				String patternStr = "[^!#\\$%\\(\\)\\+,\\-_\\.=@\\[\\]\\{\\}\\~:\\\\a-zA-Z0-9]";
 				Pattern pattern = Pattern.compile( patternStr );
@@ -294,7 +301,7 @@ public class SIARDexcerpt implements MessageConstants
 									siardexcerpt.getTextResourceService().getText( ERROR_SPECIAL_CHARACTER, name,
 											matcher.group( i ) ) );
 							Thread.sleep( 5000 );
-							System.exit( 1 );			
+							System.exit( 1 );
 						}
 					}
 				}
@@ -315,9 +322,9 @@ public class SIARDexcerpt implements MessageConstants
 									siardexcerpt.getTextResourceService().getText( ERROR_SPECIAL_CHARACTER, name,
 											matcher.group( i ) ) );
 							Thread.sleep( 5000 );
-							System.exit( 1 );			
+							System.exit( 1 );
 						}
-					} 
+					}
 				}
 
 				name = siardDatei.getAbsolutePath();
@@ -336,7 +343,7 @@ public class SIARDexcerpt implements MessageConstants
 									siardexcerpt.getTextResourceService().getText( ERROR_SPECIAL_CHARACTER, name,
 											matcher.group( i ) ) );
 							Thread.sleep( 5000 );
-							System.exit( 1 );			
+							System.exit( 1 );
 						}
 					}
 				}
@@ -346,6 +353,7 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			/** d) SIARD-Datei entpacken */
+			// System.out.println( " d) SIARD-Datei entpacken " );
 			if ( !siardDatei.exists() ) {
 				// SIARD-Datei existiert nicht
 				System.out.println( siardexcerpt.getTextResourceService().getText(
@@ -368,7 +376,7 @@ public class SIARDexcerpt implements MessageConstants
 				Controllerexcerpt controllerexcerpt = (Controllerexcerpt) context
 						.getBean( "controllerexcerpt" );
 				File siardDateiNew = new File( pathToWorkDir + File.separator + siardDatei.getName() );
-				okA = controllerexcerpt.executeA( siardDatei, siardDateiNew, "" );
+				okA = controllerexcerpt.executeA( siardDatei, siardDateiNew, "", configMap );
 
 				if ( !okA ) {
 					// SIARD Datei konte nicht entpackt werden
@@ -400,6 +408,7 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			/** e) Struktur-Check SIARD-Verzeichnis */
+			// System.out.println( " e) Struktur-Check SIARD-Verzeichnis " );
 			/* File content = new File( siardDatei.getAbsolutePath() + File.separator + "content" );
 			 * 
 			 * Content darf nicht existieren. Dann handelt es sich um eine Reine Strukturablieferung */
@@ -429,7 +438,7 @@ public class SIARDexcerpt implements MessageConstants
 				Controllerexcerpt controllerexcerptConfig = (Controllerexcerpt) context
 						.getBean( "controllerexcerpt" );
 				okAConfig = controllerexcerptConfig.executeAConfig( siardDatei, configFileHard,
-						configString );
+						configString, configMap );
 
 				if ( !okAConfig ) {
 					// Löschen des Arbeitsverzeichnisses und configFileHard, falls eines angelegt wurde
@@ -477,15 +486,14 @@ public class SIARDexcerpt implements MessageConstants
 
 			System.out.println( "SIARDexcerpt: search" );
 
-			String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
+			Map<String, String> configMap = siardexcerpt.getConfigurationService().configMap();
+
 			if ( pathToWorkDir.startsWith( "Configuration-Error:" ) ) {
 				System.out.println( pathToWorkDir );
 				System.exit( 1 );
 			}
 
 			tmpDir = new File( pathToWorkDir );
-
-			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
 
 			directoryOfOutput = new File( pathToOutput );
 
@@ -494,6 +502,7 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			/** a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext */
+			// System.out.println( " a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext " );
 			if ( args.length < 4 ) {
 				System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_PARAMETER_USAGE ) );
 				System.exit( 1 );
@@ -512,6 +521,7 @@ public class SIARDexcerpt implements MessageConstants
 
 			/** b) Suchtext einlesen */
 			String searchString = new String( args[3] );
+			// System.out.println( " b) Suchtext '" + searchString + "' einlesen " );
 
 			/* Der SearchString kann nur die Wildcard (* oder .) enthalten. Da grep es aber nicht
 			 * unterstützt durch row ersetzten */
@@ -520,6 +530,7 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			/** c) search.xml vorbereiten (Header) und xsl in Output kopieren */
+			// System.out.println( " c) search.xml vorbereiten (Header) und xsl in Output kopieren " );
 			// Zeitstempel der Datenextraktion
 			java.util.Date nowStartS = new java.util.Date();
 			java.text.SimpleDateFormat sdfStartS = new java.text.SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
@@ -539,7 +550,7 @@ public class SIARDexcerpt implements MessageConstants
 			outDateiNameS = outDateiNameS.replaceAll( "__", "_" );
 
 			// Informationen zum Archiv holen
-			String archiveS = siardexcerpt.getConfigurationService().getArchive();
+			String archiveS = configMap.get( "Archive" );
 			if ( archiveS.startsWith( "Configuration-Error:" ) ) {
 				System.out.println( archiveS );
 				System.exit( 1 );
@@ -553,7 +564,7 @@ public class SIARDexcerpt implements MessageConstants
 			// Ab hier kann ins Output geschrieben werden...
 
 			// Informationen zum XSL holen
-			String pathToXSLS = siardexcerpt.getConfigurationService().getPathToXSLsearch();
+			String pathToXSLS = configMap.get( "PathToXSLsearch" );
 			if ( pathToXSLS.startsWith( "Configuration-Error:" ) ) {
 				System.out.println( pathToXSLS );
 				System.exit( 1 );
@@ -575,12 +586,14 @@ public class SIARDexcerpt implements MessageConstants
 			LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_INFO ) );
 
 			/** d) search: dies ist in einem eigenen Modul realisiert */
+			// System.out.println( " d) search: dies ist in einem eigenen Modul realisiert " );
 			Controllerexcerpt controllerexcerptS = (Controllerexcerpt) context
 					.getBean( "controllerexcerpt" );
 
-			okB = controllerexcerptS.executeB( siardDatei, outFileSearch, searchString );
+			okB = controllerexcerptS.executeB( siardDatei, outFileSearch, searchString, configMap );
 
 			/** e) Ausgabe und exitcode */
+			// System.out.println( " e) Ausgabe und exitcode " );
 			if ( !okB ) {
 				// Suche konnte nicht erfolgen
 				LOGGER.logError( siardexcerpt.getTextResourceService().getText( MESSAGE_XML_MODUL_B ) );
@@ -673,7 +686,8 @@ public class SIARDexcerpt implements MessageConstants
 
 			System.out.println( "SIARDexcerpt: extract" );
 
-			String pathToWorkDir = siardexcerpt.getConfigurationService().getPathToWorkDir();
+			Map<String, String> configMap = siardexcerpt.getConfigurationService().configMap();
+
 			if ( pathToWorkDir.startsWith( "Configuration-Error:" ) ) {
 				System.out.println( pathToWorkDir );
 				System.exit( 1 );
@@ -681,15 +695,14 @@ public class SIARDexcerpt implements MessageConstants
 
 			tmpDir = new File( pathToWorkDir );
 
-			String pathToOutput = siardexcerpt.getConfigurationService().getPathToOutput();
-
 			directoryOfOutput = new File( pathToOutput );
 
 			if ( !directoryOfOutput.exists() ) {
 				directoryOfOutput.mkdir();
 			}
 
-			/** a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Suchtext */
+			/** a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Schluessel */
+			// System.out.println( " a) Ist die Anzahl Parameter (mind 4) korrekt? arg4 = Schluessel" );
 			if ( args.length < 4 ) {
 				System.out.println( siardexcerpt.getTextResourceService().getText( ERROR_PARAMETER_USAGE ) );
 				System.exit( 1 );
@@ -707,6 +720,7 @@ public class SIARDexcerpt implements MessageConstants
 			}
 
 			/** b) extract.xml vorbereiten (Header) und xsl in Output kopieren */
+			// System.out.println( " b) extract.xml vorbereiten (Header) und xsl in Output kopieren" );
 			// Zeitstempel der Datenextraktion
 			java.util.Date nowStart = new java.util.Date();
 			java.text.SimpleDateFormat sdfStart = new java.text.SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
@@ -730,7 +744,7 @@ public class SIARDexcerpt implements MessageConstants
 			outDateiName = outDateiName.replaceAll( "__", "_" );
 
 			// Informationen zum Archiv holen
-			String archive = siardexcerpt.getConfigurationService().getArchive();
+			String archive = configMap.get( "Archive" );
 			if ( archive.startsWith( "Configuration-Error:" ) ) {
 				System.out.println( archive );
 				System.exit( 1 );
@@ -745,7 +759,7 @@ public class SIARDexcerpt implements MessageConstants
 			/* BufferedWriter out = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new
 			 * File( outFileName + "_new.xml" ) ), "UTF-8" ) ); try { */
 			// Informationen zum XSL holen
-			String pathToXSL = siardexcerpt.getConfigurationService().getPathToXSL();
+			String pathToXSL = configMap.get( "PathToXSL" );
 			if ( pathToXSL.startsWith( "Configuration-Error:" ) ) {
 				System.out.println( pathToXSL );
 				System.exit( 1 );
@@ -874,7 +888,7 @@ public class SIARDexcerpt implements MessageConstants
 					}
 				}
 
-				String primarykeyname = siardexcerpt.getConfigurationService().getMaintablePrimarykeyName();
+				String primarykeyname = configMap.get( "MaintablePrimarykeyName" );
 				if ( primarykeyname.startsWith( "Configuration-Error:" ) ) {
 					System.out.println( primarykeyname );
 					System.exit( 1 );
@@ -909,7 +923,7 @@ public class SIARDexcerpt implements MessageConstants
 			Controllerexcerpt controllerexcerpt = (Controllerexcerpt) context
 					.getBean( "controllerexcerpt" );
 
-			okC = controllerexcerpt.executeC( siardDatei, outFile, excerptString );
+			okC = controllerexcerpt.executeC( siardDatei, outFile, excerptString, configMap );
 
 			/** d) Ausgabe und exitcode */
 			if ( !okC ) {

@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2019
+ * Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -22,7 +22,7 @@ import org.apache.log4j.NDC;
 /** Logging Klasse. Sämtliche Log Aufrufe werden an Jakarta Commons Logging delegiert, welches diese
  * wiederum an Log4j delegiert.
  * 
- * @author Rc Claire Röthlisberger, KOST-CECO */
+ * @author Rc Claire Roethlisberger, KOST-CECO */
 public class Logger
 {
 

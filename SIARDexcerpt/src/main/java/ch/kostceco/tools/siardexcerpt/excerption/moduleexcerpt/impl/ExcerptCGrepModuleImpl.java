@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * 2016-2019 Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -15,28 +15,20 @@
 
 package ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl;
 
-import static org.apache.commons.io.IOUtils.closeQuietly;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.Namespace;
-import org.jdom2.input.SAXBuilder;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptCGrepException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptCGrepModule;
-import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.StreamGobbler;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
@@ -44,23 +36,11 @@ import ch.kostceco.tools.siardexcerpt.util.Util;
 public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements ExcerptCGrepModule
 {
 
-	private ConfigurationService	configurationService;
-
-	public static String					NEWLINE	= System.getProperty( "line.separator" );
-
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService( ConfigurationService configurationService )
-	{
-		this.configurationService = configurationService;
-	}
+	public static String	NEWLINE	= System.getProperty( "line.separator" );
 
 	@Override
-	public boolean validate( File siardDatei, File outFile, String excerptString )
-			throws ExcerptCGrepException
+	public boolean validate( File siardDatei, File outFile, String excerptString,
+			Map<String, String> configMap ) throws ExcerptCGrepException
 	{
 		// Ausgabe -> Ersichtlich das SIARDexcerpt arbeitet
 		int onWork = 41;
@@ -169,13 +149,8 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				 * wenn es nicht gelöchscht werden kann wird es geleert. */
 			}
 
-			/* Nicht vergessen in "src/main/resources/config/applicationContext-services.xml" beim
-			 * entsprechenden Modul die property anzugeben: <property name="configurationService"
-			 * ref="configurationService" /> */
-
-			// String name = getConfigurationService().getMaintableName();
-			String folder = getConfigurationService().getMaintableFolder();
-			String cell = getConfigurationService().getMaintablePrimarykeyCell();
+			String folder = configMap.get( "MaintableFolder" );
+			String cell = configMap.get( "MaintablePrimarykeyCell" );
 			if ( folder.startsWith( "Configuration-Error:" ) ) {
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + folder );
@@ -204,10 +179,10 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			 * Entsprechend wurde sed verwendet. */
 
 			// Bringt alles auf eine Zeile
-			String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofMaintable
-					+ " > " + pathTofMaintableTemp + "\"";
-			String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' " + pathTofMaintableTemp
-					+ " > " + pathTofMaintable + "\"";
+			String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofMaintable + " > "
+					+ pathTofMaintableTemp + "\"";
+			String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' "
+					+ pathTofMaintableTemp + " > " + pathTofMaintable + "\"";
 			// Trennt ><row. Nur eine row auf einer Zeile
 			String commandSed3 = "cmd /c \"" + pathToSedExe + " 's/\\d060row/\\n\\d060row/g' "
 					+ pathTofMaintable + " > " + pathTofMaintableTemp + "\"";
@@ -316,24 +291,24 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 				return false;
 			} finally {
 				if ( procSed != null ) {
-					closeQuietly( procSed.getOutputStream() );
-					closeQuietly( procSed.getInputStream() );
-					closeQuietly( procSed.getErrorStream() );
+					procSed.getOutputStream().close();
+					procSed.getInputStream().close();
+					procSed.getErrorStream().close();
 				}
 				if ( procSed2 != null ) {
-					closeQuietly( procSed2.getOutputStream() );
-					closeQuietly( procSed2.getInputStream() );
-					closeQuietly( procSed2.getErrorStream() );
+					procSed2.getOutputStream().close();
+					procSed2.getInputStream().close();
+					procSed2.getErrorStream().close();
 				}
 				if ( procSed3 != null ) {
-					closeQuietly( procSed3.getOutputStream() );
-					closeQuietly( procSed3.getInputStream() );
-					closeQuietly( procSed3.getErrorStream() );
+					procSed3.getOutputStream().close();
+					procSed3.getInputStream().close();
+					procSed3.getErrorStream().close();
 				}
 				if ( procSed4 != null ) {
-					closeQuietly( procSed4.getOutputStream() );
-					closeQuietly( procSed4.getInputStream() );
-					closeQuietly( procSed4.getErrorStream() );
+					procSed4.getOutputStream().close();
+					procSed4.getInputStream().close();
+					procSed4.getErrorStream().close();
 				}
 			}
 
@@ -473,9 +448,9 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 					return false;
 				} finally {
 					if ( proc != null ) {
-						closeQuietly( proc.getOutputStream() );
-						closeQuietly( proc.getInputStream() );
-						closeQuietly( proc.getErrorStream() );
+						proc.getOutputStream().close();
+						proc.getInputStream().close();
+						proc.getErrorStream().close();
 					}
 				}
 
@@ -530,305 +505,141 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 			String folder = null;
 			String cell = null;
 
-			InputStream fin = new FileInputStream( new File( "configuration" + File.separator
-					+ "SIARDexcerpt.conf.xml" ) );
-			SAXBuilder builder = new SAXBuilder();
-			Document document = builder.build( fin );
-			fin.close();
-
-			/* read the document and for each subTable */
-			Namespace ns = Namespace.getNamespace( "" );
-
-			// select schema elements and loop
-			List<Element> subtables = document.getRootElement().getChild( "subtables", ns )
-					.getChildren( "subtable", ns );
-			for ( Element subtable : subtables ) {
-				// name = subtable.getChild( "name", ns ).getText();
-				folder = subtable.getChild( "folder", ns ).getText();
-				cell = subtable.getChild( "foreignkeycell", ns ).getText();
+			for ( int j = 1; j < 21; j++ ) {
+				// name = subtable.getChild( "name", ns ).getText();*/
+				folder = configMap.get( "st" + j + "Folder" );
+				cell = configMap.get( "st" + j + "Fkcell" );
 				String tabfolder = "";
-				String tabkeyname = subtable.getChild( "keyname", ns ).getText();
+				String tabkeyname = configMap.get( "st" + j + "Keyname" );
 				String tabname = "";
 				String tabdescription = "";
 				String tabdescriptionProv = "";
 				String cellname = "";
 				String celldescription = "";
 
-				// System.out.println( name + " - " + folder + " - " + cell );
-				File fSubtable = new File( fSchema.getAbsolutePath() + File.separator + folder
-						+ File.separator + folder + ".xml" );
-				File fSubtableTemp = new File( fSchema.getAbsolutePath() + File.separator + folder
-						+ File.separator + folder + "_Temp.xml" );
-				String pathTofSubtable = fSubtable.getAbsolutePath();
-				String pathTofSubtableTemp = fSubtableTemp.getAbsolutePath();
-				/* mit Util.oldnewstring respektive replace können sehr grosse files nicht bearbeitet werden!
-				 * 
-				 * Entsprechend wurde sed verwendet. */
+				System.out.println( j + " - " + folder + " - " + cell );
+				if ( folder.equals( "(..)" ) ) {
+					folder = null;
+					cell = null;
 
-				// Bringt alles auf eine Zeile
-				String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofSubtable
-						+ " > " + pathTofSubtableTemp + "\"";
-				String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' " + pathTofSubtableTemp
-						+ " > " + pathTofSubtable + "\"";
-				// Trennt ><row. Nur eine row auf einer Zeile
-				String commandSed3 = "cmd /c \"" + pathToSedExe + " 's/\\d060row/\\n\\d060row/g' "
-						+ pathTofSubtable + " > " + pathTofSubtableTemp + "\"";
-				// Trennt ><table. <table auf eine neue Zeile
-				String commandSed4 = "cmd /c \"" + pathToSedExe
-						+ " 's/\\d060\\d047table/\\n\\d060\\d047table/g' " + pathTofSubtableTemp + " > "
-						+ pathTofSubtable + "\"";
+				} else {
+					File fSubtable = new File( fSchema.getAbsolutePath() + File.separator + folder
+							+ File.separator + folder + ".xml" );
+					File fSubtableTemp = new File( fSchema.getAbsolutePath() + File.separator + folder
+							+ File.separator + folder + "_Temp.xml" );
+					String pathTofSubtable = fSubtable.getAbsolutePath();
+					String pathTofSubtableTemp = fSubtableTemp.getAbsolutePath();
+					/* mit Util.oldnewstring respektive replace können sehr grosse files nicht bearbeitet
+					 * werden!
+					 * 
+					 * Entsprechend wurde sed verwendet. */
 
-				// String commandSed = "cmd /c \"\"pathToSedExe\"  's/row/R0W/g\' 'hallo row.'\"";
-				/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
-				 * gehts: cmd /c\"urspruenlicher Befehl\" */
+					// Bringt alles auf eine Zeile
+					String commandSed = "cmd /c \"" + pathToSedExe + " 's/\\n/ /g' " + pathTofSubtable
+							+ " > " + pathTofSubtableTemp + "\"";
+					String commandSed2 = "cmd /c \"" + pathToSedExe + " ':a;N;$!ba;s/\\n/ /g' "
+							+ pathTofSubtableTemp + " > " + pathTofSubtable + "\"";
+					// Trennt ><row. Nur eine row auf einer Zeile
+					String commandSed3 = "cmd /c \"" + pathToSedExe + " 's/\\d060row/\\n\\d060row/g' "
+							+ pathTofSubtable + " > " + pathTofSubtableTemp + "\"";
+					// Trennt ><table. <table auf eine neue Zeile
+					String commandSed4 = "cmd /c \"" + pathToSedExe
+							+ " 's/\\d060\\d047table/\\n\\d060\\d047table/g' " + pathTofSubtableTemp + " > "
+							+ pathTofSubtable + "\"";
 
-				Process procSed = null;
-				Runtime rtSed = null;
-				Process procSed2 = null;
-				Runtime rtSed2 = null;
-				Process procSed3 = null;
-				Runtime rtSed3 = null;
-				Process procSed4 = null;
-				Runtime rtSed4 = null;
-
-				try {
-					Util.switchOffConsole();
-					rtSed = Runtime.getRuntime();
-					procSed = rtSed.exec( commandSed.toString().split( " " ) );
-					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
-
-					// Fehleroutput holen
-					StreamGobbler errorGobblerSed = new StreamGobbler( procSed.getErrorStream(), "ERROR" );
-
-					// Output holen
-					StreamGobbler outputGobblerSed = new StreamGobbler( procSed.getInputStream(), "OUTPUT" );
-
-					// Threads starten
-					errorGobblerSed.start();
-					outputGobblerSed.start();
-
-					// Warte, bis wget fertig ist
-					procSed.waitFor();
-
-					// ---------------------------
-
-					rtSed2 = Runtime.getRuntime();
-					procSed2 = rtSed2.exec( commandSed2.toString().split( " " ) );
-					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
-
-					// Fehleroutput holen
-					StreamGobbler errorGobblerSed2 = new StreamGobbler( procSed2.getErrorStream(), "ERROR" );
-
-					// Output holen
-					StreamGobbler outputGobblerSed2 = new StreamGobbler( procSed2.getInputStream(), "OUTPUT" );
-
-					// Threads starten
-					errorGobblerSed2.start();
-					outputGobblerSed2.start();
-
-					// Warte, bis wget fertig ist
-					procSed2.waitFor();
-
-					// ---------------------------
-
-					rtSed3 = Runtime.getRuntime();
-					procSed3 = rtSed3.exec( commandSed3.toString().split( " " ) );
-					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
-
-					// Fehleroutput holen
-					StreamGobbler errorGobblerSed3 = new StreamGobbler( procSed3.getErrorStream(), "ERROR" );
-
-					// Output holen
-					StreamGobbler outputGobblerSed3 = new StreamGobbler( procSed3.getInputStream(), "OUTPUT" );
-
-					// Threads starten
-					errorGobblerSed3.start();
-					outputGobblerSed3.start();
-
-					// Warte, bis wget fertig ist
-					procSed3.waitFor();
-
-					// ---------------------------
-
-					rtSed4 = Runtime.getRuntime();
-					procSed4 = rtSed4.exec( commandSed4.toString().split( " " ) );
-					// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
-
-					// Fehleroutput holen
-					StreamGobbler errorGobblerSed4 = new StreamGobbler( procSed4.getErrorStream(), "ERROR" );
-
-					// Output holen
-					StreamGobbler outputGobblerSed4 = new StreamGobbler( procSed4.getInputStream(), "OUTPUT" );
-
-					// Threads starten
-					errorGobblerSed4.start();
-					outputGobblerSed4.start();
-
-					// Warte, bis wget fertig ist
-					procSed4.waitFor();
-
-					// ---------------------------
-
-					Util.switchOnConsole();
-
-				} catch ( Exception e ) {
-					getMessageService().logError(
-							getTextResourceService().getText( MESSAGE_XML_MODUL_C )
-									+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
-					return false;
-				} finally {
-					if ( procSed != null ) {
-						closeQuietly( procSed.getOutputStream() );
-						closeQuietly( procSed.getInputStream() );
-						closeQuietly( procSed.getErrorStream() );
-					}
-					if ( procSed2 != null ) {
-						closeQuietly( procSed2.getOutputStream() );
-						closeQuietly( procSed2.getInputStream() );
-						closeQuietly( procSed2.getErrorStream() );
-					}
-					if ( procSed3 != null ) {
-						closeQuietly( procSed3.getOutputStream() );
-						closeQuietly( procSed3.getInputStream() );
-						closeQuietly( procSed3.getErrorStream() );
-					}
-					if ( procSed4 != null ) {
-						closeQuietly( procSed4.getOutputStream() );
-						closeQuietly( procSed4.getInputStream() );
-						closeQuietly( procSed4.getErrorStream() );
-					}
-				}
-
-				if ( fSubtableTemp.exists() ) {
-					Util.deleteDir( fSubtableTemp );
-				}
-
-				try {
-					/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
-					 * Entsprechend werden diese durch . ersetzt (Wildcard) */
-					String excerptStringM = excerptString.replaceAll( " ", "." );
-					excerptStringM = excerptStringM.replaceAll( "\\.", "\\.*" );
-					excerptStringM = "<" + cell + ">" + excerptStringM + "</" + cell + ">";
-					// grep "<c11>7561234567890</c11>" table13.xml >> output.txt
-					String command = "cmd /c \"\"" + pathToGrepExe + "\" -E \"" + excerptStringM + "\" \""
-							+ fSubtable.getAbsolutePath() + "\" >> \"" + tempOutFile.getAbsolutePath() + "\"\"";
+					// String commandSed = "cmd /c \"\"pathToSedExe\"  's/row/R0W/g\' 'hallo row.'\"";
 					/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten Befehl
 					 * gehts: cmd /c\"urspruenlicher Befehl\" */
 
-					// System.out.println( command );
-
-					Process proc = null;
-					Runtime rt = null;
-
-					getMessageService().logError(
-							getTextResourceService().getText( MESSAGE_XML_ELEMENT_OPEN, folder ) );
-					// TODO Start Wie maintable
-					// Informationen zur Tabelle aus metadata.xml herausholen
-
-					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-					// dbf.setValidating(false);
-					DocumentBuilder db = dbf.newDocumentBuilder();
-					org.w3c.dom.Document doc = db.parse( new FileInputStream( xmlExtracted ), "UTF8" );
-					doc.getDocumentElement().normalize();
-
-					dbf.setFeature( "http://xml.org/sax/features/namespaces", false );
-
-					NodeList nlTable = doc.getElementsByTagName( "table" );
-					for ( int i = 0; i < nlTable.getLength(); i++ ) {
-						// für jede Tabelle (table) ...
-						tabfolder = "";
-						tabname = "";
-						tabdescription = "";
-						tabdescriptionProv = "";
-						cellname = "";
-						celldescription = "";
-
-						Node nodenlTable = nlTable.item( i );
-						NodeList childNodes = nodenlTable.getChildNodes();
-						for ( int x = 0; x < childNodes.getLength(); x++ ) {
-							Node subNodeI = childNodes.item( x );
-							if ( subNodeI.getNodeName().equals( "folder" ) ) {
-								// System.out.println( subNodeI.getTextContent() );
-								if ( subNodeI.getTextContent().equals( folder ) ) {
-									/* Es ist die richtige Tabelle. Ensprechend wird i ans ende Gestellt, damit die
-									 * i-Schlaufe beendet wird. */
-									tabfolder = subNodeI.getTextContent();
-									i = nlTable.getLength();
-								}
-							} else if ( subNodeI.getNodeName().equals( "name" ) ) {
-								tabname = subNodeI.getTextContent();
-							} else if ( subNodeI.getNodeName().equals( "description" ) ) {
-								tabdescriptionProv = new String( subNodeI.getTextContent() );
-								/* in der description generiert mit csv2siard wird nach "word" der Select Befehl
-								 * angehängt. Dieser soll nicht mit ausgegeben werden. */
-								String word = "\\u000A";
-								int endIndex = tabdescriptionProv.indexOf( word );
-								if ( endIndex == -1 ) {
-									tabdescription = tabdescriptionProv;
-								} else {
-									tabdescription = tabdescriptionProv.substring( 0, endIndex );
-								}
-							} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
-								NodeList childNodesColumns = subNodeI.getChildNodes();
-								for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
-									// für jede Zelle (column) ...
-									Node subNodeII = childNodesColumns.item( y );
-									NodeList childNodesColumn = subNodeII.getChildNodes();
-									for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
-										// für jedes Subelement der Zelle (name, description...) ...
-										int cellNumber = (y + 1) / 2;
-										// System.out.println( "Zelle Nr " + cellNumber );
-										Node subNodeIII = childNodesColumn.item( z );
-										if ( subNodeIII.getNodeName().equals( "name" ) ) {
-											cellname = cellname + "<c" + cellNumber + ">" + subNodeIII.getTextContent()
-													+ "</c" + cellNumber + ">";
-											// System.out.println( cellname );
-										} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
-											celldescription = celldescription + "<c" + cellNumber + ">"
-													+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber + ">";
-										}
-									}
-								}
-							}
-						}
-						if ( i == nlTable.getLength() ) {
-							// Ausgabe für jede Tabelle
-							getMessageService().logError(
-									getTextResourceService().getText( MESSAGE_XML_TEXT, tabname, "tabname" ) );
-							getMessageService().logError(
-									getTextResourceService().getText( MESSAGE_XML_TEXT, tabfolder, "tabfolder" ) );
-							getMessageService().logError(
-									getTextResourceService().getText( MESSAGE_XML_TEXT, tabkeyname, "tabkeyname" ) );
-							getMessageService().logError(
-									getTextResourceService().getText( MESSAGE_XML_TEXT, tabdescription,
-											"tabdescription" ) );
-							getMessageService().logError(
-									getTextResourceService().getText( MESSAGE_XML_TEXT, cellname, "name" ) );
-							getMessageService().logError(
-									getTextResourceService().getText( MESSAGE_XML_TEXT, celldescription,
-											"description" ) );
-						}
-					}
-					// TODO End Wie maintable
+					Process procSed = null;
+					Runtime rtSed = null;
+					Process procSed2 = null;
+					Runtime rtSed2 = null;
+					Process procSed3 = null;
+					Runtime rtSed3 = null;
+					Process procSed4 = null;
+					Runtime rtSed4 = null;
 
 					try {
 						Util.switchOffConsole();
-						rt = Runtime.getRuntime();
-						proc = rt.exec( command.toString().split( " " ) );
+						rtSed = Runtime.getRuntime();
+						procSed = rtSed.exec( commandSed.toString().split( " " ) );
 						// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
 
 						// Fehleroutput holen
-						StreamGobbler errorGobbler = new StreamGobbler( proc.getErrorStream(), "ERROR" );
+						StreamGobbler errorGobblerSed = new StreamGobbler( procSed.getErrorStream(), "ERROR" );
 
 						// Output holen
-						StreamGobbler outputGobbler = new StreamGobbler( proc.getInputStream(), "OUTPUT" );
+						StreamGobbler outputGobblerSed = new StreamGobbler( procSed.getInputStream(), "OUTPUT" );
 
 						// Threads starten
-						errorGobbler.start();
-						outputGobbler.start();
+						errorGobblerSed.start();
+						outputGobblerSed.start();
 
 						// Warte, bis wget fertig ist
-						proc.waitFor();
+						procSed.waitFor();
+
+						// ---------------------------
+
+						rtSed2 = Runtime.getRuntime();
+						procSed2 = rtSed2.exec( commandSed2.toString().split( " " ) );
+						// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+						// Fehleroutput holen
+						StreamGobbler errorGobblerSed2 = new StreamGobbler( procSed2.getErrorStream(), "ERROR" );
+
+						// Output holen
+						StreamGobbler outputGobblerSed2 = new StreamGobbler( procSed2.getInputStream(),
+								"OUTPUT" );
+
+						// Threads starten
+						errorGobblerSed2.start();
+						outputGobblerSed2.start();
+
+						// Warte, bis wget fertig ist
+						procSed2.waitFor();
+
+						// ---------------------------
+
+						rtSed3 = Runtime.getRuntime();
+						procSed3 = rtSed3.exec( commandSed3.toString().split( " " ) );
+						// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+						// Fehleroutput holen
+						StreamGobbler errorGobblerSed3 = new StreamGobbler( procSed3.getErrorStream(), "ERROR" );
+
+						// Output holen
+						StreamGobbler outputGobblerSed3 = new StreamGobbler( procSed3.getInputStream(),
+								"OUTPUT" );
+
+						// Threads starten
+						errorGobblerSed3.start();
+						outputGobblerSed3.start();
+
+						// Warte, bis wget fertig ist
+						procSed3.waitFor();
+
+						// ---------------------------
+
+						rtSed4 = Runtime.getRuntime();
+						procSed4 = rtSed4.exec( commandSed4.toString().split( " " ) );
+						// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+						// Fehleroutput holen
+						StreamGobbler errorGobblerSed4 = new StreamGobbler( procSed4.getErrorStream(), "ERROR" );
+
+						// Output holen
+						StreamGobbler outputGobblerSed4 = new StreamGobbler( procSed4.getInputStream(),
+								"OUTPUT" );
+
+						// Threads starten
+						errorGobblerSed4.start();
+						outputGobblerSed4.start();
+
+						// Warte, bis wget fertig ist
+						procSed4.waitFor();
+
+						// ---------------------------
 
 						Util.switchOnConsole();
 
@@ -838,68 +649,230 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 										+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
 						return false;
 					} finally {
-						if ( proc != null ) {
-							closeQuietly( proc.getOutputStream() );
-							closeQuietly( proc.getInputStream() );
-							closeQuietly( proc.getErrorStream() );
+						if ( procSed != null ) {
+							procSed.getOutputStream().close();
+							procSed.getInputStream().close();
+							procSed.getErrorStream().close();
+						}
+						if ( procSed2 != null ) {
+							procSed2.getOutputStream().close();
+							procSed2.getInputStream().close();
+							procSed2.getErrorStream().close();
+						}
+						if ( procSed3 != null ) {
+							procSed3.getOutputStream().close();
+							procSed3.getInputStream().close();
+							procSed3.getErrorStream().close();
+						}
+						if ( procSed4 != null ) {
+							procSed4.getOutputStream().close();
+							procSed4.getInputStream().close();
+							procSed4.getErrorStream().close();
 						}
 					}
 
-					Scanner scanner = new Scanner( tempOutFile, "UTF-8" );
-					content = "";
+					if ( fSubtableTemp.exists() ) {
+						Util.deleteDir( fSubtableTemp );
+					}
+
 					try {
-						content = scanner.useDelimiter( "\\Z" ).next();
-					} catch ( Exception e ) {
-						// Grep ergab kein treffer Content Null
-						content = "";
-					}
-					scanner.close();
+						/* Der excerptString kann Leerschläge enthalten, welche bei grep Problem verursachen.
+						 * Entsprechend werden diese durch . ersetzt (Wildcard) */
+						String excerptStringM = excerptString.replaceAll( " ", "." );
+						excerptStringM = excerptStringM.replaceAll( "\\.", "\\.*" );
+						excerptStringM = "<" + cell + ">" + excerptStringM + "</" + cell + ">";
+						// grep "<c11>7561234567890</c11>" table13.xml >> output.txt
+						String command = "cmd /c \"\"" + pathToGrepExe + "\" -E \"" + excerptStringM + "\" \""
+								+ fSubtable.getAbsolutePath() + "\" >> \"" + tempOutFile.getAbsolutePath() + "\"\"";
+						/* Das redirect Zeichen verunmöglicht eine direkte eingabe. mit dem geschachtellten
+						 * Befehl gehts: cmd /c\"urspruenlicher Befehl\" */
 
-					getMessageService().logError(
-							getTextResourceService().getText( MESSAGE_XML_ELEMENT_CONTENT, content ) );
-					getMessageService().logError(
-							getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, folder ) );
+						// System.out.println( command );
 
-					if ( tempOutFile.exists() ) {
-						tempOutFile.delete();
-						if ( tempOutFile.exists() ) {
-							Util.replaceAllChar( tempOutFile, "" );
+						Process proc = null;
+						Runtime rt = null;
+
+						getMessageService().logError(
+								getTextResourceService().getText( MESSAGE_XML_ELEMENT_OPEN, folder ) );
+						// TODO Start Wie maintable
+						// Informationen zur Tabelle aus metadata.xml herausholen
+
+						DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+						// dbf.setValidating(false);
+						DocumentBuilder db = dbf.newDocumentBuilder();
+						org.w3c.dom.Document doc = db.parse( new FileInputStream( xmlExtracted ), "UTF8" );
+						doc.getDocumentElement().normalize();
+
+						dbf.setFeature( "http://xml.org/sax/features/namespaces", false );
+
+						NodeList nlTable = doc.getElementsByTagName( "table" );
+						for ( int i = 0; i < nlTable.getLength(); i++ ) {
+							// für jede Tabelle (table) ...
+							tabfolder = "";
+							tabname = "";
+							tabdescription = "";
+							tabdescriptionProv = "";
+							cellname = "";
+							celldescription = "";
+
+							Node nodenlTable = nlTable.item( i );
+							NodeList childNodes = nodenlTable.getChildNodes();
+							for ( int x = 0; x < childNodes.getLength(); x++ ) {
+								Node subNodeI = childNodes.item( x );
+								if ( subNodeI.getNodeName().equals( "folder" ) ) {
+									// System.out.println( subNodeI.getTextContent() );
+									if ( subNodeI.getTextContent().equals( folder ) ) {
+										/* Es ist die richtige Tabelle. Ensprechend wird i ans ende Gestellt, damit die
+										 * i-Schlaufe beendet wird. */
+										tabfolder = subNodeI.getTextContent();
+										i = nlTable.getLength();
+									}
+								} else if ( subNodeI.getNodeName().equals( "name" ) ) {
+									tabname = subNodeI.getTextContent();
+								} else if ( subNodeI.getNodeName().equals( "description" ) ) {
+									tabdescriptionProv = new String( subNodeI.getTextContent() );
+									/* in der description generiert mit csv2siard wird nach "word" der Select Befehl
+									 * angehängt. Dieser soll nicht mit ausgegeben werden. */
+									String word = "\\u000A";
+									int endIndex = tabdescriptionProv.indexOf( word );
+									if ( endIndex == -1 ) {
+										tabdescription = tabdescriptionProv;
+									} else {
+										tabdescription = tabdescriptionProv.substring( 0, endIndex );
+									}
+								} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
+									NodeList childNodesColumns = subNodeI.getChildNodes();
+									for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
+										// für jede Zelle (column) ...
+										Node subNodeII = childNodesColumns.item( y );
+										NodeList childNodesColumn = subNodeII.getChildNodes();
+										for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
+											// für jedes Subelement der Zelle (name, description...) ...
+											int cellNumber = (y + 1) / 2;
+											// System.out.println( "Zelle Nr " + cellNumber );
+											Node subNodeIII = childNodesColumn.item( z );
+											if ( subNodeIII.getNodeName().equals( "name" ) ) {
+												cellname = cellname + "<c" + cellNumber + ">" + subNodeIII.getTextContent()
+														+ "</c" + cellNumber + ">";
+												// System.out.println( cellname );
+											} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
+												celldescription = celldescription + "<c" + cellNumber + ">"
+														+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber + ">";
+											}
+										}
+									}
+								}
+							}
+							if ( i == nlTable.getLength() ) {
+								// Ausgabe für jede Tabelle
+								getMessageService().logError(
+										getTextResourceService().getText( MESSAGE_XML_TEXT, tabname, "tabname" ) );
+								getMessageService().logError(
+										getTextResourceService().getText( MESSAGE_XML_TEXT, tabfolder, "tabfolder" ) );
+								getMessageService().logError(
+										getTextResourceService().getText( MESSAGE_XML_TEXT, tabkeyname, "tabkeyname" ) );
+								getMessageService().logError(
+										getTextResourceService().getText( MESSAGE_XML_TEXT, tabdescription,
+												"tabdescription" ) );
+								getMessageService().logError(
+										getTextResourceService().getText( MESSAGE_XML_TEXT, cellname, "name" ) );
+								getMessageService().logError(
+										getTextResourceService().getText( MESSAGE_XML_TEXT, celldescription,
+												"description" ) );
+							}
 						}
-						/* Util.deleteDir( tempOutFile );
-						 * 
-						 * wird nicht verwendet, da es jetzt gelöscht werden muss und nicht spätestens bei exit.
-						 * wenn es nicht gelöchscht werden kann wird es geleert. */
+						// TODO End Wie maintable
+
+						try {
+							Util.switchOffConsole();
+							rt = Runtime.getRuntime();
+							proc = rt.exec( command.toString().split( " " ) );
+							// .split(" ") ist notwendig wenn in einem Pfad ein Doppelleerschlag vorhanden ist!
+
+							// Fehleroutput holen
+							StreamGobbler errorGobbler = new StreamGobbler( proc.getErrorStream(), "ERROR" );
+
+							// Output holen
+							StreamGobbler outputGobbler = new StreamGobbler( proc.getInputStream(), "OUTPUT" );
+
+							// Threads starten
+							errorGobbler.start();
+							outputGobbler.start();
+
+							// Warte, bis wget fertig ist
+							proc.waitFor();
+
+							Util.switchOnConsole();
+
+						} catch ( Exception e ) {
+							getMessageService().logError(
+									getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+											+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+							return false;
+						} finally {
+							if ( proc != null ) {
+								proc.getOutputStream().close();
+								proc.getInputStream().close();
+								proc.getErrorStream().close();
+							}
+						}
+
+						Scanner scanner = new Scanner( tempOutFile, "UTF-8" );
+						content = "";
+						try {
+							content = scanner.useDelimiter( "\\Z" ).next();
+						} catch ( Exception e ) {
+							// Grep ergab kein treffer Content Null
+							content = "";
+						}
+						scanner.close();
+
+						getMessageService().logError(
+								getTextResourceService().getText( MESSAGE_XML_ELEMENT_CONTENT, content ) );
+						getMessageService().logError(
+								getTextResourceService().getText( MESSAGE_XML_ELEMENT_CLOSE, folder ) );
+
+						if ( tempOutFile.exists() ) {
+							tempOutFile.delete();
+							if ( tempOutFile.exists() ) {
+								Util.replaceAllChar( tempOutFile, "" );
+							}
+							/* Util.deleteDir( tempOutFile );
+							 * 
+							 * wird nicht verwendet, da es jetzt gelöscht werden muss und nicht spätestens bei
+							 * exit. wenn es nicht gelöchscht werden kann wird es geleert. */
+						}
+						content = "";
+
+						// Ende Grep
+
+					} catch ( Exception e ) {
+						getMessageService().logError(
+								getTextResourceService().getText( MESSAGE_XML_MODUL_C )
+										+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
+						return false;
 					}
-					content = "";
 
-					// Ende Grep
-
-				} catch ( Exception e ) {
-					getMessageService().logError(
-							getTextResourceService().getText( MESSAGE_XML_MODUL_C )
-									+ getTextResourceService().getText( ERROR_XML_UNKNOWN, e.getMessage() ) );
-					return false;
-				}
-
-				// Ende SubTables
-				if ( onWork == 41 ) {
-					onWork = 2;
-					System.out.print( "-   " );
-					System.out.print( "\r" );
-				} else if ( onWork == 11 ) {
-					onWork = 12;
-					System.out.print( "\\   " );
-					System.out.print( "\r" );
-				} else if ( onWork == 21 ) {
-					onWork = 22;
-					System.out.print( "|   " );
-					System.out.print( "\r" );
-				} else if ( onWork == 31 ) {
-					onWork = 32;
-					System.out.print( "/   " );
-					System.out.print( "\r" );
-				} else {
-					onWork = onWork + 1;
+					// Ende SubTables
+					if ( onWork == 41 ) {
+						onWork = 2;
+						System.out.print( "-   " );
+						System.out.print( "\r" );
+					} else if ( onWork == 11 ) {
+						onWork = 12;
+						System.out.print( "\\   " );
+						System.out.print( "\r" );
+					} else if ( onWork == 21 ) {
+						onWork = 22;
+						System.out.print( "|   " );
+						System.out.print( "\r" );
+					} else if ( onWork == 31 ) {
+						onWork = 32;
+						System.out.print( "/   " );
+						System.out.print( "\r" );
+					} else {
+						onWork = onWork + 1;
+					}
 				}
 			}
 			System.out.print( "   " );

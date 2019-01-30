@@ -1,6 +1,6 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C) 2016-2017
- * Claire Röthlisberger (KOST-CECO)
+ * The SIARDexcerpt application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * 2016-2019 Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
  * application is free software: you can redistribute it and/or modify it under the terms of the GNU
@@ -15,40 +15,29 @@
 
 package ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.impl;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.List;
+import java.io.IOException;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-import ch.enterag.utils.zip.EntryInputStream;
-import ch.enterag.utils.zip.FileEntry;
-import ch.enterag.utils.zip.Zip64File;
 import ch.kostceco.tools.siardexcerpt.exception.moduleexcerpt.ExcerptAZipException;
 import ch.kostceco.tools.siardexcerpt.excerption.ValidationModuleImpl;
 import ch.kostceco.tools.siardexcerpt.excerption.moduleexcerpt.ExcerptAZipModule;
-import ch.kostceco.tools.siardexcerpt.service.ConfigurationService;
 import ch.kostceco.tools.siardexcerpt.util.Util;
 
 /** SIARD-Datei entpacken */
 public class ExcerptAZipModuleImpl extends ValidationModuleImpl implements ExcerptAZipModule
 {
 
-	private ConfigurationService	configurationService;
-
-	public static String					NEWLINE	= System.getProperty( "line.separator" );
-
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService( ConfigurationService configurationService )
-	{
-		this.configurationService = configurationService;
-	}
+	public static String	NEWLINE	= System.getProperty( "line.separator" );
 
 	@Override
-	public boolean validate( File siardDatei, File siardDateiNew, String noString )
-			throws ExcerptAZipException
+	public boolean validate( File siardDatei, File siardDateiNew, String noString,
+			Map<String, String> configMap ) throws ExcerptAZipException
 	{
 
 		boolean result = true;
@@ -69,44 +58,47 @@ public class ExcerptAZipModuleImpl extends ValidationModuleImpl implements Excer
 				siardDateiNew.mkdir();
 			}
 
-			/* Das metadata.xml und sein xsd müssen in das Filesystem extrahiert werden, weil bei bei
-			 * Verwendung eines Inputstreams bei der Validierung ein Problem mit den xs:include Statements
-			 * besteht, die includes können so nicht aufgelöst werden. Es werden hier jedoch nicht nur
-			 * diese Files extrahiert, sondern gleich die ganze Zip-Datei, weil auch spätere Validierungen
-			 * nur mit den extrahierten Files arbeiten können. */
-			Zip64File zipfile = new Zip64File( siardDatei );
-			List<FileEntry> fileEntryList = zipfile.getListFileEntries();
-			for ( FileEntry fileEntry : fileEntryList ) {
-				if ( !fileEntry.isDirectory() ) {
-					byte[] buffer = new byte[8192];
-					// Scheibe die Datei an den richtigen Ort respektive in den richtigen Ordner der ggf
-					// angelegt werden muss.
-					EntryInputStream eis = zipfile.openEntryInputStream( fileEntry.getName() );
-					File newFile = new File( siardDateiNew, fileEntry.getName() );
-					File parent = newFile.getParentFile();
-					if ( !parent.exists() ) {
-						parent.mkdirs();
-					}
-					FileOutputStream fos = new FileOutputStream( newFile );
-					for ( int iRead = eis.read( buffer ); iRead >= 0; iRead = eis.read( buffer ) ) {
-						fos.write( buffer, 0, iRead );
-					}
-					eis.close();
-					fos.close();
-				} else {
-					/* Scheibe den Ordner wenn noch nicht vorhanden an den richtigen Ort respektive in den
-					 * richtigen Ordner der ggf angelegt werden muss. Dies muss gemacht werden, damit auch
-					 * leere Ordner ins Work geschrieben werden. Diese werden danach im J als Fehler angegeben */
-					EntryInputStream eis = zipfile.openEntryInputStream( fileEntry.getName() );
-					File newFolder = new File( siardDateiNew, fileEntry.getName() );
-					if ( !newFolder.exists() ) {
-						File parent = newFolder.getParentFile();
+			FileInputStream fis = null;
+			ZipInputStream zipfile = null;
+			ZipEntry zEntry = null;
+			fis = new FileInputStream( siardDatei );
+			zipfile = new ZipInputStream( new BufferedInputStream( fis ) );
+
+			while ( (zEntry = zipfile.getNextEntry()) != null ) {
+				try {
+					if ( !zEntry.isDirectory() ) {
+						byte[] tmp = new byte[4 * 1024];
+						FileOutputStream fos = null;
+						String opFilePath = siardDateiNew + File.separator + zEntry.getName();
+						File newFile = new File( opFilePath );
+						File parent = newFile.getParentFile();
 						if ( !parent.exists() ) {
 							parent.mkdirs();
 						}
-						newFolder.mkdirs();
+						// System.out.println( "Extracting file to " + newFile.getAbsolutePath() );
+						fos = new FileOutputStream( opFilePath );
+						int size = 0;
+						while ( (size = zipfile.read( tmp )) != -1 ) {
+							fos.write( tmp, 0, size );
+						}
+						fos.flush();
+						fos.close();
+					} else {
+						/* Scheibe den Ordner wenn noch nicht vorhanden an den richtigen Ort respektive in den
+						 * richtigen Ordner der ggf angelegt werden muss. Dies muss gemacht werden, damit auch
+						 * leere Ordner ins Work geschrieben werden. Diese werden danach im J als Fehler
+						 * angegeben */
+						File newFolder = new File( siardDateiNew, zEntry.getName() );
+						if ( !newFolder.exists() ) {
+							File parent = newFolder.getParentFile();
+							if ( !parent.exists() ) {
+								parent.mkdirs();
+							}
+							newFolder.mkdirs();
+						}
 					}
-					eis.close();
+				} catch ( IOException e ) {
+					System.out.println( e.getMessage() );
 				}
 			}
 

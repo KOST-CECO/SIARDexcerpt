@@ -1,106 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<pathtooutput>Output</pathtooutput>
-	<pathtoworkdir>temp_SIARDexcerpt</pathtoworkdir>
 	<pathtoxsl>resources\taxar.xsl</pathtoxsl>
 	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
 	<archive>Staatsarchiv Zuerich</archive>
 	<insensitive>yes</insensitive>
-
 	<maintable>
-		<mainfolder>table13</mainfolder>
-		<mainname>taxDeclarationMainForm</mainname>
-		<title>Suchergebnis aus dem Steuerregister:</title>
-		<primarykeyname>AHV-Nr P1</primarykeyname>
-		<primarykeycell>c11</primarykeycell>
-		<cellname1>Name P1</cellname1>
-		<cellnumber1>c6</cellnumber1>
-		<cellname2>Ledigname P1</cellname2>
-		<cellnumber2>c8</cellnumber2>
-		<cellname3>Vorname P1</cellname3>
-		<cellnumber3>c7</cellnumber3>
-		<cellname4>Geburtsdatum P1</cellname4>
-		<cellnumber4>c10</cellnumber4>
-		<cellname5>Strasse P1</cellname5>
-		<cellnumber5>c15</cellnumber5>
-		<cellname6>Hausnummer P1</cellname6>
-		<cellnumber6>c16</cellnumber6>
-		<cellname7>Ort P1</cellname7>
-		<cellnumber7>c18</cellnumber7>
-		<cellname8>Name P2</cellname8>
-		<cellnumber8>c26</cellnumber8>
-		<cellname9>Ledigname P2</cellname9>
-		<cellnumber9>c28</cellnumber9>
-		<cellname10>Vorname P2</cellname10>
-		<cellnumber10>c27</cellnumber10>
-		<cellname11>Geburtsdatum P2</cellname11>
-		<cellnumber11>c30</cellnumber11>
+		<mfolder>table13</mfolder>
+		<mname>taxDeclarationMainForm</mname>
+		<mtitle>Suchergebnis aus dem Steuerregister:</mtitle>
+		<mpkname>AHV-Nr P1</mpkname>
+		<mpkcell>c11</mpkcell>
+		<mc1name>Name P1</mc1name>
+		<mc1number>c6</mc1number>
+		<mc2name>Ledigname P1</mc2name>
+		<mc2number>c8</mc2number>
+		<mc3name>Vorname P1</mc3name>
+		<mc3number>c7</mc3number>
+		<mc4name>Geburtsdatum P1</mc4name>
+		<mc4number>c10</mc4number>
+		<mc5name>Strasse P1</mc5name>
+		<mc5number>c15</mc5number>
+		<mc6name>Hausnummer P1</mc6name>
+		<mc6number>c16</mc6number>
+		<mc7name>Ort P1</mc7name>
+		<mc7number>c18</mc7number>
+		<mc8name>Name P2</mc8name>
+		<mc8number>c26</mc8number>
+		<mc9name>Ledigname P2</mc9name>
+		<mc9number>c28</mc9number>
+		<mc10name>Vorname P2</mc10name>
+		<mc10number>c27</mc10number>
+		<mc11name>Geburtsdatum P2</mc11name>
+		<mc11number>c30</mc11number>
 	</maintable>
 	<subtables>
-		<subtable>
-			<name>businessLiabilitiesListing</name>
-			<folder>table0</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>businessQualifiedInvestment</name>
-			<folder>table1</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>childData</name>
-			<folder>table2</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>disabledPersonSupport</name>
-			<folder>table3</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>movablePropertyLifeInsurance</name>
-			<folder>table4</folder>
- 			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>movablePropertyVehicle</name>
-			<folder>table5</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>paidOut</name>
-			<folder>table6</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>payment</name>
-			<folder>table7</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>paymentReceived</name>
-			<folder>table8</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>privateLiabilitiesListing</name>
-			<folder>table9</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>privateQualifiedInvestments</name>
-			<folder>table10</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>propertyHouseOrFlat</name>
-			<folder>table11</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
-		<subtable>
-			<name>securityEntry</name>
-			<folder>table12</folder>
-			<foreignkeycell>c1</foreignkeycell>
-		</subtable>
+		<subtable1>
+			<st1keyname>AHV-Nr P1</st1keyname>
+			<st1name>businessLiabilitiesListing</st1name>
+			<st1folder>table0</st1folder>
+			<st1fkcell>c1</st1fkcell>
+		</subtable1>
+		<subtable2>
+			<st2keyname>AHV-Nr P1</st2keyname>
+			<st2name>businessQualifiedInvestment</st2name>
+			<st2folder>table1</stfolder>
+			<st2fkcell>c1</st2fkcell>
+		</subtable2>
+		<subtable3>
+			<st3keyname>AHV-Nr P1</st3keyname>
+			<st3name>childData</st3name>
+			<st3folder>table2</st3folder>
+			<st3fkcell>c1</st3fkcell>
+		</subtable3>
+		<subtable4>
+			<st4keyname>AHV-Nr P1</st4keyname>
+			<st4name>disabledPersonSupport</st4name>
+			<st4folder>table3</st4folder>
+			<st4fkcell>c1</st4fkcell>
+		</subtable4>
+		<subtable5>
+			<st5keyname>AHV-Nr P1</st5keyname>
+			<st5name>movablePropertyLifeInsurance</st5name>
+			<st5folder>table4</st5folder>
+ 			<st5fkcell>c1</st5fkcell>
+		</subtable5>
+		<subtable6>
+			<st6keyname>AHV-Nr P1</st6keyname>
+			<st6name>movablePropertyVehicle</st6name>
+			<st6folder>table5</st6folder>
+			<st6fkcell>c1</st6fkcell>
+		</subtable6>
+		<subtable7>
+			<st7keyname>AHV-Nr P1</st7keyname>
+			<st7name>paidOut</st7name>
+			<st7folder>table6</st7folder>
+			<st7fkcell>c1</st7fkcell>
+		</subtable7>
+		<subtable8>
+			<st8keyname>AHV-Nr P1</st8keyname>
+			<st8name>payment</st8name>
+			<st8folder>table7</st8folder>
+			<st8fkcell>c1</st8fkcell>
+		</subtable8>
+		<subtable9>
+			<st9keyname>AHV-Nr P1</st9keyname>
+			<st9name>paymentReceived</st9name>
+			<st9folder>table8</st9folder>
+			<st9fkcell>c1</st9fkcell>
+		</subtable9>
+		<subtable10>
+			<st10keyname>AHV-Nr P1</st10keyname>
+			<st10name>privateLiabilitiesListing</st10name>
+			<st10folder>table9</st10folder>
+			<st10fkcell>c1</st10fkcell>
+		</subtable10>
+		<subtable11>
+			<st11keyname>AHV-Nr P1</st11keyname>
+			<st11name>privateQualifiedInvestments</st11name>
+			<st11folder>table10</st11folder>
+			<st11fkcell>c1</st11fkcell>
+		</subtable11>
+		<subtable12>
+			<st12keyname>AHV-Nr P1</st12keyname>
+			<st12name>propertyHouseOrFlat</st12name>
+			<st12folder>table11</st12folder>
+			<st12fkcell>c1</st12fkcell>
+		</subtable12>
+		<subtable13>
+			<st13keyname>AHV-Nr P1</st13keyname>
+			<st13name>securityEntry</st13name>
+			<st13folder>table12</st13folder>
+			<st13fkcell>c1</st13fkcell>
+		</subtable13>
 	</subtables>
 </configuration>
