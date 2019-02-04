@@ -42,15 +42,15 @@
   <h1>Gebaeudeblatt aus <xsl:value-of select="table/Infos/dbname"/> (<xsl:value-of select="table/Infos/dataOriginTimespan"/>) </h1>
   <br/>
 <div><table border="1" class="caption" width="100%">
-	<tr><td width="20%">Police Nr:</td><td width="28%"><xsl:value-of select="table/table0/row/c3"/></td><td width="4%">&#160;</td><td width="20%">Status:</td><td width="28%"><xsl:value-of select="table/table0/row/c6"/></td></tr>
-	<tr><td>Grundstueck Nr:</td><td><xsl:value-of select="table/table0/row/c2"/></td><td>&#160;</td><td>Baujahr:</td><td><xsl:value-of select="table/table0/row/c9"/></td></tr>
-	<tr><td>Gemeinde:</td><td><xsl:value-of select="table/table0/row/c17"/> (<xsl:value-of select="table/table0/row/c14"/>)</td><td>&#160;</td><td>Zweck:</td><td><xsl:value-of select="table/table0/row/c7"/>&#160;<xsl:value-of select="table/table0/row/c8"/></td></tr>
-	<tr><td>Strasse:</td><td><xsl:value-of select="table/table0/row/c18"/>&#160;<xsl:value-of select="table/table0/row/c19"/>&#160;<xsl:value-of select="table/table0/row/c20"/></td><td>&#160;</td><td>Bauart:</td><td><xsl:value-of select="table/table0/row/c11"/></td></tr>
-	<tr><td>PLZ Ort:</td><td><xsl:value-of select="table/table0/row/c21"/>&#160;<xsl:value-of select="table/table0/row/c22"/>&#160;<xsl:value-of select="table/table0/row/c23"/>&#160;<xsl:value-of select="table/table0/row/c24"/></td><td>&#160;</td><td>Lage:</td><td><xsl:value-of select="table/table0/row/c13"/></td></tr>
+	<tr><td width="20%">Police Nr:</td><td width="28%"><xsl:value-of select="table/schema0_gv_gebaeude/row/c3"/></td><td width="4%">&#160;</td><td width="20%">Status:</td><td width="28%"><xsl:value-of select="table/schema0_gv_gebaeude/row/c6"/></td></tr>
+	<tr><td>Grundstueck Nr:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c2"/></td><td>&#160;</td><td>Baujahr:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c9"/></td></tr>
+	<tr><td>Gemeinde:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c17"/> (<xsl:value-of select="table/schema0_gv_gebaeude/row/c14"/>)</td><td>&#160;</td><td>Zweck:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c7"/>&#160;<xsl:value-of select="table/schema0_gv_gebaeude/row/c8"/></td></tr>
+	<tr><td>Strasse:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c18"/>&#160;<xsl:value-of select="table/schema0_gv_gebaeude/row/c19"/>&#160;<xsl:value-of select="table/schema0_gv_gebaeude/row/c20"/></td><td>&#160;</td><td>Bauart:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c11"/></td></tr>
+	<tr><td>PLZ Ort:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c21"/>&#160;<xsl:value-of select="table/schema0_gv_gebaeude/row/c22"/>&#160;<xsl:value-of select="table/schema0_gv_gebaeude/row/c23"/>&#160;<xsl:value-of select="table/schema0_gv_gebaeude/row/c24"/></td><td>&#160;</td><td>Lage:</td><td><xsl:value-of select="table/schema0_gv_gebaeude/row/c13"/></td></tr>
 </table></div>
   <br/>
 <div><table border="1" class="caption" width="100%">
-	<xsl:for-each select="table/table1/row">
+	<xsl:for-each select="table/schema0_gv_person/row">
 		<tr><td width="20%"><xsl:value-of select="c18"/>:</td><td><xsl:value-of select="c6"/>&#160;<xsl:value-of select="c7"/>&#160;<xsl:value-of select="c8"/>&#160;<xsl:value-of select="c9"/>&#160;<xsl:value-of select="c11"/>&#160;<xsl:value-of select="c12"/>&#160;<xsl:value-of select="c13"/>&#160;<xsl:value-of select="c14"/>&#160;<xsl:value-of select="c10"/></td></tr>
 		<tr><td>&#160;</td><td>Gueltig ab:&#160;<xsl:value-of select="c15"/></td></tr>
 	<tr><td>&#160;</td><td>Gueltig bis:&#160;<xsl:value-of select="c16"/></td></tr>
@@ -59,14 +59,14 @@
 </table></div>
   <br/>
 <div><table border="1" class="caption" width="100%">
-	<xsl:for-each select="table/table2/row">
+	<xsl:for-each select="table/schema0_gv_anlage/row">
 		<tr><td width="20%">Brandschutzanlage&#160;<xsl:value-of select="c1"/>:</td><td><xsl:value-of select="c3"/>&#160;<xsl:value-of select="c4"/></td></tr>
 		<tr><td>&#160;</td><td>&#160;</td></tr>
 	</xsl:for-each>
 </table></div>
   <br/>
 <div><h2>Schaetzung:</h2><table border="1" class="caption" width="100%">
-	<xsl:for-each select="table/table4/row">
+	<xsl:for-each select="table/schema0_gv_schaetzung/row">
 		<tr><td width="20%">Schaetzungsnummer:</td><td  width="28%"><xsl:value-of select="c1"/></td><td width="4%">&#160;</td><td width="20%">Erledigungsdatum:</td><td  width="28%"><xsl:value-of select="c9"/></td></tr>
 		<tr><td>Schaetzungsdatum:</td><td><xsl:value-of select="c3"/></td><td>&#160;</td><td>Versicherungsart:</td><td><xsl:value-of select="c14"/>&#160;<xsl:value-of select="c15"/></td></tr>
 		<tr><td>Schaetzungsgrund:</td><td><xsl:value-of select="c4"/>&#160;<xsl:value-of select="c5"/></td><td>&#160;</td><td>Versicherungswert aktuell:</td><td><xsl:value-of select="c16"/></td></tr>
@@ -79,7 +79,7 @@
 </table></div>
   <br/>
 <div><h2>Schaden:</h2><table border="1" class="caption" width="100%">
-	<xsl:for-each select="table/table3/row">
+	<xsl:for-each select="table/schema0_gv_schaden/row">
 		<tr><td width="20%">Schadendatum:</td><td  width="28%"><xsl:value-of select="c4"/></td><td width="4%">&#160;</td><td width="20%">Erledigungsdatum:</td><td  width="28%"><xsl:value-of select="c5"/></td></tr>
 		<tr><td>Schadenart:</td><td><xsl:value-of select="c6"/>&#160;<xsl:value-of select="c7"/></td><td>&#160;</td><td>Schadenursache:</td><td><xsl:value-of select="c8"/>&#160;<xsl:value-of select="c9"/>&#160;<xsl:value-of select="c10"/></td></tr>
 		<tr><td>Schadensumme:</td><td><xsl:value-of select="c11"/></td><td>&#160;</td><td>Schadenstatus:</td><td><xsl:value-of select="c12"/>&#160;<xsl:value-of select="c13"/></td></tr>

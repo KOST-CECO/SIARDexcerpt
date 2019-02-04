@@ -99,6 +99,8 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 			// Information aus metadata holen
 			String mainname = "";
 			String mainfolder = "";
+			String mainschemaname = "";
+			String mainschemafolder = "";
 			String primarykeyname = "";
 			String primarykeycell = "";
 			String nameProv = "";
@@ -210,6 +212,20 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 											xMainTable = x;
 											x0MainTable = x0;
 											x0 = nlTables.getLength();
+
+											// Schema name und folder herauslesen
+											Node mainTables = nodeDetail.getParentNode();
+											NodeList nlTablesChild = mainTables.getChildNodes();
+											for ( int x2 = 0; x2 < nlTablesChild.getLength(); x2++ ) {
+												// für jedes Subelement der Tabelle (name, folder, description...) ...
+												Node subNode = nlTablesChild.item( x2 );
+												if ( subNode.getNodeName().equals( "name" ) ) {
+													mainschemaname = subNode.getTextContent();
+												} else if ( subNode.getNodeName().equals( "folder" ) ) {
+													mainschemafolder = subNode.getTextContent();
+												}
+											}
+
 										}
 									} else if ( nodeDetail.getNodeName().equals( "folder" ) ) {
 										mainfolderProv = nodeDetail.getTextContent();
@@ -565,6 +581,21 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 							primarykeycell = "c1";
 						}
 						Node mostColumnTable = mostColumn.getParentNode();
+
+						// Schema name und folder herauslesen
+						Node mainTables = mostColumnTable.getParentNode();
+						Node mainSchema = mainTables.getParentNode();
+						NodeList nlSchemaChild = mainSchema.getChildNodes();
+						for ( int x = 0; x < nlSchemaChild.getLength(); x++ ) {
+							// für jedes Subelement der Tabelle (name, folder, description...) ...
+							Node subNode = nlSchemaChild.item( x );
+							if ( subNode.getNodeName().equals( "name" ) ) {
+								mainschemaname = subNode.getTextContent();
+							} else if ( subNode.getNodeName().equals( "folder" ) ) {
+								mainschemafolder = subNode.getTextContent();
+							}
+						}
+
 						NodeList nlTableChild = mostColumnTable.getChildNodes();
 						for ( int x = 0; x < nlTableChild.getLength(); x++ ) {
 							// für jedes Subelement der Tabelle (name, folder, description...) ...
@@ -1025,6 +1056,21 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 													xMainTable = x;
 													x0MainTable = x0;
 													x0 = nlTables.getLength();
+
+													// Schema name und folder herauslesen
+													Node mainTables = nodeTable.getParentNode();
+													Node mainSchema = mainTables.getParentNode();
+													NodeList nlSchemaChild = mainSchema.getChildNodes();
+													for ( int x1 = 0; x1 < nlSchemaChild.getLength(); x1++ ) {
+														// für jedes Subelement der Tabelle (name, folder, description...) ...
+														Node subNode = nlSchemaChild.item( x1 );
+														if ( subNode.getNodeName().equals( "name" ) ) {
+															mainschemaname = subNode.getTextContent();
+														} else if ( subNode.getNodeName().equals( "folder" ) ) {
+															mainschemafolder = subNode.getTextContent();
+														}
+													}
+
 												}
 											} else if ( nodeDetail.getNodeName().equals( "folder" ) ) {
 												mainfolderProv = nodeDetail.getTextContent();
@@ -1052,6 +1098,20 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 
 										x0 = nlTables.getLength();
 										// beendet die For-schleife
+
+										// Schema name und folder herauslesen
+										Node mainTables = nodeTablesDetail.getParentNode();
+										NodeList nlTablesChild = mainTables.getChildNodes();
+										for ( int x2 = 0; x2 < nlTablesChild.getLength(); x2++ ) {
+											// für jedes Subelement der Tabelle (name, folder, description...) ...
+											Node subNode = nlTablesChild.item( x2 );
+											if ( subNode.getNodeName().equals( "name" ) ) {
+												mainschemaname = subNode.getTextContent();
+											} else if ( subNode.getNodeName().equals( "folder" ) ) {
+												mainschemafolder = subNode.getTextContent();
+											}
+										}
+
 									}
 								}
 							}
@@ -1562,6 +1622,9 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 				String valuePKname = primarykeyname;
 				primarykeyname = "<mpkname>" + primarykeyname + "</mpkname>";
 				primarykeycell = "<mpkcell>" + primarykeycell + "</mpkcell>";
+				String valueMainschemaname = mainschemaname;
+				mainschemaname = "<mschemaname>" + mainschemaname + "</mschemaname>";
+				mainschemafolder = "<mschemafolder>" + mainschemafolder + "</mschemafolder>";
 
 				// replace (..) mit wert
 				String titleNo = "<mtitle>(..)</mtitle>";
@@ -1574,6 +1637,10 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 				Util.oldnewstring( primarykeynameNo, primarykeyname, configFileHard );
 				String primarykeycellNo = "<mpkcell>(..)</mpkcell>";
 				Util.oldnewstring( primarykeycellNo, primarykeycell, configFileHard );
+				String mainschemanameNo = "<mschemaname>(..)</mschemaname>";
+				Util.oldnewstring( mainschemanameNo, mainschemaname, configFileHard );
+				String mainschemafolderNo = "<mschemafolder>(..)</mschemafolder>";
+				Util.oldnewstring( mainschemafolderNo, mainschemafolder, configFileHard );
 				String name1No = "<mc1name>(..)</mc1name>";
 				Util.oldnewstring( name1No, array12name[0], configFileHard );
 				String number1No = "<mc1number>(..)</mc1number>";
@@ -1621,10 +1688,10 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 
 				/* TODO: config subtables erstellen.
 				 * 
-		<subtable1>
-			<st1keyname>(..)</st1keyname><st1name>(..)</st1name><st1folder>(..)</st1folder><st1fkcell>(..)</st1fkcell>
-		</subtable1>
-				 * <subtables>(..)</subtables> mit Werte ersetzten.
+				 * <subtable1>
+				 * <st1keyname>(..)</st1keyname><st1name>(..)</st1name><st1folder>(..)</st1folder
+				 * ><st1fkcell>(..)</st1fkcell> </subtable1> <subtables>(..)</subtables> mit Werte
+				 * ersetzten.
 				 * 
 				 * Wenn mainname = referencedTable und referenced = primarykeyname, dann ermitteln, welcher
 				 * name und folder diese Tabelle hat und die Zellnummer der reference-column.
@@ -1635,6 +1702,7 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 				String referencedColumn = "";
 				String referencedProv = "";
 				String referencedTableProv = "";
+				String referencedSchemaProv = "";
 				String referencedColumnProv = "";
 				String subKeyNameProv = "";
 				String subKeyName = "";
@@ -1642,6 +1710,8 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 				String subFolder = "";
 				String subKeyCell = "";
 				String subKeyCellProv = "";
+				String subNameSchema = "";
+				String subFolderSchema = "";
 				Integer stcounter = 0;
 				boolean column = false;
 
@@ -1649,6 +1719,7 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 					// NodeList nlFK = docConfig.getElementsByTagName( "foreignKey" );
 					for ( int x = 0; x < nlFK.getLength(); x++ ) {
 						referencedTableProv = "";
+						referencedSchemaProv = "";
 						subKeyNameProv = "";
 						referencedColumnProv = "";
 						referencedProv = "";
@@ -1659,6 +1730,8 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 							Node subNodeFK = childNodesFK.item( y );
 							if ( subNodeFK.getNodeName().equals( "referencedTable" ) ) {
 								referencedTableProv = new String( subNodeFK.getTextContent() );
+							} else if ( subNodeFK.getNodeName().equals( "referencedSchema" ) ) {
+								referencedSchemaProv = new String( subNodeFK.getTextContent() );
 							} else if ( subNodeFK.getNodeName().equals( "name" ) ) {
 								subKeyNameProv = new String( subNodeFK.getTextContent() );
 							} else if ( subNodeFK.getNodeName().equals( "reference" ) ) {
@@ -1676,12 +1749,15 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 							}
 						}
 						// System.out.println( valueMainname + " =? " + referencedTableProv );
-						if ( valueMainname.equals( referencedTableProv ) && valuePKname.equals( referencedProv ) ) {
+						if ( valueMainname.equals( referencedTableProv )
+								&& valueMainschemaname.equals( referencedSchemaProv )
+								&& valuePKname.equals( referencedProv ) ) {
 							// referencedTable = referencedTableProv;
 							subKeyName = subKeyNameProv;
 							referencedColumn = referencedColumnProv;
 							// referenced = referencedProv;
 							referencedTableProv = "";
+							referencedSchemaProv = "";
 							subKeyNameProv = "";
 							referencedColumnProv = "";
 							referencedProv = "";
@@ -1689,6 +1765,11 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 							Node nodeParentFKs = nodeParentFK.getParentNode();
 							// nodeParentFKs = table
 							NodeList childNodesTableFK = nodeParentFKs.getChildNodes();
+							/* <foreignKey> <name>DEPT_MGR_FK</name> <referencedSchema>HR</referencedSchema>
+							 * <referencedTable>EMPLOYEES</referencedTable> <reference>
+							 * <column>MANAGER_ID</column> <referenced>EMPLOYEE_ID</referenced> </reference>
+							 * <deleteAction>RESTRICT</deleteAction> <updateAction>CASCADE</updateAction>
+							 * </foreignKey> */
 							for ( int y = 0; y < childNodesTableFK.getLength(); y++ ) {
 								Node subNodeTableFK = childNodesTableFK.item( y );
 								if ( subNodeTableFK.getNodeName().equals( "name" ) ) {
@@ -1718,30 +1799,57 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 											if ( column && subKeyCellProv != "" ) {
 												stcounter = stcounter + 1;
 												subKeyCell = subKeyCellProv;
-												subName = " <st"+stcounter+"keyname>" + subKeyName + "</st"+stcounter+"keyname><st"+stcounter+"name>"
-														+ subName + "</st"+stcounter+"name>";
-												subFolder = "<st"+stcounter+"folder>" + subFolder + "</st"+stcounter+"folder>";
-												subKeyCell = "<st"+stcounter+"fkcell>" + subKeyCell
-														+ "</st"+stcounter+"fkcell>";
-/*  										subName = " <subtable><keyname>" + subKeyName + "</keyname><name>"
-														+ subName + "</name>";
-												subFolder = "<folder>" + subFolder + "</folder>";
-												subKeyCell = "<foreignkeycell>" + subKeyCell
-														+ "</foreignkeycell></subtable></subtables>";*/
+												subName = " <st" + stcounter + "keyname>" + subKeyName + "</st" + stcounter
+														+ "keyname><st" + stcounter + "name>" + subName + "</st" + stcounter
+														+ "name>";
+												subFolder = "<st" + stcounter + "folder>" + subFolder + "</st" + stcounter
+														+ "folder>";
+												subKeyCell = "<st" + stcounter + "fkcell>" + subKeyCell + "</st"
+														+ stcounter + "fkcell>";
+
+												// Schema name und folder herauslesen
+												Node mainTables = nodeParentFKs.getParentNode();
+												Node mainSchema = mainTables.getParentNode();
+												NodeList nlSchemaChild = mainSchema.getChildNodes();
+												for ( int x1 = 0; x1 < nlSchemaChild.getLength(); x1++ ) {
+													// für jedes Subelement der Tabelle (name, folder, description...) ...
+													Node subNode = nlSchemaChild.item( x1 );
+													if ( subNode.getNodeName().equals( "folder" ) ) {
+														subFolderSchema = subNode.getTextContent();
+														// System.out.println(subFolderSchema);
+													} else if ( subNode.getNodeName().equals( "name" ) ) {
+														subNameSchema = subNode.getTextContent();
+														// System.out.println(subNameSchema);
+													}
+												}
+
+												subFolderSchema = "<st" + stcounter + "schemafolder>" + subFolderSchema
+														+ "</st" + stcounter + "schemafolder>" + "<st" + stcounter
+														+ "schemaname>" + subNameSchema + "</st" + stcounter + "schemaname>";
+												/* subName = " <subtable><keyname>" + subKeyName + "</keyname><name>" +
+												 * subName + "</name>"; subFolder = "<folder>" + subFolder + "</folder>";
+												 * subKeyCell = "<foreignkeycell>" + subKeyCell +
+												 * "</foreignkeycell></subtable></subtables>"; */
 
 												// replace (..) mit wert
 												// String subtablesNo = "<subtables>(..)</subtables>";
 												// String subtables = "<subtables></subtables>";
 												// Util.oldnewstring( subtablesNo, subtables, configFileHard );
-												String subtablesNo ="<st"+stcounter+"keyname>(..)</st"+stcounter+"keyname><st"+stcounter+"name>(..)</st"+stcounter+"name><st"+stcounter+"folder>(..)</st"+stcounter+"folder><st"+stcounter+"fkcell>(..)</st"+stcounter+"fkcell>";
+												String subtablesNo = "<st" + stcounter + "keyname>(..)</st" + stcounter
+														+ "keyname><st" + stcounter + "name>(..)</st" + stcounter + "name><st"
+														+ stcounter + "folder>(..)</st" + stcounter + "folder><st" + stcounter
+														+ "fkcell>(..)</st" + stcounter + "fkcell><st" + stcounter
+														+ "schemafolder>(..)</st" + stcounter + "schemafolder><st" + stcounter
+														+ "schemaname>(..)</st" + stcounter + "schemaname>";
 
-												String subtable = subName + subFolder + subKeyCell;
+												String subtable = subName + subFolder + subKeyCell + subFolderSchema;
 												// System.out.println( "933: " + subtable );
-												Util.oldnewstring( subtablesNo,  subtable, configFileHard );
+												Util.oldnewstring( subtablesNo, subtable, configFileHard );
 												subName = "";
 												subFolder = "";
 												subKeyCell = "";
 												subKeyCellProv = "";
+												subFolderSchema = "";
 
 											} else {
 												subKeyCell = "";

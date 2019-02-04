@@ -54,16 +54,6 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			stringNowTime = sdfStartS.format( nowTime );
 			System.out.println( stringNowTime + " Start der Suche" );
 		}
-		// Schema herausfinden
-		File fSchema = new File( siardDatei.getAbsolutePath() + File.separator + "content"
-				+ File.separator + "schema0" );
-		for ( int s = 0; s < 9999999; s++ ) {
-			fSchema = new File( siardDatei.getAbsolutePath() + File.separator + "content"
-					+ File.separator + "schema" + s );
-			if ( fSchema.exists() ) {
-				break;
-			}
-		}
 
 		File fGrepExe = new File( "resources" + File.separator + "grep" + File.separator + "grep.exe" );
 		String pathToGrepExe = fGrepExe.getAbsolutePath();
@@ -155,6 +145,7 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			// String name = getConfigurationService().getSearchtableName();
 			String name = "siardexcerptsearch";
 			String folder = configMap.get( "MaintableFolder" );
+			String folderSchema = configMap.get( "MschemaFolder" );
 			if ( folder.startsWith( "Configuration-Error:" ) ) {
 				getMessageService().logError(
 						getTextResourceService().getText( MESSAGE_XML_MODUL_B ) + folder );
@@ -169,7 +160,8 @@ public class ExcerptBSearchModuleImpl extends ValidationModuleImpl implements Ex
 			} else if ( insensitive.equalsIgnoreCase( "yes" ) ) {
 				insensitiveOption = "i";
 			}
-
+			File fSchema = new File( siardDatei.getAbsolutePath() + File.separator + "content"
+					+ File.separator + folderSchema );
 			File fSearchtable = new File( fSchema.getAbsolutePath() + File.separator + folder
 					+ File.separator + folder + ".xml" );
 			File fSearchtableTemp = new File( fSchema.getAbsolutePath() + File.separator + folder

@@ -1,5 +1,5 @@
 /* == SIARDexcerpt ==============================================================================
- * The SIARDexcerpt v0.1.0 application is used for excerpt a record from a SIARD-File. Copyright (C)
+ * The SIARDexcerpt v0.1.1 application is used for excerpt a record from a SIARD-File. Copyright (C)
  * 2016-2019 Claire Roethlisberger (KOST-CECO)
  * -----------------------------------------------------------------------------------------------
  * SIARDexcerpt is a development of the KOST-CECO. All rights rest with the KOST-CECO. This
@@ -805,23 +805,37 @@ public class SIARDexcerpt implements MessageConstants
 						String provEndXSL = "</body></html></xsl:template></xsl:stylesheet>";
 						for ( int x = 0; x < nlColumns.getLength(); x++ ) {
 							int counterColumn = 0;
-							String tableFolder = "";
+							String tableName = "";
+							String schemaName = "";
 							Node nodeColumns = nlColumns.item( x );
 							NodeList nlColumn = nodeColumns.getChildNodes();
 							counterColumn = ((nlColumn.getLength() + 1) / 2);
 							// counterColumn = Anzahl Column plus 1
 							Node nTable = nodeColumns.getParentNode();
 							// table
+
+							// Schema name und folder herauslesen
+							Node mainTables = nTable.getParentNode();
+							Node mainSchema = mainTables.getParentNode();
+							NodeList nlSchemaChild = mainSchema.getChildNodes();
+							for ( int xs = 0; xs < nlSchemaChild.getLength(); xs++ ) {
+								// für jedes Subelement der Tabelle (name, folder, description...) ...
+								Node subNode = nlSchemaChild.item( xs );
+								if ( subNode.getNodeName().equals( "name" ) ) {
+									schemaName = subNode.getTextContent();
+								}
+							}
+
 							NodeList nlTable = nTable.getChildNodes();
 							for ( int y = 0; y < nlTable.getLength(); y++ ) {
 								Node subNode = nlTable.item( y );
-								if ( subNode.getNodeName().equals( "folder" ) ) {
-									tableFolder = subNode.getTextContent();
+								if ( subNode.getNodeName().equals( "name" ) ) {
+									tableName = subNode.getTextContent();
 									// System.out.println( tableFolder + ": " + (counterColumn-1) + " Spalten." );
 									Util.oldnewstring(
 											provEndXSL,
 											siardexcerpt.getTextResourceService().getText( AUTO_XSL_TABLE_START,
-													tableFolder ), xslCopy );
+													schemaName + "_" + tableName ), xslCopy );
 									for ( int z = 1; z < counterColumn; z++ ) {
 										Util.oldnewstring( provEndXSL,
 												siardexcerpt.getTextResourceService().getText( AUTO_XSL_COLUMN, z ),
