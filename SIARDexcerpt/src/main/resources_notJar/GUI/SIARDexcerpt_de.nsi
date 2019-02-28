@@ -19,21 +19,25 @@ XPStyle on
 !include WinMessages.nsh
 !include FileFunc.nsh
 !include LogicLib.nsh
-!include getJavaHome.nsh
+#!include getJavaHome.nsh
 !include ReplaceSubStr.nsh
 !include langSIARDexcerpt_de.nsh
 !include nsDialogs.nsh
 !include XML.nsh
+!include NTProfiles.nsh
 
 ;--------------------------------
 !define INIFILE       "SIARDexcerpt.ini"
 !define KOSTHELP      "doc\SIARDexcerpt_Anwendungshandbuch_*.pdf"
 !define CONFIG        "siardexcerpt.conf.xml"
-!define CONFIGPATH    "configuration"
+!define CONFIGPATH    ".siardexcerpt\configuration"
+#!define WORKDIR       ".siardexcerpt\temp_SIARDexcerpt"
+!define LOG           ".siardexcerpt\Output"
 !define JARFILE       "siardexcerpt_de.jar"
-!define JAVAPATH      "resources\jre6"
+#!define JAVAPATH      "resources\jre6"
 
 ;--------------------------------
+Var USER
 Var DIALOG
 Var CONFIG
 Var SEARCHEXCERPT
@@ -42,10 +46,8 @@ Var SIARDORIG
 Var SIARDNAME
 Var SIARDEXCERPT
 Var LOGFILE
-Var WORKDIR
-Var LOG
 Var HEAPSIZE
-Var JAVA
+#Var JAVA
 Var T_FLAG
 Var HWND
 Var MAINTABLE
@@ -60,14 +62,25 @@ Page Custom ShowDialog LeaveDialog
 ; Functions
 Function .onInit
   ; looking for java home directory
-  push ${JAVAPATH}
-  Call getJavaHome
-  pop $JAVA
-  DetailPrint "java home: $JAVA"
+  #push ${JAVAPATH}
+  #Call getJavaHome
+  #pop $JAVA
+  #DetailPrint "java home: $JAVA"
   
   ; initial setting for validation folder/file
   StrCpy $SIARDEXCERPT $EXEDIR
   
+  System::Call "advapi32::GetUserName(t .r0, *i ${NSIS_MAX_STRLEN} r1) i.r2"
+  ; MessageBox MB_OK "User name: $0 | Number of characters: $1 | Return value (OK if non-zero): $2"  
+  ${ProfilePathDefaultUser} $3
+  StrCpy $USER "$3$0"
+  ; MessageBox MB_OK `Default User profile path:$\n"$USER"`
+
+  IfFileExists "$USER\${CONFIGPATH}\*.*" +4 0
+  CreateDirectory "$USER\.siardexcerpt"
+  CreateDirectory "$USER\${CONFIGPATH}"
+  CopyFiles /SILENT /FILESONLY "$SIARDEXCERPT\configuration\${CONFIG}" "$USER\${CONFIGPATH}"
+
   ; Initializes the plug-ins dir ($PLUGINSDIR) if not already initialized
   InitPluginsDir
   
@@ -80,27 +93,27 @@ Function .onInit
 FunctionEnd
 
 Function .onGUIEnd
-  ; MessageBox MB_OK '"$JAVA\bin\java.exe" $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" --finish'
-  ExecWait '"$JAVA\bin\java.exe" -jar ${JARFILE} "$SIARDORIG" "$CONFIG" --finish'
-  GetFullPathName $1 $WORKDIR
-  RMDir /r $1
-  delete "configuration\SIARDexcerpt.conf.xml" 
+  ; MessageBox MB_OK 'java $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" --finish'
+  ExecWait 'java -jar ${JARFILE} "$SIARDORIG" "$CONFIG" --finish'
+  #GetFullPathName $1 $WORKDIR
+  #RMDir /r $1
+  delete "$USER\${CONFIGPATH}\SIARDexcerpt.conf.xml" 
 FunctionEnd
 
-Function check4Dir
-  StrCpy $WORKDIR ''
-  StrCpy $LOG ''
-  ${xml::LoadFile} "$EXEDIR\${CONFIGPATH}\${CONFIG}" $0
-  ${xml::RootElement} $0 $1
-  ${xml::XPathString} "//configuration/pathtoworkdir/text()" $WORKDIR $1
-  ${xml::XPathString} "//configuration/pathtooutput/text()" $LOG $1
-  ${xml::Unload}
-  GetFullPathName $1 $WORKDIR
-  IfFileExists $1 fex not_fex
-fex:
-  StrCpy $WORKDIR ''
-not_fex:
-FunctionEnd
+#Function check4Dir
+#  StrCpy $WORKDIR ''
+#  StrCpy $LOG ''
+#  ${xml::LoadFile} "$EXEDIR\${CONFIGPATH}\${CONFIG}" $0
+#  ${xml::RootElement} $0 $1
+#  ${xml::XPathString} "//configuration/pathtoworkdir/text()" #$WORKDIR $1
+#  ${xml::XPathString} "//configuration/pathtooutput/text()" $LOG $1
+#  ${xml::Unload}
+#  GetFullPathName $1 $WORKDIR
+#  IfFileExists $1 fex not_fex
+#fex:
+#  StrCpy $WORKDIR ''
+#not_fex:
+#FunctionEnd
 
 Function checkHeapsize
   ${If} $HEAPSIZE == '-default'
@@ -367,7 +380,7 @@ Function LeaveDialog
 
    ${Default}
       ; Dito ${Case} '${START_Button}'
-	  ; Statt Beenden ist es jetzt ausführen, damit Enter funktioniert
+	  ; Statt Beenden ist es jetzt ausf?hren, damit Enter funktioniert
  			ReadINIStr $R3 $DIALOG "${SIARD_FileSelect}" "State"
 			StrCpy $SIARDORIG $R3
 			ReadINIStr $R2 $DIALOG "${CONFIG_FileSelect}" "State"
@@ -403,14 +416,14 @@ Function RunJar
   ${If} $T_FLAG == '--init'
     ; Launch java program
 	ClearErrors
-	; MessageBox MB_OK '"$JAVA\bin\java.exe" $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" $T_FLAG'
-	ExecWait '"$JAVA\bin\java.exe" -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG'
-	IfFileExists "configuration\SIARDexcerpt.conf.xml" 0 prog_err
+	; MessageBox MB_OK 'java $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" $T_FLAG'
+	ExecWait 'java -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG'
+	IfFileExists "$USER\${CONFIGPATH}\SIARDexcerpt.conf.xml" 0 prog_err
 	IfErrors goto_err goto_ok
 
   ${Else}
     ; get workdir and logdir
-    Call check4Dir
+    # Call check4Dir
 
 	; get logfile name
 	${GetFileName} $SIARDEXCERPT $LOGFILE
@@ -418,21 +431,21 @@ Function RunJar
     ${If} $T_FLAG == '--search'
 		; Launch java program
 		ClearErrors
-		; MessageBox MB_OK '"$JAVA\bin\java.exe" $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT"' 
-		ExecWait '"$JAVA\bin\java.exe" $HEAPSIZE -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT"'
-		IfFileExists "$LOG\$SIARDNAME_$SEARCHEXCERPT_SIARDsearch.xml" 0 prog_err
+		; MessageBox MB_OK 'java $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT"' 
+		ExecWait 'java $HEAPSIZE -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT"'
+		IfFileExists "$USER\${LOG}\$SIARDNAME_$SEARCHEXCERPT_SIARDsearch.xml" 0 prog_err
 		IfErrors goto_err goto_ok
     ${Else}
-		; MessageBox MB_OK '"$JAVA\bin\java.exe" $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT" '
-		ExecWait '"$JAVA\bin\java.exe" $HEAPSIZE -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT"'
-		IfFileExists "$LOG\$SIARDNAME_$SEARCHEXCERPT_SIARDexcerpt.xml" 0 prog_err
+		; MessageBox MB_OK 'java $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT" '
+		ExecWait 'java $HEAPSIZE -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG "$SEARCHEXCERPT"'
+		IfFileExists "$USER\${LOG}\$SIARDNAME_$SEARCHEXCERPT_SIARDexcerpt.xml" 0 prog_err
 		IfErrors goto_err goto_ok
     ${EndIf}
   ${EndIf}
   
 goto_err:
     ; ... with error
-    IfFileExists "configuration\SIARDexcerpt.conf.xml" 0 prog_err
+    IfFileExists "$USER\${CONFIGPATH}\SIARDexcerpt.conf.xml" 0 prog_err
     ${If} $T_FLAG == '--init'
       MessageBox MB_OK|MB_ICONEXCLAMATION "$SIARDEXCERPT$\n${INIT_FALSE}"
       Goto rm_workdir
@@ -447,9 +460,9 @@ goto_err:
     ${EndIf}
 
 prog_err:
-;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n$\n$JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME"
-    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n $JAVA\bin\java.exe -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME $\n$LOG\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDxxx.xml"
-;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n $JAVA\bin\java.exe" -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG"
+;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n$\n java -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME"
+    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n java -jar ${JARFILE} $SIARDORIG $CONFIG $T_FLAG $SEARCHEXCERPTNAME $\n$$USER\{LOG}\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDxxx.xml"
+;    MessageBox MB_OK|MB_ICONEXCLAMATION "${PROG_ERR} $\n java -jar ${JARFILE} "$SIARDORIG" "$CONFIG" $T_FLAG"
 
 goto_ok:
   ; ... without error completed
@@ -498,7 +511,7 @@ goto_ok:
   
 showlog:
   ; read logfile in detail view
-  GetFullPathName $1 $LOG
+  GetFullPathName $1 $USER\${LOG}
     ${If} $T_FLAG == '--search'
         IfFileExists "$1\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDsearch.xml" 0 prog_err
 		ExecShell "" "iexplore.exe" "$1\$SIARDNAME_$SEARCHEXCERPTNAME_SIARDsearch.xml"
@@ -509,18 +522,18 @@ showlog:
 	Abort
   
 rm_workdir:
-  ; MessageBox MB_OK '"$JAVA\bin\java.exe" $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" --finish'
-  ExecWait '"$JAVA\bin\java.exe" -jar ${JARFILE} "$SIARDORIG" "$CONFIG" --finish'
-  GetFullPathName $1 $WORKDIR
-  RMDir /r $1
-  delete "configuration\SIARDexcerpt.conf.xml" 
+  ; MessageBox MB_OK 'java $HEAPSIZE -jar ${JARFILE}  "$SIARDORIG" "$CONFIG" --finish'
+  ExecWait 'java -jar ${JARFILE} "$SIARDORIG" "$CONFIG" --finish'
+  #GetFullPathName $1 $WORKDIR
+  #RMDir /r $1
+  delete "$USER\${CONFIGPATH}\SIARDexcerpt.conf.xml" 
   Abort 
 FunctionEnd
 
 ;--------------------------------
 Function MainTable
   StrCpy $MAINTABLE ''
-  ${xml::LoadFile} "$EXEDIR\${CONFIGPATH}\${CONFIG}" $0
+  ${xml::LoadFile} "$USER\${CONFIGPATH}\${CONFIG}" $0
   ${xml::RootElement} $0 $1
   ${xml::XPathString} "//configuration/maintable/mainname/text()" $MAINTABLE $1
   ${xml::Unload}

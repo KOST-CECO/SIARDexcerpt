@@ -15,15 +15,12 @@
 
 package ch.kostceco.tools.siardexcerpt;
 
-// import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-// import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-// import java.io.OutputStreamWriter;
 
 import java.util.Map;
 import java.util.regex.Matcher;

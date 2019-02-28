@@ -99,7 +99,7 @@
 			<zipfileset dir="SIARDexcerpt/lib" includes="junit-4.12.jar"/>
 			<zipfileset dir="SIARDexcerpt/lib" includes="jdom-2.0.0.jar"/>
 		</jar>
-		<!--Kopiere alle benötigten Ordner und Dokumente in ../../SIARDexcerpt-->
+		<!--Kopiere alle benötigten Ordner und Dokumente in ../../SIARDexcerpt--> 
 		<copy overwrite="true" todir="../../SIARDexcerpt/configuration">
 			<fileset dir="SIARDexcerpt/src/main/resources_notJar/configuration"/>
 		</copy>
