@@ -4,6 +4,8 @@
 	<pathtoxslsearch>resources\SIARDexcerptSearch.xsl</pathtoxslsearch>
 	<archive>Staatsarchiv Zuerich</archive>
 	<insensitive>yes</insensitive>
+	<sed>no</sed>
+	
 	<maintable>
 		<mfolder>table13</mfolder>
 		<mname>taxDeclarationMainForm</mname>

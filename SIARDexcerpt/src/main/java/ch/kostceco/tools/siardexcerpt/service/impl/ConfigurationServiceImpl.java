@@ -138,6 +138,14 @@ public class ConfigurationServiceImpl implements ConfigurationService
 				configMap.put( "Insensitive", "yes" );
 			}
 
+			try {
+				/** Gibt an ob sed verwendet werden soll oder nicht. */
+				String sed = doc.getElementsByTagName( "sed" ).item( 0 ).getTextContent();
+				configMap.put( "Sed", sed );
+			} catch ( NullPointerException e ) {
+				configMap.put( "Sed", "no" );
+			}
+
 			// ------------------------ Extraktion ------------------------
 			try {
 				/** Gibt den Namen des Archivs zurück. **/
