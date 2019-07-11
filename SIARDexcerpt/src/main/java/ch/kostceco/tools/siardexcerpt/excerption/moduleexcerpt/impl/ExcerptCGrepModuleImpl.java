@@ -385,23 +385,30 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 							// System.out.println( "tabdescription: "+tabdescription );
 						} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
 							NodeList childNodesColumns = subNodeI.getChildNodes();
+							int counter = 0;
 							for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
 								Node subNodeII = childNodesColumns.item( y );
-								NodeList childNodesColumn = subNodeII.getChildNodes();
-								for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
-									int cellNumber = (y + 1) / 2;
-									// System.out.println( "Zelle Nr " + cellNumber );
-									Node subNodeIII = childNodesColumn.item( z );
-									if ( subNodeIII.getNodeName().equals( "name" ) ) {
-										// System.out.println( subNodeIII.getNodeName()+": "+subNodeIII.getTextContent()
-										// );
-										cellname = cellname + "<c" + cellNumber + ">" + subNodeIII.getTextContent()
-												+ "</c" + cellNumber + ">";
-									} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
-										// System.out.println( subNodeIII.getNodeName()+": "+subNodeIII.getTextContent()
-										// );
-										celldescription = celldescription + "<c" + cellNumber + ">"
-												+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber + ">";
+								if ( subNodeII.getNodeName().equals( "column" ) ) {
+									// nur Column mit nummer erweitern und nicht auch Kommentare
+									counter = counter + 1;
+									NodeList childNodesColumn = subNodeII.getChildNodes();
+									for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
+										int cellNumber = counter;
+										// System.out.println( "Zelle Nr " + cellNumber );
+										Node subNodeIII = childNodesColumn.item( z );
+										if ( subNodeIII.getNodeName().equals( "name" ) ) {
+											// System.out.println(
+											// subNodeIII.getNodeName()+": "+subNodeIII.getTextContent()
+											// );
+											cellname = cellname + "<c" + cellNumber + ">" + subNodeIII.getTextContent()
+													+ "</c" + cellNumber + ">";
+										} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
+											// System.out.println(
+											// subNodeIII.getNodeName()+": "+subNodeIII.getTextContent()
+											// );
+											celldescription = celldescription + "<c" + cellNumber + ">"
+													+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber + ">";
+										}
 									}
 								}
 							}
@@ -777,23 +784,26 @@ public class ExcerptCGrepModuleImpl extends ValidationModuleImpl implements Exce
 												}
 											} else if ( subNodeI.getNodeName().equals( "columns" ) ) {
 												NodeList childNodesColumns = subNodeI.getChildNodes();
+												int counter = 0;
 												for ( int y = 0; y < childNodesColumns.getLength(); y++ ) {
-													// für jede Zelle (column) ...
 													Node subNodeII = childNodesColumns.item( y );
-													NodeList childNodesColumn = subNodeII.getChildNodes();
-													for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
-														// für jedes Subelement der Zelle (name, description...) ...
-														int cellNumber = (y + 1) / 2;
-														// System.out.println( "Zelle Nr " + cellNumber );
-														Node subNodeIII = childNodesColumn.item( z );
-														if ( subNodeIII.getNodeName().equals( "name" ) ) {
-															cellname = cellname + "<c" + cellNumber + ">"
-																	+ subNodeIII.getTextContent() + "</c" + cellNumber + ">";
-															// System.out.println( cellname );
-														} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
-															celldescription = celldescription + "<c" + cellNumber + ">"
-																	+ new String( subNodeIII.getTextContent() ) + "</c" + cellNumber
-																	+ ">";
+													if ( subNodeII.getNodeName().equals( "column" ) ) {
+														// nur Column mit nummer erweitern und nicht auch Kommentare
+														counter = counter + 1;
+														NodeList childNodesColumn = subNodeII.getChildNodes();
+														for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
+															int cellNumber = counter;
+															// System.out.println( "Zelle Nr " + cellNumber );
+															Node subNodeIII = childNodesColumn.item( z );
+															if ( subNodeIII.getNodeName().equals( "name" ) ) {
+																cellname = cellname + "<c" + cellNumber + ">"
+																		+ subNodeIII.getTextContent() + "</c" + cellNumber + ">";
+																// System.out.println( cellname );
+															} else if ( subNodeIII.getNodeName().equals( "description" ) ) {
+																celldescription = celldescription + "<c" + cellNumber + ">"
+																		+ new String( subNodeIII.getTextContent() ) + "</c"
+																		+ cellNumber + ">";
+															}
 														}
 													}
 												}

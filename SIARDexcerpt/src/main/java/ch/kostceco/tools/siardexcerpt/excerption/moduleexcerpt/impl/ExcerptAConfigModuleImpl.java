@@ -157,27 +157,33 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 					/* Element number = docConfigInit.createElement("number"); number.setTextContent( "c" +
 					 * (1) ); nodeColumns.appendChild(number); */
 					NodeList nlColumn = nodeColumns.getChildNodes();
+					int counter = 0;
 					// System.out.println( "Anzahl Column: " + (nlColumn.getLength()+1)/2 );
 					for ( int y = 0; y < nlColumn.getLength(); y++ ) {
-						int counter = (y + 1) / 2;
-						Node nodeColumn = nlColumn.item( y );
-						NodeList nlColumnDetail = nodeColumn.getChildNodes();
-						Element number = docConfig.createElement( "number" );
-						number.setTextContent( "c" + counter );
-						for ( int z = 0; z < nlColumnDetail.getLength(); z++ ) {
-							Node subNode = nlColumnDetail.item( z );
-							if ( subNode.getNodeName().equals( "type" ) ) {
-								// nodeColumn.appendChild(number);
-								nodeColumn.insertBefore( number, subNode );
+						Node subNodeColumns = nlColumn.item( y );
+						if ( subNodeColumns.getNodeName().equals( "column" ) ) {
+							// nur Column mit nummer erweitern und nicht auch Kommentare
+							counter = counter + 1;
+							Node nodeColumn = nlColumn.item( y );
+							NodeList nlColumnDetail = nodeColumn.getChildNodes();
+							Element number = docConfig.createElement( "number" );
+							number.setTextContent( "c" + counter );
+							for ( int z = 0; z < nlColumnDetail.getLength(); z++ ) {
+								Node subNode = nlColumnDetail.item( z );
+								if ( subNode.getNodeName().equals( "type" ) ) {
+									// nodeColumn.appendChild(number);
+									nodeColumn.insertBefore( number, subNode );
+								}
 							}
-						}
-						for ( int z = 0; z < nlColumnDetail.getLength(); z++ ) {
-							Node subNode = nlColumnDetail.item( z );
-							if ( subNode.getNodeName().equals( "number" ) ) {
-								// System.out.println( "number " + subNode.getTextContent() );
+							for ( int z = 0; z < nlColumnDetail.getLength(); z++ ) {
+								Node subNode = nlColumnDetail.item( z );
+								if ( subNode.getNodeName().equals( "number" ) ) {
+									// System.out.println( "number " + subNode.getTextContent() );
+								}
 							}
+						} else {
+							// Kommentar wird nicht mit number ergänzt
 						}
-
 					}
 				}
 				NodeList nlFK = docConfig.getElementsByTagName( "foreignKey" );
@@ -506,6 +512,7 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 
 				// TODO (..) oder tabelle hat nicht existiert -> boolMainname=false
 				if ( !boolMainname ) {
+					// System.out.println( "(..) oder tabelle hat nicht existiert -> boolMainname=false" );
 					if ( nlPK.getLength() == 0 ) {
 						/* kein Primärschlüssel. if pkInt = 0 dann jene Tabelle mit den meisten column. Der
 						 * Schlüssel ist die erste Spalte, welche nicht Nullable sein darf oder die erste. Keine
@@ -1383,6 +1390,21 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 							Node nodeParentPK = nodePK.getParentNode();
 							// nodeParentPK = table
 							NodeList childNodesTablePK = nodeParentPK.getChildNodes();
+
+							// Schema name und folder herauslesen
+							Node mainTable = nodeParentPK.getParentNode();
+							Node mainTables = mainTable.getParentNode();
+							NodeList nlTablesChild = mainTables.getChildNodes();
+							for ( int x2 = 0; x2 < nlTablesChild.getLength(); x2++ ) {
+								// für jedes Subelement der Tabelle (name, folder, description...) ...
+								Node subNode = nlTablesChild.item( x2 );
+								if ( subNode.getNodeName().equals( "name" ) ) {
+									mainschemaname = subNode.getTextContent();
+								} else if ( subNode.getNodeName().equals( "folder" ) ) {
+									mainschemafolder = subNode.getTextContent();
+								}
+							}
+
 							for ( int y = 0; y < childNodesTablePK.getLength(); y++ ) {
 								Node subNodeTablePK = childNodesTablePK.item( y );
 								if ( subNodeTablePK.getNodeName().equals( "name" ) ) {
@@ -1397,14 +1419,6 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 										Node subNodeII = childNodesColumns.item( y1 );
 										NodeList childNodesColumn = subNodeII.getChildNodes();
 										for ( int z = 0; z < childNodesColumn.getLength(); z++ ) {
-											if ( primarykeynameProv.equals( primarykeyname ) ) {
-												primarykeycell = primarykeycellProv;
-												primarykeynameProv = "";
-												primarykeycellProv = "";
-											} else {
-												primarykeynameProv = "";
-												primarykeycellProv = "";
-											}
 											// für jedes Subelement der Zelle (name, description...) ...
 											Node subNodeIII = childNodesColumn.item( z );
 											if ( subNodeIII.getNodeName().equals( "name" ) ) {
@@ -1417,6 +1431,9 @@ public class ExcerptAConfigModuleImpl extends ValidationModuleImpl implements Ex
 											} else if ( subNodeIII.getNodeName().equals( "type" ) ) {
 												typeProv = subNodeIII.getTextContent();
 											}
+										}
+										if ( primarykeynameProv.equals( primarykeyname ) ) {
+											primarykeycell = primarykeycellProv;
 										}
 
 										/* Höchste Prio (1) für "CHARACTER VARYING", "CHARACTER" und "DATE".
