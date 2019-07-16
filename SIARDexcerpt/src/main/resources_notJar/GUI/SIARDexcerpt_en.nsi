@@ -468,7 +468,7 @@ goto_ok:
   ; ... without error completed
     Call MainTable
     ${If} $T_FLAG == '--init'
-      MessageBox MB_OK "$\n${INIT_OK} $\nMaintable: $MAINTABLE"
+      MessageBox MB_OK "$\n${INIT_OK} $\n $MAINTABLE"
       ReadINIStr $1 $DIALOG '${1INIT_RadioButton}' 'HWND'
       SendMessage $1 ${BM_SETCHECK} 0 0
       ReadINIStr $1 $DIALOG '${2SEARCH_RadioButton}' 'HWND'
